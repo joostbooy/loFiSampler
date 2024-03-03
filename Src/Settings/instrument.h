@@ -129,7 +129,7 @@ public:
 		return midi_channel() >= 16 ? "OMNI" : UiText::str.write(midi_channel() + 1);
 	}
 
-	bool channel_accepted(int channel) {
+	bool midi_channel_accepted(int channel) {
 		return midi_channel() >= 16 || channel == midi_channel();
 	}
 
