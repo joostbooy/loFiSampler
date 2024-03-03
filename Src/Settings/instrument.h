@@ -23,9 +23,9 @@ public:
 	const char * sample_rate_text(int value) {
 		switch (value)
 		{
-		case _2_KHZ:		return "2 KHZ";
-		case _4_KHZ:		return "4 KHZ";
-		case _8_KHZ:		return "8 KHZ";
+		case _2_KHZ:	return "2 KHZ";
+		case _4_KHZ:	return "4 KHZ";
+		case _8_KHZ:	return "8 KHZ";
 		case _10_KHZ:	return "10 KHZ";
 		case _16_KHZ:	return "16 KHZ";
 		default:
@@ -167,7 +167,7 @@ public:
 	//	{
 	//	case _2_KHZ: 	return Dac::sampleRate / 2000;
 	//	case _4_KHZ: 	return Dac::sampleRate / 4000;
-	//	case _8_KHZ:		return Dac::sampleRate / 8000;
+	//	case _8_KHZ:	return Dac::sampleRate / 8000;
 	//	case _16_KHZ:	return Dac::sampleRate / 16000;
 	//	default:
 	//		break;
