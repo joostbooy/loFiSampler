@@ -133,9 +133,6 @@ public:
 		return midi_channel() >= 16 || channel == midi_channel();
 	}
 
-
-
-
 	// Bit depth
 	int8_t bit_depth() {
 		return bit_depth_;
