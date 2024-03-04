@@ -4,6 +4,7 @@
 
 #include "micros.h"
 #include "settings.h"
+#include "uart.h"
 
 class Engine {
 
@@ -47,15 +48,27 @@ public:
 		requests = flags & ~type;
 	}
 
-private:
-	volatile State state_;
+	MidiEngine &midiEngine() {
+		return midiEngine_;
+	}
 
+private:
+	float pitch_bend_value_[MidiEngine::NUM_PORTS];
+
+	MidiEngine midiEngine_;
+
+	volatile State state_;
 	volatile uint8_t requests = 0x00;
 	volatile uint32_t processing_time_;
+
 
 	void start();
 	void stop();
 	void process_requests();
+	void note_on(MidiEngine::Event &e);
+	void note_off(MidiEngine::Event &e);
+	void pitch_bend(MidiEngine::Event &e);
+
 	void send_midi_clock_start();
 	void send_midi_clock_stop();
 	void send_midi_clock_continue();
