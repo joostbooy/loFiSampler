@@ -7,11 +7,10 @@ import lutCompiler
 
 #table variables
 tables = []
-ppqn = 192
+ppqn = 24
 max_bpm = 300
-max_bpm_fractional = 10
 clock_isr_freq = 8000
-
+sample_rate = 16000
 
 '''____________________
 	BPM INC
@@ -26,141 +25,87 @@ values = hertz / clock_isr_freq * (1 << 32);
 tables.append('uint32_t ' + name)
 tables.append(values.astype(int))
 
+'''____________________
+        PHASE INC
+________________________'''
+name = 'phase_inc'
 
-'''__________________________
-	BPM FRACTIONAL INC
+freq_min = 1.0 / (sample_rate * 10.0)
+freq_max = 1.0 / (sample_rate / 10.0)
+steps = numpy.linspace(freq_min, freq_max, 256)
+
+tables.append('float ' + name)
+tables.append(steps.astype('float32'))
+
+'''_____________________________
+     TEMPO SYNC PHASE INC
 _____________________________'''
 
-name = 'bpm_fractional_inc'
+bpm = numpy.arange(1.0, max_bpm + 1)
+hertz = bpm / 60 / 4
+values = sample_rate * hertz
 
-stepsize = 1.0 / max_bpm_fractional
-bpmFraction = numpy.arange(0.00, 1.00, stepsize)
-hertz = bpmFraction / 60 * ppqn
-values = hertz / clock_isr_freq * (1 << 32);
-
-tables.append('uint32_t ' + name)
-tables.append(values.astype(int))
+name = 'tempo_sync_phase_inc'
+values_whole = 1.0 / values
+tables.append('float ' + name)
+tables.append(values_whole.astype('float32'))
 
 '''____________________
-    MIDI NOTE SCALES
-    (10 octaves per scale)
+	RECIPROCAL
+________________________'''
+name = 'reciprocal'
+
+max_steps = 16
+step = numpy.arange(1, max_steps + 1)
+values = 1.0 / step
+values = numpy.insert(values, 0, 0.0)
+
+tables.append('float ' + name)
+tables.append(values.astype('float32'))
+
+'''____________________
+	EXP TABLE
 ________________________'''
 
+exp_table_size = 1024
+stepsize = 1.0 / exp_table_size
+x = numpy.arange(0, 1.0, stepsize)
 
-def make_map(notes):
-    result = []
-    for i in range(128 // len(notes) + 1):
-        shifted_notes = numpy.clip(notes + i * 12, 0, 127)
-        result += shifted_notes.tolist()
-        if len(result) >= 128:
-            break
-    return result[:128]
+name = 'exp'
+values = 1.0 - numpy.exp(-6 * x)
+values /= values.max()
 
+tables.append('float ' + name)
+tables.append(values.astype('float32'))
 
-max_octaves = 10
-notes_in_scale = 7
-octaves = numpy.repeat(numpy.arange(0, 12 * max_octaves, 12), notes_in_scale)
+name = 'inv_exp'
+values = 1.0 - values[::-1]
 
-#MAJOR
-name = 'scale_major'
+tables.append('float ' + name)
+tables.append(values.astype('float32'))
 
-notes = numpy.array([0,2,4,5,7,9,11] * max_octaves) + octaves
-tables.append('uint8_t ' + name)
-tables.append(notes)
+'''____________________
+	FREQUENCY RATIO
+________________________'''
+name = 'frequency_ratio'
 
-notes_map = numpy.array([0,0,2,2,4,5,5,7,7,9,9,11])
-tables.append('uint8_t ' + name + '_map')
-tables.append(make_map(notes_map))
+notes = numpy.arange(128, -128, -1)
+values = pow(2, notes / 12.0);
 
-#MINOR
-name = 'scale_minor'
+tables.append('float ' + name)
+tables.append(values.astype('float32'))
 
-notes = numpy.array([0,2,3,5,7,8,10] * max_octaves) + octaves
-tables.append('uint8_t ' + name)
-tables.append(notes)
-
-notes_map = numpy.array([0,0,2,3,3,5,5,7,8,8,10,10])
-tables.append('uint8_t ' + name + '_map')
-tables.append(make_map(notes_map))
-
-#MIXOLYDIAN
-name = 'scale_mixolydian'
-
-notes = numpy.array([0,2,4,5,7,9,10] * max_octaves) + octaves
-tables.append('uint8_t ' + name)
-tables.append(notes.astype(int))
-
-notes_map = numpy.array([0,0,2,2,4,5,5,7,7,9,10,10])
-tables.append('uint8_t ' + name + '_map')
-tables.append(make_map(notes_map))
-
-#DORIAN
-name = 'scale_dorian'
-
-notes = numpy.array([0,2,3,5,7,9,10] * max_octaves) + octaves
-tables.append('uint8_t ' + name)
-tables.append(notes.astype(int))
-
-notes_map = numpy.array([0,0,2,3,3,5,5,7,7,9,10,10])
-tables.append('uint8_t ' + name + '_map')
-tables.append(make_map(notes_map))
-
-#PHRYGIAN
-name = 'scale_phrygian'
-
-notes = numpy.array([0,1,3,5,7,8,10] * max_octaves) + octaves
-tables.append('uint8_t ' + name)
-tables.append(notes.astype(int))
-
-notes_map = numpy.array([0,1,1,3,3,5,5,7,8,8,10,10])
-tables.append('uint8_t ' + name + '_map')
-tables.append(make_map(notes_map))
-
-#LYDIAN
-name ='scale_lydian'
-
-notes = numpy.array([0,2,4,6,7,9,11] * max_octaves) + octaves
-tables.append('uint8_t ' + name)
-tables.append(notes.astype(int))
-
-notes_map = numpy.array([0,0,2,2,4,4,6,7,7,9,9,11,11])
-tables.append('uint8_t ' + name + '_map')
-tables.append(make_map(notes_map))
-
-#AEOLYIAN
-name ='scale_aeolyian'
-
-notes = numpy.array([0,2,3,5,7,8,10] * 10) + octaves
-tables.append('uint8_t ' + name)
-tables.append(notes.astype(int))
-
-notes_map = numpy.array([0,0,2,3,3,5,5,7,8,8,10,10])
-tables.append('uint8_t ' + name + '_map')
-tables.append(make_map(notes_map))
-
-#LOCRIAN
-name ='scale_locrian'
-
-notes = numpy.array([0,1,3,5,6,8,10] * 10) + octaves
-tables.append('uint8_t ' + name)
-tables.append(notes.astype(int))
-
-notes_map = numpy.array([0,1,1,3,3,5,6,6,8,8,10,10])
-tables.append('uint8_t ' + name + '_map')
-tables.append(make_map(notes_map))
 
 '''____________________
 	DEFINES
 ________________________'''
 
 defines = [
+'SAMPLE_RATE '			+ str(sample_rate),
 'PPQN '					+ str(ppqn),
-'MAX_OCTAVES '			+ str(max_octaves),
-'NOTES_IN_SCALE '		+ str(notes_in_scale),
-'TOTAL_NOTES_IN_SCALE '	+ str(notes_in_scale * max_octaves),
 'MAX_BPM '				+ str(max_bpm),
-'MAX_BPM_FRACTIONAL '	+ str(max_bpm_fractional),
-'CLOCK_ISR_FREQ '		+ str(clock_isr_freq)
+'CLOCK_ISR_FREQ '		+ str(clock_isr_freq),
+'EXP_TABLE_SIZE '		+ str(exp_table_size)
 ]
 
 
