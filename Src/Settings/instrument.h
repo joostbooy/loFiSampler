@@ -2,9 +2,11 @@
 #define Instrument_h
 
 #include "uiText.h"
+#include "midiEngine.h"
 #include "sample.h"
 #include "fileWriter.h"
 #include "fileReader.h"
+#include "dac.h"
 
 class Instrument {
 
@@ -14,7 +16,6 @@ public:
 		_2_KHZ,
 		_4_KHZ,
 		_8_KHZ,
-		_10_KHZ,
 		_16_KHZ,
 
 		NUM_SAMPLE_RATES
@@ -26,7 +27,6 @@ public:
 		case _2_KHZ:	return "2 KHZ";
 		case _4_KHZ:	return "4 KHZ";
 		case _8_KHZ:	return "8 KHZ";
-		case _10_KHZ:	return "10 KHZ";
 		case _16_KHZ:	return "16 KHZ";
 		default:
 			break;
@@ -36,9 +36,13 @@ public:
 	}
 
 	void init() {
-		set_name("NEW INSTUMENT");
+		set_name("NEW INSTRUMENT");
 		set_pan(0);
 		set_port(0);
+		set_midi_channel(16);
+		set_midi_port(MidiEngine::USB);
+		set_bit_depth(16);
+		set_bend_range(2);
 
 		clear_samples();
 	}
@@ -133,17 +137,39 @@ public:
 		return midi_channel() >= 16 || channel == midi_channel();
 	}
 
+	// Midi port
+	int8_t midi_port() {
+		return midi_port_;
+	}
+
+	void set_midi_port(int8_t value) {
+		midi_port_ = stmlib::clip(0, MidiEngine::NUM_PORTS, value);
+	}
+
+	const char* midi_port_text() {
+		return nullptr;
+	}
+
+	//bool midi_port_accepted(MidiEngine::Event &e) {
+	bool midi_port_accepted(int port) {
+		return midi_port() == port;
+	}
+
 	// Bit depth
-	int8_t bit_depth() {
+	void set_bit_depth(int value) {
+		bit_depth_ = stmlib::clip(2, 16, value);
+	}
+
+	uint8_t bit_depth() {
 		return bit_depth_;
 	}
 
-	void set_bit_depth(int8_t value) {
-		bit_depth_ = stmlib::clip(1, 12, value);
+	const char *bit_depth_text() {
+		return UiText::str.write(bit_depth(), " BIT");
 	}
 
-	const char* bit_depth_text() {
-		return UiText::str.write(bit_depth());
+	uint8_t bit_shifts() {
+		return 16 - bit_depth();
 	}
 
 	// SampleRate
@@ -160,15 +186,15 @@ public:
 	}
 
 	const size_t sample_rate_divisor() {
-	//	switch (sample_rate())
-	//	{
-	//	case _2_KHZ: 	return Dac::sampleRate / 2000;
-	//	case _4_KHZ: 	return Dac::sampleRate / 4000;
-	//	case _8_KHZ:	return Dac::sampleRate / 8000;
-	//	case _16_KHZ:	return Dac::sampleRate / 16000;
-	//	default:
-	//		break;
-	//	}
+		switch (sample_rate())
+		{
+		case _2_KHZ: 	return Dac::kSampleRate / 2000;
+		case _4_KHZ: 	return Dac::kSampleRate / 4000;
+		case _8_KHZ:	return Dac::kSampleRate / 8000;
+		case _16_KHZ:	return Dac::kSampleRate / 16000;
+		default:
+			break;
+		}
 		return 1;
 	}
 
@@ -178,11 +204,24 @@ public:
 	}
 
 	void set_port(int8_t value) {
-		port_ = 0; //stmlib::clip(0, Dac::kNumChannels - 1, value);
+		port_ = stmlib::clip(0, Dac::kNumChannels - 1, value);
 	}
 
 	const char* port_text() {
 		return UiText::str.write(port() + 1);
+	}
+
+	// Bend range
+	uint8_t bend_range() {
+		return bend_range_;
+	}
+
+	void set_bend_range(int value) {
+		bend_range_ = stmlib::clip(0, 24, value);
+	}
+
+	const char* bend_range_text() {
+		return UiText::str.write(bend_range(), " SEMITONES");
 	}
 
 	// name
@@ -210,9 +249,11 @@ public:
 private:
 	int8_t pan_;
 	int8_t port_;
+	int8_t midi_port_;
 	int8_t midi_channel_;
 	int8_t bit_depth_;
 	int8_t sample_rate_;
+	uint8_t bend_range_;
 	size_t num_samples_;
 	static const size_t kMaxNameLength = 16;
 	static const size_t kMaxNumSamples = 128;
