@@ -1,7 +1,10 @@
 #ifndef MidiEngine_h
 #define MidiEngine_h
 
+#include "usb.h"
 #include "uart.h"
+#include "que.h"
+
 
 class MidiEngine {
 
@@ -10,6 +13,7 @@ public:
 	enum Port {
 		UART,
 		USB,
+		// CV
 		NUM_PORTS
 	};
 
@@ -40,12 +44,12 @@ public:
 		num_data_bytes_ = 0;
 	}
 
-	void tick() {
+	void poll() {
 		if (uart_->readable() && input_que.writeable()) {
 			input_que.write(uart_->read());
 		}
 
-		if (uart_->writable() {
+		if (uart_->writeable()) {
 			if (clock_output_que.readable()) {
 				uart_->write(clock_output_que.read());
 			} else if (output_que.readable()) {
@@ -64,12 +68,12 @@ public:
 		return false;
 	}
 
-	uint16_t read_14_bit(Event &e) {
+	static inline uint16_t read_14_bit(Event &e) {
 		return (e.data[0] & 0x7F) | (e.data[1] << 7);
 	}
 
-	bool write(Event &e) {		
-		uint8_t size = e.message != last_message_ : 3 : 2;
+	bool write(Event &e) {
+		uint8_t size = e.message != last_message_ ? 3 : 2;
 		if (output_que.available_size() >= size) {
 			if (size == 3) {
 				output_que.write(e.message);
