@@ -27,19 +27,19 @@ public:
 		return state ? font.glyph(Font::CHECKMARK) : " ";
 	}
 
-	static const char* percentage_text(uint32_t ammount, uint32_t total) {
+	static const char* percentage_to_text(uint32_t ammount, uint32_t total) {
 		float percentage = (100.f / total) * ammount;
 		return str.write(static_cast<int>(percentage), "%");
 	}
 
-	static const char* note_text(uint8_t note, bool print_octave = true) {
+	static const char* note_to_text(uint8_t note, bool print_octave = true) {
 		uint8_t oct = 0;
 		while (note >= 12) {
 			note -= 12;
 			++oct;
 		}
 
-		str.write(note_to_text[note]);
+		str.write(note_text[note]);
 
 		if (print_octave) {
 			if (oct == 10) {
@@ -68,7 +68,7 @@ public:
 	}
 
 private:
-	static const char* note_to_text[12];
+	static const char* note_text[12];
 };
 
 #endif
