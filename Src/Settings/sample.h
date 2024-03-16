@@ -2,6 +2,7 @@
 #define Sample_h
 
 #include "uiText.h"
+#include "sampleData.h"
 #include "stringUtils.h"
 #include "fileWriter.h"
 #include "fileReader.h"
@@ -10,41 +11,62 @@ class Sample {
 
 public:
 
+	enum PlayMode {
+		FORWARD,
+		BACKWARD,
+		PING_PONG,
+		PING_PONG_BACKWARD,
+
+		NUM_PLAY_MODES
+	};
+
+	static const char* play_mode_text(int mode) {
+		switch (mode)
+		{
+		case FORWARD:				return "FORWARD";
+		case BACKWARD:				return "BACKWARD";
+		case PING_PONG:				return "PING PONG";
+		case PING_PONG_BACKWARD:	return "PING PONG BACKWARD";
+		default:
+			break;
+		}
+		return nullptr;
+	}
+
 	void init() {
-		set_data(nullptr);
+		// set_data(nullptr);
 
 		//	set_size(0);
 		//	set_start(0);
 
-
 		set_loop(false);
+		set_play_mode(FORWARD);
 		set_root_note(60);
 		set_key_range_low(0);
 		set_key_range_high(127);
-
-		set_name(" ");
+		set_bit_depth(16);
 	}
 
 	// data
-	void set_data(uint16_t* value) {
-		data_ = value;
+	void set_data(SampleData::Entry *entry) {
+		entry_ = entry;
 	}
 
-	uint16_t* data() {
-		return data_;
+	int16_t* data() {
+		return entry_->data;
 	}
 
 	bool has_data() {
-		return data_ != nullptr;
+		return entry_ != nullptr;
 	}
 
 	// size
 	void set_size(size_t value) {
-		size_ = value;
+	//	size_ = value;
 	}
 
 	size_t size() {
-		return size_;
+		return entry_->size;
 	}
 
 	const char *size_text() {
@@ -53,7 +75,7 @@ public:
 
 	// start
 	void set_start(size_t value) {
-		start_ = stmlib::clip(0, size(), value);
+		start_ = stmlib::clip(0, end() - 1, value);
 	}
 
 	size_t start() {
@@ -66,7 +88,7 @@ public:
 
 	// end
 	void set_end(size_t value) {
-		end_ = stmlib::clip(start(), size(), value);
+		end_ = stmlib::clip(start() + 1, size(), value);
 	}
 
 	size_t end() {
@@ -79,7 +101,7 @@ public:
 
 	// loop start
 	void set_loop_start(size_t value) {
-		loop_start_ = stmlib::clip(0, loop_end(), value);
+		loop_start_ = stmlib::clip(1, loop_end(), value);
 	}
 
 	size_t loop_start() {
@@ -92,7 +114,7 @@ public:
 
 	// loop end
 	void set_loop_end(size_t value) {
-		loop_end_ = stmlib::clip(loop_start(), 0xFFFFFFFF, value);
+		loop_end_ = stmlib::clip(loop_start(), size() - 1, value);
 	}
 
 	size_t loop_end() {
@@ -159,48 +181,60 @@ public:
 		return key >= key_range_low() && key <= key_range_high();
 	}
 
-	// name
-	const char *name() {
-		return name_;
+	// Play mode
+	void set_play_mode(uint8_t value) {
+		play_mode_ = stmlib::clip(0, NUM_PLAY_MODES - 1, value);
 	}
 
-	void set_name(const char *value) {
-		return StringUtils::copy(name_, const_cast<char*>(value), max_name_length());
+	uint8_t play_mode() {
+		return play_mode_;
 	}
 
-	const size_t max_name_length() {
-		return kMaxNameLength;
+	const char *play_mode_text() {
+		return play_mode_text(play_mode());
 	}
 
 	// Storage
 	void save(FileWriter &fileWriter) {
-		fileWriter.write(size_);
-		fileWriter.write(size_);
-		fileWriter.write(size_);
-		fileWriter.write(size_);
+		fileWriter.write(entry_);
+		fileWriter.write(start_);
+		fileWriter.write(end_);
+		fileWriter.write(loop_);
+		fileWriter.write(play_mode_);
+		fileWriter.write(loop_start_);
+		fileWriter.write(loop_end_);
+		fileWriter.write(root_note_);
+		fileWriter.write(key_range_low_);
+		fileWriter.write(key_range_high_);
+		fileWriter.write(bit_depth_);
 	}
 
 	void load(FileReader &fileReader) {
-		fileReader.read(size_);
-		fileReader.read(size_);
-		fileReader.read(size_);
-		fileReader.read(size_);
+		fileReader.read(entry_);
+		fileReader.read(start_);
+		fileReader.read(end_);
+		fileReader.read(loop_);
+		fileReader.read(play_mode_);
+		fileReader.read(loop_start_);
+		fileReader.read(loop_end_);
+		fileReader.read(root_note_);
+		fileReader.read(key_range_low_);
+		fileReader.read(key_range_high_);
+		fileReader.read(bit_depth_);
 	}
 
 private:
-	uint16_t *data_;
-	size_t size_;
+	SampleData::Entry *entry_;
 	size_t start_;
 	size_t end_;
 	bool loop_;
+	uint8_t play_mode_;
 	size_t loop_start_;
 	size_t loop_end_;
 	uint8_t root_note_;
 	uint8_t key_range_low_;
 	uint8_t key_range_high_;
-
-	static const size_t kMaxNameLength = 8;
-	char name_[kMaxNameLength];
+	uint8_t bit_depth_;
 };
 
 #endif
