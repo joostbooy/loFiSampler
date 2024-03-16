@@ -44,7 +44,6 @@ public:
 		set_root_note(60);
 		set_key_range_low(0);
 		set_key_range_high(127);
-		set_bit_depth(16);
 	}
 
 	// data
