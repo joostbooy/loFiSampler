@@ -1,10 +1,12 @@
 #ifndef Engine_h
 #define Engine_h
 
-
 #include "micros.h"
-#include "settings.h"
+#include "midiClockEngine.h"
+#include "midiEngine.h"
 #include "uart.h"
+#include "lfoEngine.h"
+#include "envelopeEngine.h"
 
 class Engine {
 
@@ -23,18 +25,22 @@ public:
 		CONTINUE		= (1 << 3),
 	};
 
-	void init();
+	void init(Uart*, Usb*);
 	void tick();
-	void update();
 	void suspend();
 	void resume();
 	void process();
+	void fill(Dac::Buffer *buffer, const size_t size);
 
 	float processing_time();
 
 	// states
 	State state() {
 		return state_;
+	}
+
+	constexpr size_t max_voices() {
+		return kMaxVoices;
 	}
 
 	// requests
@@ -53,13 +59,16 @@ public:
 	}
 
 private:
-	float pitch_bend_value_[MidiEngine::NUM_PORTS];
-
-	MidiEngine midiEngine_;
-
 	volatile State state_;
 	volatile uint8_t requests = 0x00;
-	volatile uint32_t processing_time_;
+	float pitch_bend_value_[MidiEngine::NUM_PORTS];
+
+	static const size_t kMaxVoices = 8;
+
+	MidiEngine midiEngine_;
+	MidiClockEngine midiClockEngine_;
+	LfoEngine lfoEngine_[Settings::num_lfos()];
+	EnvelopeEngine envelopeEngine_[Settings::num_envelopes() * kMaxVoices];
 
 
 	void start();

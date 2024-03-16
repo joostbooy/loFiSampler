@@ -2,11 +2,21 @@
 
 Engine engine;
 
-void Engine::init(Uart *uart) {
-	midiEngine_.init(&uart);
+void Engine::init(Uart *uart, Usb* usb) {
+	midiEngine_.init(uart, usb);
 
-	for (int i = 0; i < MidiEngine::NUM_PORTS; ++i)	{
-		pitch_bend_value_[i] = 0.f
+	for (size_t i = 0; i < Settings::num_lfos(); ++i) {
+		lfoEngine_[i].init(&settings.lfo(i));
+	}
+
+	for (size_t i = 0; i < Settings::num_envelopes(); ++i) {
+		for (size_t v = 0; v < kMaxVoices; ++v) {
+			envelopeEngine_[v + (i * kMaxVoices)].init(&settings.envelope(i));
+		}
+	}
+
+	for (size_t i = 0; i < MidiEngine::NUM_PORTS; ++i)	{
+		pitch_bend_value_[i] = 0.f;
 	}
 }
 
@@ -36,7 +46,12 @@ void Engine::process_requests() {
 }
 
 void Engine::tick() {
-	midiEngine_.tick();
+	if (midiClockEngine_.tick()) {
+		if (settings.midi().send_clock()) {
+			midiEngine_.write(MidiEngine::CLOCK_PULSE);
+		}
+	}
+	midiEngine_.poll();
 }
 
 void Engine::note_on(MidiEngine::Event &e) {
@@ -53,10 +68,11 @@ void Engine::pitch_bend(MidiEngine::Event &e) {
 
 // low priority
 void Engine::process() {
+
 	MidiEngine::Event e;
 
 	while (midiEngine_.read(e)) {
-		switch (e.message)
+		switch (e.message & 0xF0)
 		{
 		case MidiEngine::NOTE_ON:
 			note_on(e);
@@ -71,17 +87,11 @@ void Engine::process() {
 			break;
 		}
 	}
+
 }
 
-float Engine::processing_time() {
-	return (1.f / 500.f) * processing_time_;
-}
-
-// 2 khz interrupt
-void Engine::update() {
-	uint32_t start = micros.read();
-
-	//
-
-	processing_time_ = micros.read() - start;
+void Engine::fill(Dac::Buffer *buffer, const size_t size) {
+	for (size_t i = 0; i < size; ++i) {
+		//
+	}
 }
