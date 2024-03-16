@@ -1,15 +1,41 @@
 #ifndef Settings_h
 #define Settings_h
 
+#include "lfo.h"
+#include "midi.h"
 #include "sample.h"
 #include "instrument.h"
+#include "envelope.h"
 #include "stringBuilder.h"
 
 class Settings {
 
 public:
 
+	constexpr static const size_t num_lfos() {
+		return kNumLfos;
+	}
+
+	constexpr static const size_t num_envelopes() {
+		return kNumLfos;
+	}
+
 	void init() {
+		selected_sample_ = 0;
+		selected_instrument_ = 0;
+
+		path.clear();
+
+		midi().init();
+
+		for (size_t i = 0; i < kNumLfos; ++i) {
+			lfo(i).init();
+		}
+
+		for (size_t i = 0; i < kNumEnvelopes; ++i) {
+			envelope(i).init();
+		}
+
 		for (size_t i = 0; i < kMaxSamples; ++i) {
 			sample(i).init();
 		}
@@ -19,12 +45,40 @@ public:
 		}
 	}
 
+	Midi &midi() {
+		return midi_;
+	}
+
 	Sample &sample(size_t index) {
 		return sample_[index];
 	}
 
 	Instrument &instrument(size_t index) {
 		return instrument_[index];
+	}
+
+	Lfo &lfo(size_t index) {
+		return lfo_[index];
+	}
+
+	Envelope &envelope(size_t index) {
+		return envelope_[index];
+	}
+
+	int selected_sample() {
+		return selected_sample_;
+	}
+
+	void set_selected_sample(int index) {
+		selected_sample_ = stmlib::clip(0, instrument(0).num_samples() - 1, index);
+	}
+
+	int selected_instrument() {
+		return selected_instrument_;
+	}
+
+	void set_selected_instrument(int index) {
+		selected_instrument_ = stmlib::clip(0, kMaxInstruments - 1, index);
 	}
 
 	// save & load
@@ -49,9 +103,17 @@ private:
 
 	static const size_t kMaxSamples = 128;
 	static const size_t kMaxInstruments = 4;
+	static const size_t kNumLfos = 4;
+	static const size_t kNumEnvelopes = 2;
+
+	Midi midi_;
 	Sample sample_[kMaxSamples];
 	Instrument instrument_[kMaxInstruments];
+	Lfo lfo_[kNumLfos];
+	Envelope envelope_[kNumEnvelopes];
 
+	int selected_sample_;
+	int selected_instrument_;
 };
 
 extern Settings settings;
