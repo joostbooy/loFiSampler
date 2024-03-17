@@ -8,25 +8,30 @@ class SampleEngine {
 
 public:
 
+	enum State {
+		BACKWARD 	= -1,
+		IDLE		= 0,
+		FORWARD		= 1
+	};
+
 	void init() {
-		is_playing_ = false;
+		state_ = IDLE;
 	}
 
 	void note_on(MidiEngine::Event &e, Sample *sample, Instrument *instrument) {
 		sample_ = sample;
 		instrument_ = instrument;
 		key_pressed_ = true;
-		is_playing_ = true;
 
 		note_ = e.data[0];
 		velocity_ = (1.f / 127.f) * e.data[1];
 
-		if ((sample_->play_mode() == Sample::FORWARD) || (sample_->play_mode() == Sample::PING_PONG)) {
+		if (sample_->play_mode() == Sample::FORWARD) {
 			phase_ = sample_->start();
-			direction_ = 1;
+			state_ = FORWARD;
 		} else {
 			phase_ = sample_->end();
-			direction_ = -1;
+			state_ = BACKWARD;
 		}
 	}
 
@@ -41,7 +46,7 @@ public:
 	}
 
 	int16_t next(ModulationEngine::Frame *frame) {
-		if (is_playing_ == false) {
+		if (state_ == IDLE) {
 			return 0;
 		}
 
@@ -55,46 +60,19 @@ public:
 
 		phase_ += get_inc(note_, sample_->root_note(), instrument_->bend_range(), frame->bend);
 
-		switch (sample_->play_mode())
-		{
-		case Sample::FORWARD:
-			if (!next_phase_forward()) {
-				is_playing_ = false;
-			}
-			break;
-		case Sample::BACKWARD:
-			if (!next_phase_backward()) {
-				is_playing_ = false;
-			}
-			break;
-		case Sample::PING_PONG:
-			if (direction_ == 1) {
-				if (!next_phase_forward(intergral)) {
-					direction_ = -1;
-				}
+		if (state_ == FORWARD) {
+			if (is_looping()) {
+				next_loop_forward(intergral);
 			} else {
-				if (!next_phase_backward(intergral)) {
-					is_playing_ = false;
-				}
+				next_forward(intergral);
 			}
-			break;
-		case Sample::PING_PONG_REVERSE:
-			if (direction_ == -1) {
-				if (!next_phase_backward(intergral)) {
-					direction_ = 1;
-				}
+		} else if (state_ == BACKWARD) {
+			if (is_looping()) {
+				next_loop_backward(intergral);
 			} else {
-				if (!next_phase_forward(intergral)) {
-					is_playing_ = false;
-				}
+				next_backward(intergral);
 			}
-			break;
-		default:
-			break;
 		}
-
-		//float pan_value = sample_->pan() * frame->pan();
-		//Dsp::pan(pan_value);
 
 		return value * velocity_ * frame->gain;
 	}
@@ -102,29 +80,54 @@ public:
 private:
 	float phase_;
 	float velocity_;
-	uint8_t note_;
 	bool key_pressed_;
-	bool is_playing_;
-	int direction_;
+	uint8_t note_;
+	State state_;
 	Sample_ *sample_;
 	Instrument *instrument_;
 
-	inline bool next_phase_forward(uint32_t intergral) {
-		if (sample_->loop() && key_pressed_ && (intergral >= sample_->loop_end())) {
-			phase_ = sample_->loop_start();
-		} else if (intergral >= sample_->end()) {
-			return false;
-		}
-		return true;
+	inline bool is_looping() {
+		return sample_->loop() && key_pressed_;
 	}
 
-	inline bool next_phase_backward(uint32_t intergral) {
-		if (sample_->loop() && key_pressed_ && (intergral <= sample_->loop_start())) {
-			phase_ = sample_->loop_end();
-		} else if (intergral <= sample_->start()) {
-			return false;
+	inline void next_forward((uint32_t intergral) {
+		if (intergral >= sample_->end()) {
+			if (sample_->u_turn() && (sample_->play_mode() == Sample::FORWARD)) {
+				state_ = BACKWARD;
+			} else {
+				state_ = IDLE;
+			}
 		}
-		return true;
+	}
+
+	inline void next_backward((uint32_t intergral) {
+		if (intergral <= sample_->start()) {
+			if (sample_->u_turn() && (sample_->play_mode() == Sample::BACWARD)) {
+				state_ = FORWARD;
+			} else {
+				state_ = IDLE;
+			}
+		}
+	}
+
+	inline void next_loop_forward(uint32_t intergral) {
+		if (intergral >= sample_->loop_end()) {
+			if (sample_->u_turn()) {
+				state_ = BACKWARD;
+			} else {
+				phase_ = sample_->loop_start();
+			}
+		}
+	}
+
+	inline void next_loop_backward(uint32_t intergral) {
+		if (intergral <= sample_->loop_start()) {
+			if (sample_->u_turn()) {
+				state_ = FORWARD;
+			} else {
+				phase_ = sample_->loop_end();
+			}
+		}
 	}
 
 	inline float get_inc(int note, int root_note, int bend_range, float bend = 0.5f) {
@@ -132,7 +135,7 @@ private:
 		float a = lut_frequency_ratio[stmlib::clip_max(255, index + bend_range)];
 		float b = lut_frequency_ratio[index];
 		float c = lut_frequency_ratio[stmlib::clip_min(0, index - bend_range)];
-		return Dsp::cross_fade(a, b, c, bend) * direction_;
+		return Dsp::cross_fade(a, b, c, bend) * state_;
 	}
 };
 
