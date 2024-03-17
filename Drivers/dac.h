@@ -22,6 +22,11 @@ class Dac {
 
 public:
 
+	struct Buffer
+	{
+		int member;
+	};
+
 	enum ClearCode {
 		ClearZeroScale  = 0,
 		ClearMidScale   = 1,
@@ -44,13 +49,16 @@ public:
 	}
 
 	void write() {
-		for (int i = 0; i < kNumChannels; ++i) {
+		for (size_t i = 0; i < kNumChannels; ++i) {
 			writeDac(i == 7 ? WRITE_INPUT_REGISTER_UPDATE_ALL : WRITE_INPUT_REGISTER, i, value_[i], 0);
 		}
 	}
 
+	static const uint32_t kSampleRate = 16000;
+	static const size_t kNumChannels = 8;
+	static const size_t kBlockSize = 16;
+
 private:
-	static const int kNumChannels = 8;
 	uint16_t value_[kNumChannels];
 	volatile uint8_t dummy;
 
