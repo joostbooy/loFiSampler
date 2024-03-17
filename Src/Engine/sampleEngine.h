@@ -2,6 +2,7 @@
 #define SampleEngine_h
 
 #include "sample.h"
+#include "modulationEngine.h"
 
 class SampleEngine {
 
@@ -17,23 +18,29 @@ public:
 		key_pressed_ = true;
 		is_playing_ = true;
 
-		if (sample_->play_mode() == Sample::FORWARD || Sample::PING_PONG) {
+		note_ = e.data[0];
+		velocity_ = (1.f / 127.f) * e.data[1];
+
+		if ((sample_->play_mode() == Sample::FORWARD) || (sample_->play_mode() == Sample::PING_PONG)) {
 			phase_ = sample_->start();
 			direction_ = 1;
 		} else {
 			phase_ = sample_->end();
-			direction_ = 0;
+			direction_ = -1;
 		}
-
-		velocity_ = (1.f / 127.f) * e.data[1];
-		inc_ = lut_frequency_ratio[128 - (e.data[0] - sample_->root_note())];
 	}
 
 	void note_off() {
 		key_pressed_ = false;
 	}
 
-	int16_t next(float bend) {
+	void fill(int16_t *buffer, ModulationEngine::Frame *frame, const size_t size) {
+		for (int i = 0; i < size; ++i) {
+			*buffer++ = next(*frame++);
+		}
+	}
+
+	int16_t next(ModulationEngine::Frame *frame) {
 		if (is_playing_ == false) {
 			return 0;
 		}
@@ -42,9 +49,11 @@ public:
 		float fractional = phase_ - intergral;
 
 		uint8_t shifts = instrument_->bit_shifts();
-		int16_t a = (sample_->data(phase_intergral) >> shifts) << shifts);
-		int16_t b = (sample_->data(phase_intergral + 1) >> shifts) << shifts);
-		int16_t value = a + (b - a) * fractional;
+		int16_t a = sample_->data(phase_intergral);
+		int16_t b = sample_->data(phase_intergral + direction_);
+		int16_t value = (Dsp::cross_fade(a, b, fractional) >> shifts) << shifts;
+
+		phase_ += get_inc(note_, sample_->root_note(), instrument_->bend_range(), frame->bend);
 
 		switch (sample_->play_mode())
 		{
@@ -61,7 +70,7 @@ public:
 		case Sample::PING_PONG:
 			if (direction_ == 1) {
 				if (!next_phase_forward(intergral)) {
-					direction_ = 0;
+					direction_ = -1;
 				}
 			} else {
 				if (!next_phase_backward(intergral)) {
@@ -70,7 +79,7 @@ public:
 			}
 			break;
 		case Sample::PING_PONG_REVERSE:
-			if (direction_ == 0) {
+			if (direction_ == -1) {
 				if (!next_phase_backward(intergral)) {
 					direction_ = 1;
 				}
@@ -84,21 +93,23 @@ public:
 			break;
 		}
 
-		return value * velocity_;
+		//float pan_value = sample_->pan() * frame->pan();
+		//Dsp::pan(pan_value);
+
+		return value * velocity_ * frame->gain;
 	}
 
 private:
-	float inc_;
 	float phase_;
 	float velocity_;
+	uint8_t note_;
 	bool key_pressed_;
 	bool is_playing_;
-	bool direction_;
+	int direction_;
 	Sample_ *sample_;
 	Instrument *instrument_;
 
 	inline bool next_phase_forward(uint32_t intergral) {
-		phase_ += inc_;
 		if (sample_->loop() && key_pressed_ && (intergral >= sample_->loop_end())) {
 			phase_ = sample_->loop_start();
 		} else if (intergral >= sample_->end()) {
@@ -108,7 +119,6 @@ private:
 	}
 
 	inline bool next_phase_backward(uint32_t intergral) {
-		phase_ -= inc_;
 		if (sample_->loop() && key_pressed_ && (intergral <= sample_->loop_start())) {
 			phase_ = sample_->loop_end();
 		} else if (intergral <= sample_->start()) {
@@ -117,30 +127,12 @@ private:
 		return true;
 	}
 
-	inline bool next_phase_ping_pong(uint32_t intergral) {
-		if (direction_ == 1) {
-			phase_ += inc_;
-			if (intergral >= sample_->end() || (sample_->loop() && key_pressed_ && (intergral >= sample_->loop_end()))) {
-				direction_ = 0;
-				phase_ -= inc_;
-			}
-		} else {
-			phase_ -= inc_;
-			if (sample_->loop() && key_pressed_ && (intergral <= sample_->loop_start())) {
-				direction_ = 1;
-				phase_ += inc_;
-			} else if (intergral <= sample_->start()) {
-				is_playing_ = false;
-			}
-		}
-	}
-
-	inline float inc(int note, int bend_range, float bend = 0.5f) {
+	inline float get_inc(int note, int root_note, int bend_range, float bend = 0.5f) {
 		int index = 128 - (note - root_note);
 		float a = lut_frequency_ratio[stmlib::clip_max(255, index + bend_range)];
 		float b = lut_frequency_ratio[index];
 		float c = lut_frequency_ratio[stmlib::clip_min(0, index - bend_range)];
-		return Dsp::cross_fade(a, b, c, bend);
+		return Dsp::cross_fade(a, b, c, bend) * direction_;
 	}
 };
 
