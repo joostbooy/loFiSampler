@@ -15,8 +15,10 @@ void Engine::init(Uart *uart, Usb* usb) {
 		}
 	}
 
+	//modualationEngine_.init(&lfoEngine_[0], Settings::num_lfos(), &envelopeEngine_[0], )
+
 	for (size_t i = 0; i < MidiEngine::NUM_PORTS; ++i)	{
-		pitch_bend_value_[i] = 0.f;
+		pitch_bend_value_[i] = 0.5f;
 	}
 }
 
@@ -87,7 +89,6 @@ void Engine::process() {
 			break;
 		}
 	}
-
 }
 
 void Engine::fill(Dac::Buffer *buffer, const size_t size) {
