@@ -14,8 +14,6 @@ public:
 	enum PlayMode {
 		FORWARD,
 		BACKWARD,
-		PING_PONG,
-		PING_PONG_BACKWARD,
 
 		NUM_PLAY_MODES
 	};
@@ -25,8 +23,6 @@ public:
 		{
 		case FORWARD:				return "FORWARD";
 		case BACKWARD:				return "BACKWARD";
-		case PING_PONG:				return "PING PONG";
-		case PING_PONG_BACKWARD:	return "PING PONG BACKWARD";
 		default:
 			break;
 		}
@@ -40,6 +36,7 @@ public:
 		//	set_start(0);
 
 		set_loop(false);
+		set_u_turn(false);
 		set_play_mode(FORWARD);
 		set_root_note(60);
 		set_key_range_low(0);
@@ -61,7 +58,7 @@ public:
 
 	// size
 	void set_size(size_t value) {
-	//	size_ = value;
+		//	size_ = value;
 	}
 
 	size_t size() {
@@ -193,12 +190,26 @@ public:
 		return play_mode_text(play_mode());
 	}
 
+	// U turn
+	void set_u_turn(bool value) {
+		u_turn_ = value;
+	}
+
+	bool u_turn() {
+		return u_turn_;
+	}
+
+	const char *u_turn_text() {
+		return UiText::bool_to_on_off(u_turn());
+	}
+
 	// Storage
 	void save(FileWriter &fileWriter) {
 		fileWriter.write(entry_);
 		fileWriter.write(start_);
 		fileWriter.write(end_);
 		fileWriter.write(loop_);
+		fileWriter.write(u_turn_);
 		fileWriter.write(play_mode_);
 		fileWriter.write(loop_start_);
 		fileWriter.write(loop_end_);
@@ -213,6 +224,7 @@ public:
 		fileReader.read(start_);
 		fileReader.read(end_);
 		fileReader.read(loop_);
+		fileReader.read(u_turn_);
 		fileReader.read(play_mode_);
 		fileReader.read(loop_start_);
 		fileReader.read(loop_end_);
@@ -227,6 +239,7 @@ private:
 	size_t start_;
 	size_t end_;
 	bool loop_;
+	bool u_turn_;
 	uint8_t play_mode_;
 	size_t loop_start_;
 	size_t loop_end_;
