@@ -1,11 +1,10 @@
 #ifndef Engine_h
 #define Engine_h
 
-#include "micros.h"
-#include "midiClockEngine.h"
-#include "midiEngine.h"
 #include "uart.h"
-#include "lfoEngine.h"
+#include "micros.h"
+#include "midiEngine.h"
+#include "midiClockEngine.h"
 #include "envelopeEngine.h"
 #include "sampleEngine.h"
 #include "modulationEngine.h"
@@ -63,15 +62,13 @@ public:
 private:
 	volatile State state_;
 	volatile uint8_t requests = 0x00;
-	float pitch_bend_value_[MidiEngine::NUM_PORTS];
 
 	static const size_t kMaxVoices = 8;
 
 	MidiEngine midiEngine_;
 	MidiClockEngine midiClockEngine_;
-	LfoEngine lfoEngine_[Settings::num_lfos()];
-	EnvelopeEngine envelopeEngine_[Settings::num_envelopes() * kMaxVoices];
 	ModulationEngine modualationEngine_;
+	EnvelopeEngine envelopeEngine_[Settings::num_envelopes() * kMaxVoices];
 
 	void start();
 	void stop();

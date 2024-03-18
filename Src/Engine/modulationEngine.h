@@ -13,8 +13,12 @@ public:
 		float data[Modulation::NUM_DESTINATIONS];
 	};
 
-	void init(Modulation *modulation) {
-		modulation_ = modulation;
+	void init(Settings *settings) {
+		modulation_ = &settings->modulation();
+
+		for (size_t i = 0; i < Settings::num_lfos(); ++i) {
+			lfoEngine_[i].init(&settings->lfo(i));
+		}
 	}
 
 	Frame *frame() {
@@ -46,12 +50,11 @@ public:
 	}
 
 	void fill() {
-		source_[Modulation::LFO_1] = lfoEngine_[0].next();
-		source_[Modulation::LFO_2] = lfoEngine_[1].next();
-		source_[Modulation::LFO_3] = lfoEngine_[2].next();
-		source_[Modulation::LFO_4] = lfoEngine_[3].next();
-
 		for (size_t i = 0; i < kFrameSize; ++i) {
+			source_[Modulation::LFO_1] = lfoEngine_[0].next();
+			source_[Modulation::LFO_2] = lfoEngine_[1].next();
+			source_[Modulation::LFO_3] = lfoEngine_[2].next();
+			source_[Modulation::LFO_4] = lfoEngine_[3].next();
 			process(&frame_[i]);
 		}
 	}

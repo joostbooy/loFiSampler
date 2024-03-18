@@ -4,22 +4,12 @@ Engine engine;
 
 void Engine::init(Settings *settings, Uart *uart, Usb* usb) {
 	midiEngine_.init(uart, usb);
-	modualationEngine_.init(&settings->modulation());
-
-	for (size_t i = 0; i < Settings::num_lfos(); ++i) {
-		lfoEngine_[i].init(&settings->lfo(i));
-	}
+	modualationEngine_.init(settings);
 
 	for (size_t i = 0; i < Settings::num_envelopes(); ++i) {
 		for (size_t v = 0; v < kMaxVoices; ++v) {
 			envelopeEngine_[v + (i * kMaxVoices)].init(&settings->envelope(i));
 		}
-	}
-
-	//modualationEngine_.init(&lfoEngine_[0], Settings::num_lfos(), &envelopeEngine_[0], )
-
-	for (size_t i = 0; i < MidiEngine::NUM_PORTS; ++i)	{
-		pitch_bend_value_[i] = 0.5f;
 	}
 }
 
@@ -78,7 +68,6 @@ void Engine::cc(MidiEngine::Event &e) {
 
 // low priority
 void Engine::process() {
-
 	MidiEngine::Event e;
 
 	while (midiEngine_.read(e)) {
