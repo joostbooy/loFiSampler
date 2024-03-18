@@ -18,6 +18,14 @@ public:
 		state_ = IDLE;
 	}
 
+	State state() {
+		return state_;
+	}
+
+	uint32_t phase() {
+		return phase_;
+	}
+
 	void note_on(MidiEngine::Event &e, Sample *sample, Instrument *instrument) {
 		sample_ = sample;
 		instrument_ = instrument;
@@ -40,25 +48,21 @@ public:
 	}
 
 	void fill(int16_t *buffer, ModulationEngine::Frame *frame, const size_t size) {
-		for (int i = 0; i < size; ++i) {
-			*buffer++ = next(*frame++);
+		for (size_t i = 0; i < size; ++i) {
+			*buffer++ = next(frame++);
 		}
 	}
 
 	int16_t next(ModulationEngine::Frame *frame) {
-		if (state_ == IDLE) {
-			return 0;
-		}
-
 		uint32_t intergral = static_cast<uint32_t>(phase_);
 		float fractional = phase_ - intergral;
 
+		int16_t a = sample_->data(intergral);
+		int16_t b = sample_->data(intergral + state_);
 		uint8_t shifts = instrument_->bit_shifts();
-		int16_t a = sample_->data(phase_intergral);
-		int16_t b = sample_->data(phase_intergral + direction_);
 		int16_t value = (Dsp::cross_fade(a, b, fractional) >> shifts) << shifts;
 
-		phase_ += get_inc(note_, sample_->root_note(), instrument_->bend_range(), frame->bend);
+		phase_ += get_inc(note_, sample_->root_note(), instrument_->bend_range(), sample_->cents_float(), frame->data[Modulation::BEND]);
 
 		if (state_ == FORWARD) {
 			if (is_looping()) {
@@ -74,7 +78,7 @@ public:
 			}
 		}
 
-		return value * velocity_ * frame->gain;
+		return value * velocity_ * frame->data[Modulation::GAIN];
 	}
 
 private:
@@ -83,14 +87,14 @@ private:
 	bool key_pressed_;
 	uint8_t note_;
 	State state_;
-	Sample_ *sample_;
+	Sample *sample_;
 	Instrument *instrument_;
 
 	inline bool is_looping() {
 		return sample_->loop() && key_pressed_;
 	}
 
-	inline void next_forward((uint32_t intergral) {
+	inline void next_forward(uint32_t intergral) {
 		if (intergral >= sample_->end()) {
 			if (sample_->u_turn() && (sample_->play_mode() == Sample::FORWARD)) {
 				state_ = BACKWARD;
@@ -100,9 +104,9 @@ private:
 		}
 	}
 
-	inline void next_backward((uint32_t intergral) {
+	inline void next_backward(uint32_t intergral) {
 		if (intergral <= sample_->start()) {
-			if (sample_->u_turn() && (sample_->play_mode() == Sample::BACWARD)) {
+			if (sample_->u_turn() && (sample_->play_mode() == Sample::BACKWARD)) {
 				state_ = FORWARD;
 			} else {
 				state_ = IDLE;
@@ -130,13 +134,14 @@ private:
 		}
 	}
 
-	inline float get_inc(int note, int root_note, int bend_range, float bend = 0.5f) {
-		int index = 128 - (note - root_note);
-		float a = lut_frequency_ratio[stmlib::clip_max(255, index + bend_range)];
-		float b = lut_frequency_ratio[index];
-		float c = lut_frequency_ratio[stmlib::clip_min(0, index - bend_range)];
+	inline float get_inc(int note, int root_note, int bend_range, float cents, float bend) {
+		int semitone = 128 - (note - root_note);
+		float a = lut_semitone_ratio[stmlib::clip_min(0, semitone - bend_range)];
+		float b = lut_semitone_ratio[semitone];
+		float c = lut_semitone_ratio[stmlib::clip_max(255, semitone + bend_range)];
 		return Dsp::cross_fade(a, b, c, bend) * state_;
 	}
+
 };
 
 #endif
