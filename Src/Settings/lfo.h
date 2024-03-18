@@ -12,7 +12,8 @@ public:
 
 	void init() {
 		set_speed(0);
-		set_shape(0);
+		set_shape(32);
+		set_skew(32);
 		set_clock_sync(false);
 		set_randomise(false);
 	}
@@ -35,16 +36,37 @@ public:
 	}
 
 	// shape
-	uint8_t shape() {
+	int8_t shape() {
 		return shape_;
 	}
 
 	void set_shape(int value) {
-		shape_ = stmlib::clip(0, 255, value);
+		shape_ = stmlib::clip(0, 64, value);
 	}
 
 	const char *shape_text() {
-		return nullptr;
+		return UiText::str.write(skew() - 32);
+	}
+
+	float shape_float() {
+		return (1.f / 64.f) * shape();
+	}
+
+	// Skew
+	int8_t skew() {
+		return skew_;
+	}
+
+	void set_skew(int value) {
+		skew_ = stmlib::clip(0, 64, value);
+	}
+
+	const char *skew_text() {
+		return UiText::str.write(skew() - 32);
+	}
+
+	float skew_float() {
+		return (1.f / 64.f) * skew();
 	}
 
 	// clock sync
@@ -75,22 +97,25 @@ public:
 
 	// Storage
 	void save(FileWriter &fileWriter) {
-		fileWriter.write(speed_);
+		fileWriter.write(skew_);
 		fileWriter.write(shape_);
+		fileWriter.write(speed_);
 		fileWriter.write(randomise_);
 		fileWriter.write(clock_sync_);
 	}
 
 	void load(FileReader &fileReader) {
-		fileReader.read(speed_);
+		fileReader.read(skew_);
 		fileReader.read(shape_);
+		fileReader.read(speed_);
 		fileReader.read(randomise_);
 		fileReader.read(clock_sync_);
 	}
 
 private:
+	int8_t skew_;
+	int8_t shape_;
 	uint8_t speed_;
-	uint8_t shape_;
 	bool randomise_;
 	bool clock_sync_;
 };

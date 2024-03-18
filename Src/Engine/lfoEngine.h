@@ -19,23 +19,20 @@ public:
 		phase_ = 0.f;
 	}
 
-	float next_sample() {
+	float next() {
 		phase_ += lfo_->inc();
 		if (phase_ >= 1.f) {
 			phase_ = 0.f;
 		}
-		return Curve::read(phase_, lfo_->shape());
-		//return Dsp::cross_fade(a, b, triangle(phase_));
+
+		float tri_ = triangle(phase_, lfo_->skew_float());
+		return Curve::read(tri_, lfo_->shape_float());
 	}
 
 private:
-	float phase_;
-	float inc_;
 	Lfo *lfo_;
-
-	inline float triangle(float phase) {
-		return phase < 0.5f ? phase * 2.f : (1.f - phase) * 2.f;
-	}
+	float inc_;
+	float phase_;
 
 	inline float triangle(float phase, float skew) {
 		if (phase < skew) {
