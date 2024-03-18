@@ -41,7 +41,7 @@ int main(void)
 
 	settings.init();	// before ui & engine
 	ui.init();
-	engine.init(&uart, &usb);
+	engine.init(&settings, &uart, &usb);
 
 	// start timers
 
