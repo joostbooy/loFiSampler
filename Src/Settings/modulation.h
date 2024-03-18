@@ -117,11 +117,17 @@ public:
 
 	void write_matrix(int src, int dest, bool state) {
 		uint32_t data = matrix_[src];
-		
+
 		if (state) {
 			matrix_[src] = data | (1 << dest);
 		} else {
 			matrix_[src] = data & ~(1 << dest);
+		}
+	}
+
+	void clear_matrix() {
+		for (size_t i = 0; i < NUM_SOURCES; ++i) {
+			matrix_[i] = 0;
 		}
 	}
 
