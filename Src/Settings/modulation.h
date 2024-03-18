@@ -4,7 +4,6 @@
 #include "uiText.h"
 #include "fileWriter.h"
 #include "fileReader.h"
-#include "midi.h"
 
 class Modulation {
 
@@ -47,7 +46,6 @@ public:
 		CV_2,
 		CV_3,
 		CV_4,
-		MIDI_MOD,
 		MIDI_BEND,
 		MIDI_CC_A,
 		MIDI_CC_B,
@@ -69,7 +67,6 @@ public:
 		case CV_2:			return "CV 3";
 		case CV_3:			return "CV 3";
 		case CV_4:			return "CV 4";
-		case MIDI_MOD:		return "MIDI_MOD";
 		case MIDI_BEND:		return "MIDI_BEND";
 		case MIDI_CC_A:		return midi_cc_number_text(0);
 		case MIDI_CC_B:		return midi_cc_number_text(1);
@@ -113,7 +110,6 @@ public:
 	bool read_matrix(int src, int dest) {
 		return matrix_[src] & (1 << dest);
 	}
-
 
 	void write_matrix(int src, int dest, bool state) {
 		uint32_t data = matrix_[src];

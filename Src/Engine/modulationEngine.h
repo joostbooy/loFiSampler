@@ -33,18 +33,14 @@ public:
 		source_[Modulation::CV_1 + channel] = value;
 	}
 
-	void write_midi_mod(float value) {
-		source_[Modulation::MIDI_MOD] = value;
-	}
-
 	void write_midi_bend(float value) {
 		source_[Modulation::MIDI_BEND] = value;
 	}
 
-	void write_midi_cc(uint8_t number, uint8_t value) {
+	void write_midi_cc(uint8_t number, float value) {
 		for (size_t i = 0; i < Modulation::num_user_cc(); ++i) {
 			if (number == modulation_->midi_cc_number(i)) {
-				source_[i + Modulation::MIDI_CC_A] = (1.f / 127.f) * value;
+				source_[i + Modulation::MIDI_CC_A] = value;
 			}
 		}
 	}
@@ -61,22 +57,26 @@ public:
 	}
 
 private:
-	Modulation *modulation_;
-
 	static const size_t kFrameSize = Dac::kBlockSize;
+
+	Modulation *modulation_;
 	Frame frame_[kFrameSize];
 	float source_[Modulation::NUM_SOURCES];
-
 	LfoEngine lfoEngine_[settings.num_lfos()];
 
 	void process(Frame *frame) {
+		int sources;
+
 		for (int x = 0; x < Modulation::NUM_DESTINATIONS; ++x) {
-			frame->data[x] = 1.f;
+			sources = 0;
+			frame->data[x] = 0.f;
 			for (int y = 0; y < Modulation::NUM_SOURCES; ++y) {
 				if (modulation_->read_matrix(x, y)) {
-					frame->data[x] *= source_[y];
+					frame->data[x] += source_[y];
+					++sources;
 				}
 			}
+			frame->data[x] *= lut_reciprocal[sources];
 		}
 	}
 
