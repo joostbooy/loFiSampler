@@ -98,7 +98,7 @@ public:
 	}
 
 	void set_midi_cc_number(int index, int cc_number) {
-		midi_cc_number_[index] = cc_number;
+		midi_cc_number_[index] = stmlib::clip(0, 127, cc_number);
 	}
 
 	const char* midi_cc_number_text(int index) {
@@ -114,11 +114,14 @@ public:
 		return matrix_[src] & (1 << dest);
 	}
 
+
 	void write_matrix(int src, int dest, bool state) {
+		uint32_t data = matrix_[src];
+		
 		if (state) {
-			matrix_[src] |= (1 << dest);
+			matrix_[src] = data | (1 << dest);
 		} else {
-			matrix_[src] &= ~(1 << dest);
+			matrix_[src] = data & ~(1 << dest);
 		}
 	}
 
