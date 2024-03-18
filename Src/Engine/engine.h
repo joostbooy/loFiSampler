@@ -7,6 +7,8 @@
 #include "uart.h"
 #include "lfoEngine.h"
 #include "envelopeEngine.h"
+#include "sampleEngine.h"
+#include "modulationEngine.h"
 
 class Engine {
 
@@ -25,7 +27,7 @@ public:
 		CONTINUE		= (1 << 3),
 	};
 
-	void init(Uart*, Usb*);
+	void init(Settings*, Uart*, Usb*);
 	void tick();
 	void suspend();
 	void resume();
@@ -69,7 +71,7 @@ private:
 	MidiClockEngine midiClockEngine_;
 	LfoEngine lfoEngine_[Settings::num_lfos()];
 	EnvelopeEngine envelopeEngine_[Settings::num_envelopes() * kMaxVoices];
-
+	ModulationEngine modualationEngine_;
 
 	void start();
 	void stop();
@@ -77,6 +79,7 @@ private:
 	void note_on(MidiEngine::Event &e);
 	void note_off(MidiEngine::Event &e);
 	void pitch_bend(MidiEngine::Event &e);
+	void cc(MidiEngine::Event &e);
 
 	void send_midi_clock_start();
 	void send_midi_clock_stop();

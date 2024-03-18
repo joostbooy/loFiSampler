@@ -2,16 +2,17 @@
 
 Engine engine;
 
-void Engine::init(Uart *uart, Usb* usb) {
+void Engine::init(Settings *settings, Uart *uart, Usb* usb) {
 	midiEngine_.init(uart, usb);
+	modualationEngine_.init(&settings->modulation());
 
 	for (size_t i = 0; i < Settings::num_lfos(); ++i) {
-		lfoEngine_[i].init(&settings.lfo(i));
+		lfoEngine_[i].init(&settings->lfo(i));
 	}
 
 	for (size_t i = 0; i < Settings::num_envelopes(); ++i) {
 		for (size_t v = 0; v < kMaxVoices; ++v) {
-			envelopeEngine_[v + (i * kMaxVoices)].init(&settings.envelope(i));
+			envelopeEngine_[v + (i * kMaxVoices)].init(&settings->envelope(i));
 		}
 	}
 
@@ -65,7 +66,14 @@ void Engine::note_off(MidiEngine::Event &e) {
 }
 
 void Engine::pitch_bend(MidiEngine::Event &e) {
-	pitch_bend_value_[e.port] = (1.f / 16383.f) * MidiEngine::read_14_bit(e);
+	float data = (1.f / 16383.f) * MidiEngine::read_14_bit(e);
+	modualationEngine_.write_midi_bend(data);
+}
+
+void Engine::cc(MidiEngine::Event &e) {
+	uint8_t number = e.data[0];
+	float data = (1.f / 127.f) * e.data[1];
+	modualationEngine_.write_midi_cc(number, data);
 }
 
 // low priority
@@ -84,6 +92,9 @@ void Engine::process() {
 			break;
 		case MidiEngine::PITCH_BEND:
 			pitch_bend(e);
+			break;
+		case MidiEngine::CONTROLLER_CHANGE:
+			cc(e);
 			break;
 		default:
 			break;
