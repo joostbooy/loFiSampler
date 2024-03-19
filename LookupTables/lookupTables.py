@@ -89,12 +89,17 @@ tables.append(values.astype('float32'))
 ________________________'''
 name = 'semitone_ratio'
 
-notes = numpy.arange(-128, 128, 1)
+notes = numpy.arange(-128, 128)
 values = pow(2, notes / 12.0);
 
 tables.append('float ' + name)
 tables.append(values.astype('float32'))
 
+name = 'cent_ratio'
+values = pow(2, numpy.arange(-99, 99) / 199.0 / 12.0);
+
+tables.append('float ' + name)
+tables.append(values.astype('float32'))
 
 '''____________________
 	DEFINES
