@@ -114,10 +114,10 @@ private:
 
 	Midi midi_;
 	Modulation modulation_;
-	Sample sample_[kMaxSamples];
-	Instrument instrument_[kMaxInstruments];
 	Lfo lfo_[kNumLfos];
+	Sample sample_[kMaxSamples];
 	Envelope envelope_[kNumEnvelopes];
+	Instrument instrument_[kMaxInstruments];
 
 	FileWriter fileWriter;
 	FileReader fileReader;
