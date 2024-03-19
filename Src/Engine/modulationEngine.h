@@ -70,16 +70,16 @@ private:
 	void process(Frame *frame) {
 		int sources;
 
-		for (int x = 0; x < Modulation::NUM_DESTINATIONS; ++x) {
+		for (int y = 0; y < Modulation::NUM_DESTINATIONS; ++y) {
 			sources = 0;
-			frame->data[x] = 0.f;
-			for (int y = 0; y < Modulation::NUM_SOURCES; ++y) {
+			frame->data[y] = 0.f;
+			for (int x = 0; x < Modulation::NUM_SOURCES; ++x) {
 				if (modulation_->read_matrix(x, y)) {
-					frame->data[x] += source_[y];
+					frame->data[y] += source_[x];
 					++sources;
 				}
 			}
-			frame->data[x] *= lut_reciprocal[sources];
+			frame->data[y] *= lut_reciprocal[sources];
 		}
 	}
 
