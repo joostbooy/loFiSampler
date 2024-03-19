@@ -64,7 +64,7 @@ public:
 		case LFO_3:			return "LFO 3";
 		case LFO_4:			return "LFO 4";
 		case CV_1:			return "CV 1";
-		case CV_2:			return "CV 3";
+		case CV_2:			return "CV 2";
 		case CV_3:			return "CV 3";
 		case CV_4:			return "CV 4";
 		case MIDI_BEND:		return "MIDI_BEND";
