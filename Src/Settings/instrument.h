@@ -43,6 +43,7 @@ public:
 		set_midi_port(MidiEngine::USB);
 		set_bit_depth(16);
 		set_bend_range(2);
+		set_enable_modulation(false);
 
 		clear_samples();
 	}
@@ -224,6 +225,19 @@ public:
 		return UiText::str.write(bend_range(), " SEMITONES");
 	}
 
+	// Modulation
+	bool modulation_enabled() {
+		return modulation_enabled_;
+	}
+
+	void set_enable_modulation(bool state) {
+		modulation_enabled_ = state;
+	}
+
+	const char* modulation_enabled_text() {
+		return UiText::bool_to_on_off(modulation_enabled());
+	}
+
 	// name
 	const char *name() {
 		return name_;
@@ -255,6 +269,7 @@ private:
 	int8_t sample_rate_;
 	uint8_t bend_range_;
 	size_t num_samples_;
+	bool modulation_enabled_;
 	static const size_t kMaxNameLength = 16;
 	static const size_t kMaxNumSamples = 128;
 	char name_[kMaxNameLength];
