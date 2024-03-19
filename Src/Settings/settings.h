@@ -4,6 +4,7 @@
 #include "lfo.h"
 #include "midi.h"
 #include "sample.h"
+#include "modulation.h"
 #include "instrument.h"
 #include "envelope.h"
 #include "stringBuilder.h"
@@ -27,6 +28,7 @@ public:
 		path.clear();
 
 		midi().init();
+		modulation().init();
 
 		for (size_t i = 0; i < kNumLfos; ++i) {
 			lfo(i).init();
@@ -47,6 +49,10 @@ public:
 
 	Midi &midi() {
 		return midi_;
+	}
+
+	Modulation &modulation() {
+		return modulation_;
 	}
 
 	Sample &sample(size_t index) {
@@ -107,6 +113,7 @@ private:
 	static const size_t kNumEnvelopes = 2;
 
 	Midi midi_;
+	Modulation modulation_;
 	Sample sample_[kMaxSamples];
 	Instrument instrument_[kMaxInstruments];
 	Lfo lfo_[kNumLfos];
