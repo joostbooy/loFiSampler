@@ -11,7 +11,7 @@
 # ------------------------------------------------
 
 
-TARGET = AudioSampler
+TARGET = LoFiSampler
 OPT = -O2
 
 BUILD_DIR = Build
