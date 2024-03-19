@@ -55,7 +55,7 @@ tables.append(values_whole.astype('float32'))
 ________________________'''
 name = 'reciprocal'
 
-max_steps = 16
+max_steps = 32
 step = numpy.arange(1, max_steps + 1)
 values = 1.0 / step
 values = numpy.insert(values, 0, 0.0)
@@ -85,11 +85,11 @@ tables.append('float ' + name)
 tables.append(values.astype('float32'))
 
 '''____________________
-	FREQUENCY RATIO
+	FREQUENCY RATIOS
 ________________________'''
-name = 'frequency_ratio'
+name = 'semitone_ratio'
 
-notes = numpy.arange(128, -128, -1)
+notes = numpy.arange(-128, 128, 1)
 values = pow(2, notes / 12.0);
 
 tables.append('float ' + name)

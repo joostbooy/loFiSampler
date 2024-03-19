@@ -15,6 +15,7 @@ extern const float lut_tempo_sync_phase_inc[];
 extern const float lut_reciprocal[];
 extern const float lut_exp[];
 extern const float lut_inv_exp[];
-extern const float lut_frequency_ratio[];
+extern const float lut_semitone_ratio[];
+extern const float lut_cent_ratio[];
 
 #endif
