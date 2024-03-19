@@ -3,10 +3,16 @@
 
 #include "lfo.h"
 #include "curve.h"
+#include "rng.h"
 
 class LfoEngine {
 
 public:
+
+	enum Stage {
+		FALLING = 0,
+		RISING = 1,
+	};
 
 	void init(Lfo *lfo) {
 		lfo_ = lfo;
@@ -17,6 +23,7 @@ public:
 
 	void reset() {
 		phase_ = 0.f;
+		set_stage(RISING);
 	}
 
 	float next() {
@@ -25,24 +32,45 @@ public:
 			phase_ = 0.f;
 		}
 
-		float tri_ = triangle(phase_, lfo_->skew_float());
-		return Curve::read(tri_, lfo_->shape_float());
+		float skew_phase_;
+		float skew = lfo_->skew_float();
+
+		if (phase_ < skew) {
+			set_stage(RISING);
+			skew_phase_ = phase_ * (1.0f / skew);
+		} else {
+			set_stage(FALLING);
+			skew_phase_ = (phase_ - skew) * (1.0f / (1.0f - skew));
+		}
+
+		float curve_phase = Curve::read(skew_phase_, lfo_->shape_float());
+		value_ = Dsp::cross_fade(last_value_, target_value_, curve_phase);
+
+		return value_;
 	}
 
 private:
 	Lfo *lfo_;
 	float inc_;
 	float phase_;
+	float value_;
+	float last_value_;
+	float target_value_;
+	Stage stage_;
 
-	inline float triangle(float phase, float skew) {
-		if (phase < skew) {
-			float inc_up = 1.0f / skew;
-			return phase * inc_up;
-		} else {
-			float inc_down = 1.0f / (1.0f - skew);
-			return 1.0f - (phase - skew) * inc_down;
+	inline void set_stage(Stage stage) {
+		if (stage_ != stage) {
+			stage_ = stage;
+			last_value_ = value_;
+
+			if (lfo_->randomise()) {
+				target_value_ = Rng::reciprocal();
+			} else {
+				target_value_ = static_cast<float>(stage);
+			}
 		}
 	}
+
 };
 
 #endif
