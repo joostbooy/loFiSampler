@@ -4,9 +4,6 @@
 #include "fileReader.h"
 
 Settings settings;
-FileWriter fileWriter;
-FileReader fileReader;
-
 
 bool Settings::save(const char* new_path) {
 	path.write(new_path);

@@ -119,6 +119,9 @@ private:
 	Lfo lfo_[kNumLfos];
 	Envelope envelope_[kNumEnvelopes];
 
+	FileWriter fileWriter;
+	FileReader fileReader;
+
 	int selected_sample_;
 	int selected_instrument_;
 };
