@@ -26,7 +26,7 @@ public:
 		CONTINUE		= (1 << 3),
 	};
 
-	void init(Settings*, Uart*, Usb*);
+	void init(Uart*, Usb*);
 	void tick();
 	void suspend();
 	void resume();

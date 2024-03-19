@@ -2,17 +2,16 @@
 
 Engine engine;
 
-void Engine::init(Settings *settings, Uart *uart, Usb* usb) {
+void Engine::init(Uart *uart, Usb* usb) {
 	midiEngine_.init(uart, usb);
-	modualationEngine_.init(settings);
+	modualationEngine_.init(&settings);
 
 	for (size_t i = 0; i < Settings::num_envelopes(); ++i) {
 		for (size_t v = 0; v < kMaxVoices; ++v) {
-			envelopeEngine_[v + (i * kMaxVoices)].init(&settings->envelope(i));
+			envelopeEngine_[v + (i * kMaxVoices)].init(&settings.envelope(i));
 		}
 	}
 }
-
 
 /*	Engine commands */
 
