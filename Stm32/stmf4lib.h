@@ -31,6 +31,10 @@ public:
 		return value > max ? max : (value < min ? min : value);
 	}
 
+	static inline float clip_float(float value) {
+		return value > 1.0f ? 1.0f : (value < 0.0f ? 0.0f : value);
+	}
+
 	template <typename type>
 	static inline type difference(type a, type b) {
 		return a > b ? a - b : b - a;
