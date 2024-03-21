@@ -19,6 +19,10 @@ public:
 		return str.write(value);
 	}
 
+	static const char* float_to_text(int min, int max, float value) {
+		return str.write(Dsp::cross_fade(min, max, value));
+	}
+
 	static const char* bool_to_on_off(bool state) {
 		return state ? "ON" : "OFF";
 	}
