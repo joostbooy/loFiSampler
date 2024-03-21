@@ -1,4 +1,5 @@
 # AUDIO SAMPLER
+Work in progress
 
 ## Features
 - x
@@ -16,7 +17,7 @@
 - `/Drivers`			Hardware peripheral drivers
 - `/LookUpTables`	Tables & table generation
 - `/Stm32`				MCU config & helpers
-- `/Src/Settings`	All the sequencer data
+- `/Src/Settings`	All the sampler data
 - `/Src/Ui`				User interface to manipulate & visualize the data
 - `/Src/Engine`		Responsible for running the data & talk to the hardware drivers
 - `/Src/Disk`			Filesystem
