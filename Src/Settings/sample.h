@@ -42,6 +42,7 @@ public:
 		set_root_note(60);
 		set_key_range_low(0);
 		set_key_range_high(127);
+		set_gain(100);
 	}
 
 	// data
@@ -140,20 +141,16 @@ public:
 	}
 
 	// Root note
-	void set_cents(uint8_t value) {
-		cents_ = stmlib::clip(-99, 99, value);
+	void set_cents(float value) {
+		cents_ = stmlib::clip_float(value);
 	}
 
-	int cents() {
+	float cents() {
 		return cents_;
 	}
 
-	float cents_float() {
-		return (1.f / 100.f) * (cents() + 99);
-	}
-
 	const char *cents_text() {
-		return UiText::str.write(cents());
+		return UiText::float_to_text(-99, 99, cents());
 	}
 
 	// Root note
@@ -225,6 +222,20 @@ public:
 		return UiText::bool_to_on_off(u_turn());
 	}
 
+	// Gain
+	void set_gain(float value) {
+		gain_ = stmlib::clip_float(value);
+	}
+
+	float gain() {
+		return gain_;
+	}
+
+	const char *gain_text() {
+		return UiText::percentage_to_text(gain() * 100 , 100);
+	}
+
+
 	// Storage
 	void save(FileWriter &fileWriter) {
 		fileWriter.write(entry_);
@@ -239,6 +250,7 @@ public:
 		fileWriter.write(root_note_);
 		fileWriter.write(key_range_low_);
 		fileWriter.write(key_range_high_);
+		fileWriter.write(gain_);
 	}
 
 	void load(FileReader &fileReader) {
@@ -254,6 +266,7 @@ public:
 		fileReader.read(root_note_);
 		fileReader.read(key_range_low_);
 		fileReader.read(key_range_high_);
+		fileReader.read(gain_);
 	}
 
 private:
@@ -265,10 +278,11 @@ private:
 	uint8_t play_mode_;
 	size_t loop_start_;
 	size_t loop_end_;
-	int cents_;
+	float cents_;
 	uint8_t root_note_;
 	uint8_t key_range_low_;
 	uint8_t key_range_high_;
+	float gain_;
 };
 
 #endif

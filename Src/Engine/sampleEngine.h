@@ -32,7 +32,6 @@ public:
 		key_pressed_ = true;
 
 		note_ = e.data[0];
-		velocity_ = (1.f / 127.f) * e.data[1];
 
 		if (sample_->play_mode() == Sample::FORWARD) {
 			phase_ = sample_->start();
@@ -48,12 +47,17 @@ public:
 	}
 
 	void fill(int16_t *buffer, ModulationEngine::Frame *frame, const size_t size) {
+		// copy settings;
+		//sample_ = sample;
+
 		for (size_t i = 0; i < size; ++i) {
 			*buffer++ = next(frame++);
 		}
 	}
 
 	int16_t next(ModulationEngine::Frame *frame) {
+		// apply_modulation(frame);
+
 		uint32_t intergral = static_cast<uint32_t>(phase_);
 		float fractional = phase_ - intergral;
 
@@ -62,7 +66,7 @@ public:
 		uint8_t shifts = instrument_->bit_shifts();
 		int16_t value = (Dsp::cross_fade(a, b, fractional) >> shifts) << shifts;
 
-		phase_ += get_inc(note_, sample_->root_note(), instrument_->bend_range(), sample_->cents_float(), frame->data[Modulation::BEND]);
+		phase_ += get_inc(note_, sample_->root_note(), instrument_->bend_range(), sample_->cents(), frame->data[Modulation::BEND]);
 
 		if (state_ == FORWARD) {
 			if (is_looping()) {
@@ -78,12 +82,11 @@ public:
 			}
 		}
 
-		return value * velocity_ * frame->data[Modulation::GAIN];
+		return value * sample_->gain() * instrument_->gain();
 	}
 
 private:
 	float phase_;
-	float velocity_;
 	bool key_pressed_;
 	uint8_t note_;
 	State state_;
@@ -140,6 +143,15 @@ private:
 		float b = lut_semitone_ratio[semitone];
 		float c = lut_semitone_ratio[stmlib::clip_max(255, semitone + bend_range)];
 		return Dsp::cross_fade(a, b, c, bend) * state_;
+	}
+
+	void apply_modulation(ModulationEngine::Frame *frame) {
+		if (instrument_->modulation_enabled()) {
+			//	sample_.set_start(sample_src_->start() * frame->data[Modulation::START]);
+			//	sample_.set_end(sample_src_->end() * frame->data[Modulation::END]);
+			//	sample_.set_loop_start(sample_src_->loop_start() * frame->data[Modulation::LOOP_START]);
+			//	sample_.set_loop_end(sample_src_->loop_end() * frame->data[Modulation::LOOP_END]);
+		}
 	}
 
 };

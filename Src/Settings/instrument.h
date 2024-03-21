@@ -37,6 +37,7 @@ public:
 
 	void init() {
 		set_name("NEW INSTRUMENT");
+		set_gain(100);
 		set_pan(0);
 		set_port(0);
 		set_midi_channel(16);
@@ -105,20 +106,16 @@ public:
 	}
 
 	// pan
-	int8_t pan() {
+	float pan() {
 		return pan_;
 	}
 
-	void set_pan(int8_t value) {
-		pan_ = stmlib::clip(-100, 100, value);
+	void set_pan(float value) {
+		pan_ = stmlib::clip_float(value);
 	}
 
 	const char* pan_text() {
-		return UiText::str.write(pan());
-	}
-
-	float pan_float() {
-		return (1.f / 200.f) * (pan_ + 100);
+		return UiText::float_to_text(-100, 100, pan());
 	}
 
 	// Midi channel
@@ -251,8 +248,25 @@ public:
 		return kMaxNameLength;
 	}
 
+	// Gain
+	void set_gain(float value) {
+		gain_ = stmlib::clip_float(value);
+	}
+
+	float gain() {
+		return gain_;
+	}
+
+	const char *gain_text() {
+		return UiText::percentage_to_text(gain() * 100, 100);
+	}
+
+
 	// Storage
 	void save(FileWriter &fileWriter) {
+		fileWriter.write(pan_);
+		fileWriter.write(pan_);
+		fileWriter.write(pan_);
 		fileWriter.write(pan_);
 	}
 
@@ -261,7 +275,8 @@ public:
 	}
 
 private:
-	int8_t pan_;
+	float pan_;
+	float gain_;
 	int8_t port_;
 	int8_t midi_port_;
 	int8_t midi_channel_;
