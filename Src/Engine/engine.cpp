@@ -47,7 +47,9 @@ void Engine::tick() {
 }
 
 void Engine::note_on(MidiEngine::Event &e) {
-
+//	for (int i = 0; i < Settings::kNumInstruments; ++i) {
+//		if (instrumentEngine_[i].)
+//	}
 }
 
 void Engine::note_off(MidiEngine::Event &e) {
@@ -69,7 +71,7 @@ void Engine::cc(MidiEngine::Event &e) {
 void Engine::process() {
 	MidiEngine::Event e;
 
-	while (midiEngine_.read(e)) {
+	while (midiEngine_.pull(e)) {
 		switch (e.message & 0xF0)
 		{
 		case MidiEngine::NOTE_ON:
@@ -91,6 +93,8 @@ void Engine::process() {
 }
 
 void Engine::fill(Dac::Buffer *buffer, const size_t size) {
+	// process_midi();
+
 	for (size_t i = 0; i < size; ++i) {
 		//
 	}

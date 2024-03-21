@@ -58,7 +58,7 @@ public:
 		}
 	}
 
-	bool read(Event &e) {
+	bool pull(Event &e) {
 		while (input_que.readable()) {
 			if (parse(input_que.read())) {
 				e = event_;
