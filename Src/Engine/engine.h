@@ -8,6 +8,9 @@
 #include "envelopeEngine.h"
 #include "sampleEngine.h"
 #include "modulationEngine.h"
+#include "instrumentEngine.h"
+#include "voiceEngine.h"
+#include "sampleQue.h"
 
 class Engine {
 
@@ -30,7 +33,6 @@ public:
 	void tick();
 	void suspend();
 	void resume();
-	void process();
 	void fill(Dac::Buffer *buffer, const size_t size);
 
 	float processing_time();
@@ -38,10 +40,6 @@ public:
 	// states
 	State state() {
 		return state_;
-	}
-
-	constexpr size_t max_voices() {
-		return kMaxVoices;
 	}
 
 	// requests
@@ -63,16 +61,18 @@ private:
 	volatile State state_;
 	volatile uint8_t requests = 0x00;
 
-	static const size_t kMaxVoices = 8;
-
+	SampleQue sampleQue_;
+	VoiceEngine voiceEngine_;
 	MidiEngine midiEngine_;
 	MidiClockEngine midiClockEngine_;
 	ModulationEngine modualationEngine_;
-	EnvelopeEngine envelopeEngine_[Settings::num_envelopes() * kMaxVoices];
+	InstrumentEngine instrumentEngine_[Settings::kMaxInstruments];
+	EnvelopeEngine envelopeEngine_[Settings::kMaxInstruments * Settings::kMaxVoices];
 
 	void start();
 	void stop();
 	void process_requests();
+	void process_midi();
 	void note_on(MidiEngine::Event &e);
 	void note_off(MidiEngine::Event &e);
 	void pitch_bend(MidiEngine::Event &e);

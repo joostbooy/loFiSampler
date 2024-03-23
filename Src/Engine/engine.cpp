@@ -3,12 +3,12 @@
 Engine engine;
 
 void Engine::init(Uart *uart, Usb* usb) {
-	midiEngine_.init(uart, usb);
+	//midiEngine_.init(uart, usb);
 	modualationEngine_.init(&settings);
 
-	for (size_t i = 0; i < Settings::num_envelopes(); ++i) {
-		for (size_t v = 0; v < kMaxVoices; ++v) {
-			envelopeEngine_[v + (i * kMaxVoices)].init(&settings.envelope(i));
+	for (size_t i = 0; i < Settings::kNumEnvelopes; ++i) {
+		for (size_t v = 0; v < Settings::kMaxVoices; ++v) {
+			envelopeEngine_[v + (i * Settings::kMaxVoices)].init(&settings.envelope(i));
 		}
 	}
 }
@@ -47,13 +47,14 @@ void Engine::tick() {
 }
 
 void Engine::note_on(MidiEngine::Event &e) {
-//	for (int i = 0; i < Settings::kNumInstruments; ++i) {
-//		if (instrumentEngine_[i].)
-//	}
+	size_t num_written = sampleQue_.note_on(e);
+	if (num_written >= 1) {
+		voiceEngine_.request_voices(num_written);
+	}
 }
 
 void Engine::note_off(MidiEngine::Event &e) {
-
+	voiceEngine_.note_off(e.port, e.message & 0x0F, e.data[0]);
 }
 
 void Engine::pitch_bend(MidiEngine::Event &e) {
@@ -68,7 +69,7 @@ void Engine::cc(MidiEngine::Event &e) {
 }
 
 // low priority
-void Engine::process() {
+void Engine::process_midi() {
 	MidiEngine::Event e;
 
 	while (midiEngine_.pull(e)) {
@@ -93,9 +94,17 @@ void Engine::process() {
 }
 
 void Engine::fill(Dac::Buffer *buffer, const size_t size) {
-	// process_midi();
+	process_midi();
+
+	SampleQue::Event e;
+	while (sampleQue_.readable() && voiceEngine_.available()) {
+		e = sampleQue_.read();
+		voiceEngine_.assign_voice(e);
+	}
 
 	for (size_t i = 0; i < size; ++i) {
 		//
 	}
+
+	voiceEngine_.update_available_voices();
 }
