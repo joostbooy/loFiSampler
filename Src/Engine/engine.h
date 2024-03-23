@@ -8,7 +8,6 @@
 #include "envelopeEngine.h"
 #include "sampleEngine.h"
 #include "modulationEngine.h"
-#include "instrumentEngine.h"
 #include "voiceEngine.h"
 #include "sampleQue.h"
 
@@ -66,7 +65,6 @@ private:
 	MidiEngine midiEngine_;
 	MidiClockEngine midiClockEngine_;
 	ModulationEngine modualationEngine_;
-	InstrumentEngine instrumentEngine_[Settings::kMaxInstruments];
 	EnvelopeEngine envelopeEngine_[Settings::kMaxInstruments * Settings::kMaxVoices];
 
 	void start();
