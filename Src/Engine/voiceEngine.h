@@ -38,6 +38,7 @@ public:
 			uint8_t v = active_voices_.pull();
 			voice_[v].request_stop();
 			active_voices_.push(v);
+			--count;
 		}
 	}
 
@@ -57,7 +58,6 @@ public:
 	bool available() {
 		return available_voices_.size() > 0;
 	}
-
 
 	void assign_voice(SampleQue::Event e) {
 		uint8_t v = available_voices_.pop();
