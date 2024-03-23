@@ -35,16 +35,19 @@ public:
 		return nullptr;
 	}
 
+	static const size_t kMaxNameLength = 16;
+	static const size_t kMaxNumSamples = 128;
+
 	void init() {
 		set_name("NEW INSTRUMENT");
-		set_gain(100);
-		set_pan(0);
+		set_gain(1.0);
+		set_pan(0.5);
 		set_port(0);
 		set_midi_channel(16);
 		set_midi_port(MidiEngine::USB);
 		set_bit_depth(16);
 		set_bend_range(2);
-		set_enable_modulation(false);
+		set_modulation(false);
 
 		clear_samples();
 	}
@@ -148,9 +151,12 @@ public:
 		return nullptr;
 	}
 
-	//bool midi_port_accepted(MidiEngine::Event &e) {
 	bool midi_port_accepted(int port) {
 		return midi_port() == port;
+	}
+
+	bool midi_accepted(MidiEngine::Event &e) {
+		return midi_port_accepted(e.port) && midi_channel_accepted(e.message & 0x0F);
 	}
 
 	// Bit depth
@@ -223,16 +229,16 @@ public:
 	}
 
 	// Modulation
-	bool modulation_enabled() {
-		return modulation_enabled_;
+	bool modulation() {
+		return modulation_;
 	}
 
-	void set_enable_modulation(bool state) {
-		modulation_enabled_ = state;
+	void set_modulation(bool state) {
+		modulation_ = state;
 	}
 
-	const char* modulation_enabled_text() {
-		return UiText::bool_to_on_off(modulation_enabled());
+	const char* modulation_text() {
+		return UiText::bool_to_on_off(modulation());
 	}
 
 	// name
@@ -265,13 +271,26 @@ public:
 	// Storage
 	void save(FileWriter &fileWriter) {
 		fileWriter.write(pan_);
-		fileWriter.write(pan_);
-		fileWriter.write(pan_);
-		fileWriter.write(pan_);
+		fileWriter.write(gain_);
+		fileWriter.write(port_);
+		fileWriter.write(midi_port_);
+		fileWriter.write(midi_channel_);
+		fileWriter.write(bit_depth_);
+		fileWriter.write(sample_rate_);
+		fileWriter.write(bend_range_);
+		fileWriter.write(num_samples_);
 	}
 
 	void load(FileReader &fileReader) {
 		fileReader.read(pan_);
+		fileReader.read(gain_);
+		fileReader.read(port_);
+		fileReader.read(midi_port_);
+		fileReader.read(midi_channel_);
+		fileReader.read(bit_depth_);
+		fileReader.read(sample_rate_);
+		fileReader.read(bend_range_);
+		fileReader.read(num_samples_);
 	}
 
 private:
@@ -284,9 +303,8 @@ private:
 	int8_t sample_rate_;
 	uint8_t bend_range_;
 	size_t num_samples_;
-	bool modulation_enabled_;
-	static const size_t kMaxNameLength = 16;
-	static const size_t kMaxNumSamples = 128;
+	bool modulation_;
+
 	char name_[kMaxNameLength];
 	Sample *sample_[kMaxNumSamples];
 
