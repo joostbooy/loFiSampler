@@ -20,13 +20,13 @@ public:
 	}
 
 	size_t note_on(MidiEngine::Event &e) {
-		size_t size = event_que_.size();
+		size_t last_size = event_que_.size();
 
 		for (size_t i = 0; i < Settings::kMaxInstruments; ++i) {
 			poll(&settings.instrument(i), e);
 		}
 
-		return size - event_que_.size();
+		return event_que_.size() - last_size;
 	}
 
 	bool readable() {
