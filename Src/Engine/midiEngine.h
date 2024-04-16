@@ -1,10 +1,9 @@
 #ifndef MidiEngine_h
 #define MidiEngine_h
 
-#include "usb.h"
-#include "uart.h"
 #include "que.h"
-
+#include "uart.h"
+#include "usb.h"
 
 class MidiEngine {
 
@@ -13,7 +12,7 @@ public:
 	enum Port {
 		UART,
 		USB,
-		// CV
+
 		NUM_PORTS
 	};
 
@@ -38,9 +37,14 @@ public:
 		uint8_t data[2];
 	};
 
+	Que<uint8_t, 32> input_que;
+	Que<uint8_t, 32> output_que;
+	Que<uint8_t, 8> clock_output_que;
+
 	void init(Uart *uart, Usb *usb) {
 		usb_ = usb;
 		uart_ = uart;
+
 		num_data_bytes_ = 0;
 	}
 
@@ -57,6 +61,7 @@ public:
 			}
 		}
 	}
+
 
 	bool pull(Event &e) {
 		while (input_que.readable()) {
@@ -97,12 +102,10 @@ public:
 private:
 	Usb *usb_;
 	Uart *uart_;
+
 	Event event_;
 	uint8_t last_message_;
 	uint8_t num_data_bytes_;
-	Que<uint8_t, 32> input_que;
-	Que<uint8_t, 32> output_que;
-	Que<uint8_t, 8> clock_output_que;
 
 	bool parse(uint8_t reading) {
 		if (reading >= 0x80) {
