@@ -2,6 +2,7 @@
 #define SampleEngine_h
 
 #include "sample.h"
+#include "sampleQue.h"
 #include "modulationEngine.h"
 
 class SampleEngine {
@@ -26,12 +27,12 @@ public:
 		return phase_;
 	}
 
-	void note_on(MidiEngine::Event &e, Sample *sample, Instrument *instrument) {
-		sample_ = sample;
-		instrument_ = instrument;
-		key_pressed_ = true;
+	void note_on(SampleQue::Event &e) {
+		sample_ = e.sample_;
+		instrument_ = e.instrument_;
+		note_ = e.midi_event_.data[0];
 
-		note_ = e.data[0];
+		key_pressed_ = true;
 
 		if (sample_->play_mode() == Sample::FORWARD) {
 			phase_ = sample_->start();
@@ -146,7 +147,8 @@ private:
 	}
 
 	void apply_modulation(ModulationEngine::Frame *frame) {
-		if (instrument_->modulation_enabled()) {
+		if (instrument_->modulation()) {
+			//	sample_.set_gain(sample_src_->gain() * frame->read(Modulation::SAMPLE_GAIN);
 			//	sample_.set_start(sample_src_->start() * frame->data[Modulation::START]);
 			//	sample_.set_end(sample_src_->end() * frame->data[Modulation::END]);
 			//	sample_.set_loop_start(sample_src_->loop_start() * frame->data[Modulation::LOOP_START]);

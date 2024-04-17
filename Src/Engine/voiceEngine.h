@@ -61,7 +61,7 @@ public:
 
 	void assign_voice(SampleQue::Event e) {
 		uint8_t v = available_voices_.pop();
-		voice_[v].note_on(e.midi_event_);
+		voice_[v].note_on(e);
 		active_voices_.push(v);
 
 		most_recent_voice_ = v;

@@ -14,26 +14,26 @@ public:
 	}
 
 	uint8_t port() {
-		return event_.port;
+		return event_.midi_event_.port;
 	}
 
 	uint8_t velocity() {
-		return event_.data[1];
+		return event_.midi_event_.data[1];
 	}
 
 	uint8_t note() {
-		return event_.data[0];
+		return event_.midi_event_.data[0];
 	}
 
 	uint8_t channel() {
-		return event_.message & 0x0F;
+		return event_.midi_event_.message & 0x0F;
 	}
 
-	void note_on(MidiEngine::Event &event) {
+	void note_on(SampleQue::Event &event) {
 		event_ = event;
 		envelopeEngine_[0].attack();
 		envelopeEngine_[1].attack();
-		//sampleEngine_.note_on(event);
+		sampleEngine_.note_on(event);
 	}
 
 	void note_off() {
@@ -52,7 +52,7 @@ public:
 
 private:
 	bool stop_requested_;
-	MidiEngine::Event event_;
+	SampleQue::Event event_;
 	SampleEngine sampleEngine_;
 	EnvelopeEngine envelopeEngine_[2];
 };
