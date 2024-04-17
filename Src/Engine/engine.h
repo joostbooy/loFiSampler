@@ -22,10 +22,11 @@ public:
 	};
 
 	enum Request {
-		START			= (1 << 0),
-		STOP			= (1 << 1),
-		PAUSE			= (1 << 2),
-		CONTINUE		= (1 << 3),
+		START				= (1 << 0),
+		STOP				= (1 << 1),
+		PAUSE				= (1 << 2),
+		CONTINUE			= (1 << 3),
+		KILL_MIDI_CHANNEL	= (1 << 4),
 	};
 
 	void init(Uart*, Usb*);
@@ -41,28 +42,35 @@ public:
 		return state_;
 	}
 
-	// requests
-	void add_request_wait(Request type) {
+	// requests_
+	void add_request_blocking(Request type) {
 		add_request(type);
-		while (requests & type);
+		while (requests_ & type);
 	}
 
 	void clear_request(Request type) {
-		uint8_t flags = requests;
-		requests = flags & ~type;
+		uint8_t flags = requests_;
+		requests_ = flags & ~type;
 	}
 
 	MidiEngine &midiEngine() {
 		return midiEngine_;
 	}
 
+	void kill_midi_channel_blocking(uint8_t channel) {
+		channel_to_kill_ = channel;
+		add_request_blocking(KILL_MIDI_CHANNEL);
+	}
+
 private:
 	volatile State state_;
-	volatile uint8_t requests = 0x00;
+	volatile uint8_t requests_ = 0x00;
+
+	uint8_t channel_to_kill_;
 
 	SampleQue sampleQue_;
-	VoiceEngine voiceEngine_;
 	MidiEngine midiEngine_;
+	VoiceEngine voiceEngine_;
 	MidiClockEngine midiClockEngine_;
 	ModulationEngine modualationEngine_;
 	EnvelopeEngine envelopeEngine_[Settings::kMaxInstruments * Settings::kMaxVoices];
@@ -82,8 +90,8 @@ private:
 	void send_midi_24PPQN_clock_tick();
 
 	void add_request(Request type) {
-		uint8_t flags = requests;
-		requests = flags | type;
+		uint8_t flags = requests_;
+		requests_ = flags | type;
 	}
 };
 

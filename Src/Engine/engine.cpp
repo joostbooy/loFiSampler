@@ -31,12 +31,6 @@ void Engine::resume() {
 
 }
 
-/*	Tasks */
-
-void Engine::process_requests() {
-
-}
-
 void Engine::tick() {
 	if (midiClockEngine_.tick()) {
 		if (settings.midi().send_clock()) {
@@ -93,8 +87,20 @@ void Engine::process_midi() {
 	}
 }
 
+void Engine::process_requests() {
+	if (!requests_) {
+		return;
+	}
+
+	if (requests_ & KILL_MIDI_CHANNEL) {
+		clear_request(KILL_MIDI_CHANNEL);
+		voiceEngine_.kill_midi_channel(channel_to_kill_);
+	}
+}
+
 void Engine::fill(Dac::Buffer *buffer, const size_t size) {
 	process_midi();
+	process_requests();
 
 	SampleQue::Event e;
 	while (sampleQue_.readable() && voiceEngine_.available()) {
