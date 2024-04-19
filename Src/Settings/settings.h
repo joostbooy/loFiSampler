@@ -13,13 +13,11 @@ class Settings {
 
 public:
 
-	constexpr static const size_t num_lfos() {
-		return kNumLfos;
-	}
-
-	constexpr static const size_t num_envelopes() {
-		return kNumLfos;
-	}
+	static const size_t kMaxVoices = 8;
+	static const size_t kMaxSamples = 128;
+	static const size_t kMaxInstruments = 8;
+	static const size_t kNumLfos = 4;
+	static const size_t kNumEnvelopes = 2;
 
 	void init() {
 		selected_sample_ = 0;
@@ -85,6 +83,7 @@ public:
 
 	void set_selected_instrument(int index) {
 		selected_instrument_ = stmlib::clip(0, kMaxInstruments - 1, index);
+		set_selected_sample(selected_sample_);
 	}
 
 	// save & load
@@ -106,11 +105,6 @@ public:
 
 private:
 	StringBuilderBase<63>path;
-
-	static const size_t kMaxSamples = 128;
-	static const size_t kMaxInstruments = 4;
-	static const size_t kNumLfos = 4;
-	static const size_t kNumEnvelopes = 2;
 
 	Midi midi_;
 	Modulation modulation_;
