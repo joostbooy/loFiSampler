@@ -42,7 +42,7 @@ public:
 		set_name("NEW INSTRUMENT");
 		set_gain(1.0);
 		set_pan(0.5);
-		set_port(0);
+		set_audio_port(0);
 		set_midi_channel(16);
 		set_midi_port(MidiEngine::USB);
 		set_bit_depth(16);
@@ -203,16 +203,16 @@ public:
 	}
 
 	// Port
-	int8_t port() {
-		return port_;
+	int8_t audio_port() {
+		return audio_port_;
 	}
 
-	void set_port(int8_t value) {
-		port_ = stmlib::clip(0, Dac::kNumChannels - 1, value);
+	void set_audio_port(int8_t value) {
+		audio_port_ = stmlib::clip(0, Dac::kNumChannels - 1, value);
 	}
 
-	const char* port_text() {
-		return UiText::str.write(port() + 1);
+	const char* audio_port_text() {
+		return UiText::str.write(audio_port() + 1);
 	}
 
 	// Bend range
@@ -272,7 +272,7 @@ public:
 	void save(FileWriter &fileWriter) {
 		fileWriter.write(pan_);
 		fileWriter.write(gain_);
-		fileWriter.write(port_);
+		fileWriter.write(audio_port_);
 		fileWriter.write(midi_port_);
 		fileWriter.write(midi_channel_);
 		fileWriter.write(bit_depth_);
@@ -284,7 +284,7 @@ public:
 	void load(FileReader &fileReader) {
 		fileReader.read(pan_);
 		fileReader.read(gain_);
-		fileReader.read(port_);
+		fileReader.read(audio_port_);
 		fileReader.read(midi_port_);
 		fileReader.read(midi_channel_);
 		fileReader.read(bit_depth_);
@@ -296,7 +296,7 @@ public:
 private:
 	float pan_;
 	float gain_;
-	int8_t port_;
+	int8_t audio_port_;
 	int8_t midi_port_;
 	int8_t midi_channel_;
 	int8_t bit_depth_;
