@@ -25,7 +25,7 @@ public:
 		STOP				= (1 << 1),
 		PAUSE				= (1 << 2),
 		CONTINUE			= (1 << 3),
-		KILL_MIDI_CHANNEL	= (1 << 4),
+		KILL_MIDI_PORT	= (1 << 4),
 	};
 
 	void init(Uart*, Usb*);
@@ -52,20 +52,20 @@ public:
 		requests_ = flags & ~type;
 	}
 
-	MidiEngine &midiEngine() {
-		return midiEngine_;
+	VoiceEngine &voiceEngine() {
+		return voiceEngine_;
 	}
 
-	void kill_midi_channel_blocking(uint8_t channel) {
-		channel_to_kill_ = channel;
-		add_request_blocking(KILL_MIDI_CHANNEL);
+	void kill_midi_channel_blocking(uint8_t port) {
+		port_to_kill_ = port;
+		add_request_blocking(KILL_MIDI_PORT);
 	}
 
 private:
 	volatile State state_;
 	volatile uint8_t requests_ = 0x00;
 
-	uint8_t channel_to_kill_;
+	uint8_t port_to_kill_;
 
 	SampleQue sampleQue_;
 	MidiEngine midiEngine_;

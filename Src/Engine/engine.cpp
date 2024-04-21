@@ -33,9 +33,12 @@ void Engine::resume() {
 
 void Engine::tick() {
 	if (midiClockEngine_.tick()) {
-		if (settings.midi().send_clock()) {
-			midiEngine_.write(MidiEngine::CLOCK_PULSE);
+		for (int i = 0; i < MidiEngine::NUM_PORTS; ++i) {
+			if (settings.midi().send_clock(i)) {
+				midiEngine_.write(i, MidiEngine::CLOCK_PULSE);
+			}
 		}
+
 	}
 	midiEngine_.poll();
 }
@@ -92,9 +95,9 @@ void Engine::process_requests() {
 		return;
 	}
 
-	if (requests_ & KILL_MIDI_CHANNEL) {
-		clear_request(KILL_MIDI_CHANNEL);
-		voiceEngine_.kill_midi_channel(channel_to_kill_);
+	if (requests_ & KILL_MIDI_PORT) {
+		clear_request(KILL_MIDI_PORT);
+		voiceEngine_.kill_midi_port(port_to_kill_);
 	}
 }
 
