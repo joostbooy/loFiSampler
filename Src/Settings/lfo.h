@@ -12,8 +12,8 @@ public:
 
 	void init() {
 		set_speed(0);
-		set_shape(32);
-		set_skew(32);
+		set_shape(0.5f);
+		set_skew(0.5f);
 		set_clock_sync(false);
 		set_randomise(false);
 	}
@@ -36,37 +36,29 @@ public:
 	}
 
 	// shape
-	int8_t shape() {
+	float shape() {
 		return shape_;
 	}
 
-	void set_shape(int value) {
-		shape_ = stmlib::clip(0, 64, value);
+	void set_shape(float value) {
+		shape_ = stmlib::clip_float(value);
 	}
 
 	const char *shape_text() {
-		return UiText::str.write(skew() - 32);
-	}
-
-	float shape_float() {
-		return (1.f / 64.f) * shape();
+		return UiText::str.write((shape() * 100) - 50);
 	}
 
 	// Skew
-	int8_t skew() {
+	float skew() {
 		return skew_;
 	}
 
-	void set_skew(int value) {
-		skew_ = stmlib::clip(0, 64, value);
+	void set_skew(float value) {
+		skew_ = stmlib::clip_float(value);
 	}
 
 	const char *skew_text() {
-		return UiText::str.write(skew() - 32);
-	}
-
-	float skew_float() {
-		return (1.f / 64.f) * skew();
+		return UiText::str.write((skew() * 100) - 50);
 	}
 
 	// clock sync
@@ -113,8 +105,8 @@ public:
 	}
 
 private:
-	int8_t skew_;
-	int8_t shape_;
+	float skew_;
+	float shape_;
 	uint8_t speed_;
 	bool randomise_;
 	bool clock_sync_;

@@ -16,6 +16,7 @@ public:
 
 	void init(Lfo *lfo) {
 		lfo_ = lfo;
+		value_ = 0.f;
 		reset();
 	}
 
@@ -34,18 +35,18 @@ public:
 			phase_ = 0.f;
 		}
 
-		float skew_phase_;
-		float skew = lfo_->skew_float();
+		float skew_phase;
+		float skew_amount = lfo_->skew();
 
-		if (phase_ < skew) {
+		if (phase_ < skew_amount) {
 			set_stage(RISING);
-			skew_phase_ = phase_ * (1.0f / skew);
+			skew_phase = phase_ * (1.0f / skew_amount);
 		} else {
 			set_stage(FALLING);
-			skew_phase_ = (phase_ - skew) * (1.0f / (1.0f - skew));
+			skew_phase = (phase_ - skew_amount) * (1.0f / (1.0f - skew_amount));
 		}
 
-		float curve_phase = Curve::read(skew_phase_, lfo_->shape_float());
+		float curve_phase = Curve::read(skew_phase, lfo_->shape());
 		value_ = Dsp::cross_fade(last_value_, target_value_, curve_phase);
 
 		return value_;
