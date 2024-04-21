@@ -15,9 +15,8 @@ public:
 		available_voices_.clear();
 
 		for (uint8_t i = 0; i < Settings::kMaxVoices; ++i) {
-		//	voice_[i].init(settings.envelope(0));
+			voice_[i].init();
 			available_voices_.push(i);
-			key_is_pressed_[i] = false;
 		}
 	}
 
@@ -47,8 +46,7 @@ public:
 
 		for (int i = 0; i < total; ++i) {
 			uint8_t v = active_voices_.read(i);
-			if (key_is_pressed_[v] == true && voice_[v].port() == port && voice_[v].channel() == chn && voice_[v].note() == note) {
-				key_is_pressed_[v] = false;
+			if (voice_[v].key_pressed() && voice_[v].port() == port && voice_[v].channel() == chn && voice_[v].note() == note) {
 				voice_[v].note_off();
 				break;
 			}
@@ -63,9 +61,7 @@ public:
 		uint8_t v = available_voices_.pop();
 		voice_[v].note_on(e);
 		active_voices_.push(v);
-
 		most_recent_voice_ = v;
-		key_is_pressed_[v] = true;
 	}
 
 	void update_available_voices() {
@@ -82,13 +78,12 @@ public:
 	}
 
 	void kill_midi_channel(uint8_t chn) {
-		uint8_t total = active_voices_.size();
+		uint8_t count = active_voices_.size();
 
-		for (int i = 0; i < total; ++i) {
+		for (int i = 0; i < count; ++i) {
 			uint8_t v = active_voices_.read(i);
 			if (voice_[v].channel() == chn) {
 				voice_[v].request_stop();
-				key_is_pressed_[v] = false;
 			}
 		}
 	}
@@ -97,8 +92,6 @@ private:
 	Voice voice_[Settings::kMaxVoices];
 	Stack<uint8_t, Settings::kMaxVoices> active_voices_;
 	Stack<uint8_t, Settings::kMaxVoices> available_voices_;
-
-	bool key_is_pressed_[Settings::kMaxVoices];
 	uint8_t most_recent_voice_ = 0;
 };
 

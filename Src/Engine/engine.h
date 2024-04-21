@@ -6,7 +6,6 @@
 #include "midiEngine.h"
 #include "midiClockEngine.h"
 #include "envelopeEngine.h"
-#include "sampleEngine.h"
 #include "modulationEngine.h"
 #include "voiceEngine.h"
 #include "sampleQue.h"
