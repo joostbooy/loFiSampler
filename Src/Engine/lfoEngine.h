@@ -63,6 +63,7 @@ private:
 	inline void set_stage(Stage stage) {
 		if (stage_ != stage) {
 			stage_ = stage;
+
 			last_value_ = value_;
 
 			if (lfo_->randomise()) {
