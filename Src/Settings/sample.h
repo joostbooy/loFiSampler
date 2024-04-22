@@ -21,8 +21,8 @@ public:
 	static const char* play_mode_text(int mode) {
 		switch (mode)
 		{
-		case FORWARD:				return "FORWARD";
-		case BACKWARD:				return "BACKWARD";
+		case FORWARD:	return "FORWARD";
+		case BACKWARD:	return "BACKWARD";
 		default:
 			break;
 		}
@@ -38,11 +38,11 @@ public:
 		set_loop(false);
 		set_u_turn(false);
 		set_play_mode(FORWARD);
-		set_cents(0);
+		set_cents(0.0);
 		set_root_note(60);
 		set_key_range_low(0);
 		set_key_range_high(127);
-		set_gain(100);
+		set_gain(1.0);
 	}
 
 	// data
@@ -50,12 +50,8 @@ public:
 		entry_ = entry;
 	}
 
-	int16_t* data() {
-		return entry_->data;
-	}
-
-	int16_t data(size_t index) {
-		return entry_->data[index];
+	int16_t *data(size_t index) {
+		return is_stereo() ? &entry_->data[index] : &entry_->data[index / 2];
 	}
 
 	bool has_data() {
@@ -68,11 +64,15 @@ public:
 	}
 
 	size_t size() {
-		return entry_->size;
+		return is_stereo() ? entry_->size : entry_->size * 2;
 	}
 
 	const char *size_text() {
 		return UiText::str.write(size());
+	}
+
+	bool is_stereo() {
+		return entry_->num_channels == 2;
 	}
 
 	// start
@@ -140,7 +140,7 @@ public:
 		return UiText::bool_to_on_off(loop());
 	}
 
-	// Root note
+	// Cents
 	void set_cents(float value) {
 		cents_ = stmlib::clip_float(value);
 	}
@@ -228,7 +228,7 @@ public:
 	}
 
 	float gain() {
-		return gain_;
+		return is_stereo() ? gain_ : gain_ * 0.5f;
 	}
 
 	const char *gain_text() {

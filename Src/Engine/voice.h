@@ -19,13 +19,16 @@ public:
 	void init() {
 		state_ = IDLE;
 		key_pressed_ = false;
+		stop_requested_ = false;
 	}
 
 	uint8_t port() { return port_; }
 	uint8_t note() { return note_; }
 	uint32_t phase() { return phase_; }
 	uint8_t channel() { return channel_; }
+	uint8_t audio_port() { return instrument_->audio_port(); }
 	bool key_pressed() { return key_pressed_; }
+
 
 	void request_stop() {
 		stop_requested_ = true;
@@ -65,30 +68,39 @@ public:
 	}
 
 	void fill(int16_t *buffer, ModulationEngine::Frame *frame, const size_t size) {
+		if (state_ == IDLE) {
+			return;
+		}
+
 		// copy settings;
 		//sample_ = sample;
 
 		for (size_t i = 0; i < size; ++i) {
-			if (stop_requested_ && (fade_phase_ > 0.0f)) {
-				fade_phase_ -= ((Dac::kSampleRate / 1000) * 4);
+			if (stop_requested_) {
+				if (fade_phase_ > 0.0f) {
+					fade_phase_ -= ((Dac::kSampleRate / 1000) * 4);
+				} else {
+					stop_requested_ = false;
+					state_ = IDLE;
+				}
 			}
 
-			// apply_modulation(frame);
-			*buffer++ = next(frame++);
-			// if (sample_->num_channels() >= 2) {
-			// *buffer++ = next(frame++);
-			// }
+			apply_modulation(frame);
+			*buffer++ += next(frame);
+			*buffer++ += next(frame++);
 		}
 	}
+
 
 	int16_t next(ModulationEngine::Frame *frame) {
 		uint32_t intergral = static_cast<uint32_t>(phase_);
 		float fractional = phase_ - intergral;
 
-		int16_t a = sample_->data(intergral);
-		int16_t b = sample_->data(intergral + state_);
+		int16_t *a = sample_->data(intergral);
+		int16_t *b = (a + state_);
+
 		uint8_t shifts = instrument_->bit_shifts();
-		int16_t value = (Dsp::cross_fade(a, b, fractional) >> shifts) << shifts;
+		int16_t value = (Dsp::cross_fade(*a, *b, fractional) >> shifts) << shifts;
 
 		phase_ += get_inc(note_, sample_->root_note(), instrument_->bend_range(), sample_->cents(), frame->data[Modulation::BEND]);
 
@@ -175,7 +187,7 @@ private:
 		return Dsp::cross_fade(a, b, c, bend) * state_;
 	}
 
-	void apply_modulation(ModulationEngine::Frame *frame) {
+	inline void apply_modulation(ModulationEngine::Frame *frame) {
 		if (instrument_->modulation()) {
 			// envelope_[0].next();
 			// envelope_[1].next();
@@ -184,6 +196,9 @@ private:
 			// sample_.set_end(sample_src_->end() * frame->data[Modulation::END]);
 			// sample_.set_loop_start(sample_src_->loop_start() * frame->data[Modulation::LOOP_START]);
 			// sample_.set_loop_end(sample_src_->loop_end() * frame->data[Modulation::LOOP_END]);
+			// instrument_.set_pan(instrument_src_->pan() * frame->data[Modulation::PAN]);
+			// instrument_.set_gain(instrument_src_->gain() * frame->data[Modulation::INSTRUMENT_GAIN]);
+			// instrument_.set_bit_depth(instrument_src_->bit_depth() * frame->data[Modulation::BIT_DEPTH]);
 		}
 	}
 

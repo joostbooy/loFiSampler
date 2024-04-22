@@ -44,10 +44,10 @@ public:
 		set_pan(0.5);
 		set_audio_port(0);
 		set_midi_channel(16);
-		set_midi_port(MidiEngine::USB);
+		set_midi_port(MidiEngine::UART);
 		set_bit_depth(16);
 		set_bend_range(2);
-		set_modulation(false);
+		set_modulation(true);
 
 		clear_samples();
 	}
@@ -189,7 +189,7 @@ public:
 		return sample_rate_text(sample_rate());
 	}
 
-	const size_t sample_rate_divisor() {
+	const size_t sample_rate_prescaler() {
 		switch (sample_rate())
 		{
 		case _2_KHZ: 	return Dac::kSampleRate / 2000;
@@ -208,11 +208,12 @@ public:
 	}
 
 	void set_audio_port(int8_t value) {
-		audio_port_ = stmlib::clip(0, Dac::kNumChannels - 1, value);
+		audio_port_ = stmlib::clip(0, (Dac::kNumChannels / 2) - 1, value);
 	}
 
 	const char* audio_port_text() {
-		return UiText::str.write(audio_port() + 1);
+		int port = (audio_port() * 2) + 1;
+		return UiText::str.write(port, "&", port + 1);
 	}
 
 	// Bend range
