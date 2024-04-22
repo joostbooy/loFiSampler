@@ -25,9 +25,14 @@ public:
 		set_stage(RISING);
 	}
 
-	float phase() {
-		return phase_;
+	void retrigger() {
+		if (lfo_->retrigger()) {
+			reset();
+		}
 	}
+
+	float phase() { return phase_; }
+	float value() { return value_; }
 
 	float next() {
 		phase_ += lfo_->inc();
@@ -69,7 +74,7 @@ private:
 			if (lfo_->randomise()) {
 				target_value_ = Rng::reciprocal();
 			} else {
-				target_value_ = static_cast<float>(stage);
+				target_value_ = (stage_ == RISING) ? 1.f : 0.f;
 			}
 		}
 	}

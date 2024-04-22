@@ -53,6 +53,12 @@ public:
 		source_[Modulation::MIDI_BEND] = value;
 	}
 
+	void retrigger_lfos() {
+		for (size_t i = 0; i < Settings::kNumLfos; ++i) {
+			lfoEngine_[i].retrigger();
+		}
+	}
+
 	void write_midi_cc(uint8_t number, float value) {
 		for (size_t i = 0; i < Modulation::num_user_cc(); ++i) {
 			if (number == modulation_->midi_cc_number(i)) {

@@ -10,34 +10,40 @@ class Modulation {
 public:
 
 	enum Destination {
-		GAIN,
 		PAN,
 		BEND,
 		START,
 		END,
 		LOOP_START,
 		LOOP_END,
+		SAMPLE_GAIN,
+		INSTRUMENT_GAIN,
+		BIT_DEPTH,
 
 		NUM_DESTINATIONS
 	};
 
+	static_assert(NUM_DESTINATIONS < 32, "Too many destinations !");
+
 	const char *destination_text(int value) {
 		switch (value)
 		{
-		case GAIN:			return "GAIN";
-		case PAN:			return "PAN";
-		case BEND:			return "BEND";
-		case START:			return "START";
-		case END:			return "END";
-		case LOOP_START:	return "LOOP START";
-		case LOOP_END:		return "LOOP END";
+		case PAN:				return "PAN";
+		case BEND:				return "BEND";
+		case START:				return "START";
+		case END:				return "END";
+		case LOOP_START:		return "LOOP START";
+		case LOOP_END:			return "LOOP END";
+		case SAMPLE_GAIN:		return "SAMPLE GAIN";
+		case INSTRUMENT_GAIN:	return "INSTRUMENT GAIN";
+		case BIT_DEPTH:			return "BIT DEPTH";
 		default:
 			break;
 		}
 		return nullptr;
 	}
 
-	enum Sources {
+	enum Source {
 		LFO_1,
 		LFO_2,
 		LFO_3,
@@ -47,11 +53,13 @@ public:
 		CV_3,
 		CV_4,
 		MIDI_BEND,
+		MIDI_VELOCITY,
 		MIDI_CC_A,
 		MIDI_CC_B,
 		MIDI_CC_C,
 		MIDI_CC_D,
-		MOD_ENVELOPE,
+		ENVELOPE_1,
+		ENVELOPE_2,
 
 		NUM_SOURCES
 	};
@@ -67,12 +75,14 @@ public:
 		case CV_2:			return "CV 2";
 		case CV_3:			return "CV 3";
 		case CV_4:			return "CV 4";
-		case MIDI_BEND:		return "MIDI_BEND";
+		case MIDI_BEND:		return "MIDI BEND";
+		case MIDI_VELOCITY:	return "MIDI VELOCITY";
 		case MIDI_CC_A:		return midi_cc_number_text(0);
 		case MIDI_CC_B:		return midi_cc_number_text(1);
 		case MIDI_CC_C:		return midi_cc_number_text(2);
 		case MIDI_CC_D:		return midi_cc_number_text(3);
-		case MOD_ENVELOPE:	return "MOD ENVELOPE";
+		case ENVELOPE_1:	return "ENVELOPE 1";
+		case ENVELOPE_2:	return "ENVELOPE 2";
 		default:
 			break;
 		}
@@ -84,9 +94,9 @@ public:
 			set_midi_cc_number(i, i);
 		}
 
-		for (size_t i = 0; i < NUM_SOURCES; ++i) {
-			matrix_[i] = 0;
-		}
+		clear_matrix();
+		write_matrix(MIDI_VELOCITY, SAMPLE_GAIN, true);
+		write_matrix(ENVELOPE_1, SAMPLE_GAIN, true);
 	}
 
 	// Midi CC
