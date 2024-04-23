@@ -20,13 +20,16 @@ public:
 		state_ = IDLE;
 		key_pressed_ = false;
 		stop_requested_ = false;
+
+		for (size_t i = 0; i < Settings::kNumEnvelopes; ++i) {
+			envelope_[i].init(&settings.envelope(i));
+		}
 	}
 
 	uint8_t port() { return port_; }
 	uint8_t note() { return note_; }
 	uint32_t phase() { return phase_; }
 	uint8_t channel() { return channel_; }
-	uint8_t audio_port() { return instrument_->audio_port(); }
 	bool key_pressed() { return key_pressed_; }
 
 
@@ -67,32 +70,27 @@ public:
 		envelope_[1].release();
 	}
 
-	void fill(int16_t *buffer, ModulationEngine::Frame *frame, const size_t size) {
-		if (state_ == IDLE) {
-			return;
-		}
-
+	void fill(Dac::Buffer *buffer, ModulationEngine::Frame *frame, const size_t size) {
 		// copy settings;
 		//sample_ = sample;
+		int16_t *ptr = &buffer[0].channel[instrument_->audio_channel()];
 
 		for (size_t i = 0; i < size; ++i) {
-			if (stop_requested_) {
-				if (fade_phase_ > 0.0f) {
-					fade_phase_ -= ((Dac::kSampleRate / 1000) * 4);
-				} else {
-					stop_requested_ = false;
-					state_ = IDLE;
-				}
-			}
+			int16_t left = next(frame);
+			int16_t right = next(frame);
+			Dsp::pan(&left, &right, instrument_->pan());
 
-			apply_modulation(frame);
-			*buffer++ += next(frame);
-			*buffer++ += next(frame++);
+			*ptr += left;
+			*(ptr + 1) += right;
+
+			ptr += Dac::kNumChannels;
+			++frame;
 		}
 	}
 
-
 	int16_t next(ModulationEngine::Frame *frame) {
+		apply_modulation(frame);
+
 		uint32_t intergral = static_cast<uint32_t>(phase_);
 		float fractional = phase_ - intergral;
 
@@ -139,8 +137,8 @@ private:
 		return sample_->loop() && key_pressed_;
 	}
 
-	inline void next_forward(uint32_t intergral) {
-		if (intergral >= sample_->end()) {
+	inline void next_forward(uint32_t phase) {
+		if (phase >= sample_->end()) {
 			if (sample_->u_turn() && (sample_->play_mode() == Sample::FORWARD)) {
 				state_ = BACKWARD;
 			} else {
@@ -149,8 +147,8 @@ private:
 		}
 	}
 
-	inline void next_backward(uint32_t intergral) {
-		if (intergral <= sample_->start()) {
+	inline void next_backward(uint32_t phase) {
+		if (phase <= sample_->start()) {
 			if (sample_->u_turn() && (sample_->play_mode() == Sample::BACKWARD)) {
 				state_ = FORWARD;
 			} else {
@@ -159,8 +157,8 @@ private:
 		}
 	}
 
-	inline void next_loop_forward(uint32_t intergral) {
-		if (intergral >= sample_->loop_end()) {
+	inline void next_loop_forward(uint32_t phase) {
+		if (phase >= sample_->loop_end()) {
 			if (sample_->u_turn()) {
 				state_ = BACKWARD;
 			} else {
@@ -169,8 +167,8 @@ private:
 		}
 	}
 
-	inline void next_loop_backward(uint32_t intergral) {
-		if (intergral <= sample_->loop_start()) {
+	inline void next_loop_backward(uint32_t phase) {
+		if (phase <= sample_->loop_start()) {
 			if (sample_->u_turn()) {
 				state_ = FORWARD;
 			} else {
@@ -188,6 +186,15 @@ private:
 	}
 
 	inline void apply_modulation(ModulationEngine::Frame *frame) {
+		if (stop_requested_) {
+			if (fade_phase_ > 0.0f) {
+				fade_phase_ -= ((Dac::kSampleRate / 1000) * 4);
+			} else {
+				stop_requested_ = false;
+				state_ = IDLE;
+			}
+		}
+
 		if (instrument_->modulation()) {
 			// envelope_[0].next();
 			// envelope_[1].next();
