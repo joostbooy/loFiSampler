@@ -6,12 +6,6 @@ void Engine::init(Uart *uart, Usb* usb) {
 	//midiEngine_.init(uart, usb);
 	modualationEngine_.init(&settings);
 	voiceEngine_.init();
-
-	for (size_t i = 0; i < Settings::kNumEnvelopes; ++i) {
-		for (size_t v = 0; v < Settings::kMaxVoices; ++v) {
-			envelopeEngine_[v + (i * Settings::kMaxVoices)].init(&settings.envelope(i));
-		}
-	}
 }
 
 /*	Engine commands */
@@ -39,7 +33,6 @@ void Engine::tick() {
 				midiEngine_.write(i, MidiEngine::CLOCK_PULSE);
 			}
 		}
-
 	}
 	midiEngine_.poll();
 }
@@ -106,20 +99,18 @@ void Engine::fill(Dac::Buffer *buffer, const size_t size) {
 	process_midi();
 	process_requests();
 
-	SampleQue::Event e;
 	bool new_voices = false;
 
 	while (sampleQue_.readable() && voiceEngine_.available()) {
-		e = sampleQue_.read();
-		voiceEngine_.assign_voice(e);
+		voiceEngine_.assign_voice(sampleQue_.read());
 		new_voices = true;
 	}
 
 	if (new_voices) {
 		modualationEngine_.retrigger_lfos();
 	}
-	modualationEngine_.fill();
 
-	voiceEngine_.fill(modualationEngine_.frame());
+	modualationEngine_.fill(size);
+	voiceEngine_.fill(buffer, size, modualationEngine_.frame());
 	voiceEngine_.update_available_voices();
 }

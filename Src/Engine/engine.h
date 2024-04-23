@@ -14,18 +14,8 @@ class Engine {
 
 public:
 
-	enum State {
-		STOPPED,
-		PAUSED,
-		RUNNING
-	};
-
 	enum Request {
-		START				= (1 << 0),
-		STOP				= (1 << 1),
-		PAUSE				= (1 << 2),
-		CONTINUE			= (1 << 3),
-		KILL_MIDI_PORT	= (1 << 4),
+		KILL_MIDI_PORT	= (1 << 0),
 	};
 
 	void init(Uart*, Usb*);
@@ -33,14 +23,7 @@ public:
 	void suspend();
 	void resume();
 	void fill(Dac::Buffer *buffer, const size_t size);
-
-	float processing_time();
-
-	// states
-	State state() {
-		return state_;
-	}
-
+	
 	// requests_
 	void add_request_blocking(Request type) {
 		add_request(type);
@@ -62,7 +45,6 @@ public:
 	}
 
 private:
-	volatile State state_;
 	volatile uint8_t requests_ = 0x00;
 
 	uint8_t port_to_kill_;
@@ -72,7 +54,6 @@ private:
 	VoiceEngine voiceEngine_;
 	MidiClockEngine midiClockEngine_;
 	ModulationEngine modualationEngine_;
-	EnvelopeEngine envelopeEngine_[Settings::kMaxInstruments * Settings::kMaxVoices];
 
 	void start();
 	void stop();
