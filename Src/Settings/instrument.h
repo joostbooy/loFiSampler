@@ -42,7 +42,7 @@ public:
 		set_name("NEW INSTRUMENT");
 		set_gain(1.0);
 		set_pan(0.5);
-		set_audio_port(0);
+		set_audio_channel(0);
 		set_midi_channel(16);
 		set_midi_port(MidiEngine::UART);
 		set_bit_depth(16);
@@ -202,18 +202,18 @@ public:
 		return 1;
 	}
 
-	// Port
-	int8_t audio_port() {
-		return audio_port_;
+	// Audio channel
+	int8_t audio_channel() {
+		return audio_channel_;
 	}
 
-	void set_audio_port(int8_t value) {
-		audio_port_ = stmlib::clip(0, (Dac::kNumChannels / 2) - 1, value);
+	void set_audio_channel(int8_t value) {
+		audio_channel_ = stmlib::clip(0, (Dac::kNumChannels / 2) - 1, value);
 	}
 
-	const char* audio_port_text() {
-		int port = (audio_port() * 2) + 1;
-		return UiText::str.write(port, "&", port + 1);
+	const char* audio_channel_text() {
+		int chn = (audio_channel() * 2) + 1;
+		return UiText::str.write(chn, "&", chn + 1);
 	}
 
 	// Bend range
@@ -273,7 +273,7 @@ public:
 	void save(FileWriter &fileWriter) {
 		fileWriter.write(pan_);
 		fileWriter.write(gain_);
-		fileWriter.write(audio_port_);
+		fileWriter.write(audio_channel_);
 		fileWriter.write(midi_port_);
 		fileWriter.write(midi_channel_);
 		fileWriter.write(bit_depth_);
@@ -285,7 +285,7 @@ public:
 	void load(FileReader &fileReader) {
 		fileReader.read(pan_);
 		fileReader.read(gain_);
-		fileReader.read(audio_port_);
+		fileReader.read(audio_channel_);
 		fileReader.read(midi_port_);
 		fileReader.read(midi_channel_);
 		fileReader.read(bit_depth_);
@@ -297,7 +297,7 @@ public:
 private:
 	float pan_;
 	float gain_;
-	int8_t audio_port_;
+	int8_t audio_channel_;
 	int8_t midi_port_;
 	int8_t midi_channel_;
 	int8_t bit_depth_;
