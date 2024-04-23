@@ -213,7 +213,7 @@ public:
 
 	const char* audio_channel_text() {
 		int chn = (audio_channel() * 2) + 1;
-		return UiText::str.write(chn, "&", chn + 1);
+		return UiText::str.write(chn, " & ", chn + 1);
 	}
 
 	// Bend range
