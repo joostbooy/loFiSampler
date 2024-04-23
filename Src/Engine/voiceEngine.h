@@ -28,6 +28,20 @@ public:
 		return voice_[index];
 	}
 
+	void fill(Dac::Buffer *buffer, ModulationEngine::Frame *frame, const size_t size) {
+		std::fill(&buffer[0].channel[0], &buffer[size].channel[0], 0);
+
+		for (size_t i = 0; i < Settings::kMaxVoices; ++i) {
+			if (voice_[i].state() != Voice::IDLE) {
+				voice_[i].fill(buffer, frame, size);
+			}
+		}
+
+		for (size_t i = 0; i < Dac::kNumChannels; ++i) {
+			limiter_[i].process(&buffer[0].channel[i], Dac::kBlockSize, Dac::kNumChannels);
+		}
+	}
+
 	void request_voices(size_t count) {
 		if (count >= Settings::kMaxVoices) {
 			count = Settings::kMaxVoices - 1;
@@ -92,6 +106,7 @@ private:
 	Voice voice_[Settings::kMaxVoices];
 	Stack<uint8_t, Settings::kMaxVoices> active_voices_;
 	Stack<uint8_t, Settings::kMaxVoices> available_voices_;
+	Limiter<int16_t> limiter_[Dac::kNumChannels];
 	size_t most_recent_voice_ = 0;
 };
 

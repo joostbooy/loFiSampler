@@ -29,6 +29,7 @@ public:
 	uint32_t phase() { return phase_; }
 	uint8_t channel() { return channel_; }
 	bool key_pressed() { return key_pressed_; }
+	State state() { return state_; }
 
 
 	void request_stop() {
@@ -69,12 +70,6 @@ public:
 	}
 
 	void fill(Dac::Buffer *buffer, ModulationEngine::Frame *frame, const size_t size) {
-		if (state_ == IDLE) {
-			return;
-		}
-
-		// copy settings;
-		//sample_ = sample;
 		int16_t *ptr = &buffer[0].channel[instrument_->audio_channel() * 2];
 
 		for (size_t i = 0; i < size; ++i) {
