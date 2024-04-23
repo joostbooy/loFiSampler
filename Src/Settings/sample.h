@@ -228,11 +228,11 @@ public:
 	}
 
 	float gain() {
-		return is_stereo() ? gain_ : gain_ * 0.5f;
+		return gain_;
 	}
 
 	const char *gain_text() {
-		return UiText::percentage_to_text(gain_ * 100, 100);
+		return UiText::percentage_to_text(gain() * 100, 100);
 	}
 
 
