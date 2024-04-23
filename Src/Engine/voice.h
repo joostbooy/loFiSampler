@@ -20,10 +20,8 @@ public:
 		state_ = IDLE;
 		key_pressed_ = false;
 		stop_requested_ = false;
-
-		for (size_t i = 0; i < Settings::kNumEnvelopes; ++i) {
-			envelope_[i].init(&settings.envelope(i));
-		}
+		envelope_[0].init(&settings.envelope(0));
+		envelope_[1].init(&settings.envelope(1));
 	}
 
 	uint8_t port() { return port_; }
@@ -71,11 +69,15 @@ public:
 	}
 
 	void fill(Dac::Buffer *buffer, ModulationEngine::Frame *frame, const size_t size) {
+		if (state_ == IDLE) { return; }
+
 		// copy settings;
 		//sample_ = sample;
 		int16_t *ptr = &buffer[0].channel[instrument_->audio_channel()];
 
 		for (size_t i = 0; i < size; ++i) {
+			apply_modulation(frame);
+
 			int16_t left = next(frame);
 			int16_t right = next(frame);
 			Dsp::pan(&left, &right, instrument_->pan());
@@ -89,8 +91,6 @@ public:
 	}
 
 	int16_t next(ModulationEngine::Frame *frame) {
-		apply_modulation(frame);
-
 		uint32_t intergral = static_cast<uint32_t>(phase_);
 		float fractional = phase_ - intergral;
 
