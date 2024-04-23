@@ -7,6 +7,8 @@
 #include "engine.h"
 #include "ui.h"
 
+Dac dac;
+
 extern "C" {
 
 	void NMI_Handler() { }
@@ -36,6 +38,7 @@ int main(void)
 	sys.init();
 	micros.init();	// must be called before adc, display & sdio init
 	debug.init();
+	dac.init();
 	disk.init();
 	disk.mount();
 
@@ -44,9 +47,10 @@ int main(void)
 	engine.init(&uart, &usb);
 
 	// start timers
+	engine.fill(&dac.buffer_[0], Dac::kBlockSize);
+	//dac.start();
 
 	while (1) {
 		ui.process();
-		engine.process();
 	}
 }

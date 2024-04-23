@@ -111,6 +111,6 @@ void Engine::fill(Dac::Buffer *buffer, const size_t size) {
 	}
 
 	modualationEngine_.fill(size);
-	voiceEngine_.fill(buffer, size, modualationEngine_.frame());
+	voiceEngine_.fill(buffer, modualationEngine_.frame(), size);
 	voiceEngine_.update_available_voices();
 }
