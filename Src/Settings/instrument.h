@@ -256,12 +256,12 @@ public:
 	}
 
 	// Gain
-	void set_gain(float value) {
-		gain_ = stmlib::clip_float(value);
-	}
-
 	float gain() {
 		return gain_;
+	}
+
+	void set_gain(float value) {
+		gain_ = stmlib::clip_float(value);
 	}
 
 	const char *gain_text() {
@@ -292,6 +292,19 @@ public:
 		fileReader.read(sample_rate_);
 		fileReader.read(bend_range_);
 		fileReader.read(num_samples_);
+	}
+
+	void paste(Instrument *instrument) {
+		pan_ = instrument->pan();
+		gain_ = instrument->gain();
+		audio_channel_ = instrument->audio_channel();
+		midi_port_ = instrument->midi_port();
+		midi_channel_ = instrument->midi_channel();
+		bit_depth_ = instrument->bit_depth();
+		sample_rate_ = instrument->sample_rate();
+		bend_range_ = instrument->bend_range();
+		bit_depth_ = instrument->bit_depth();
+		num_samples_ = instrument->num_samples();
 	}
 
 private:

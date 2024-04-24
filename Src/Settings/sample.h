@@ -269,6 +269,21 @@ public:
 		fileReader.read(gain_);
 	}
 
+	void paste(Sample *sample) {
+		 start_ = sample->start();
+		 end_ = sample->end();
+		 loop_ = sample->loop();
+		 u_turn_ = sample->u_turn();
+		 play_mode_ = sample->play_mode();
+		 loop_start_ = sample->loop_start();
+		 loop_end_ = sample->loop_end();
+		 cents_ = sample->cents();
+		 root_note_ = sample->root_note();
+		 key_range_low_ = sample->key_range_low();
+		 key_range_high_ = sample->key_range_high();
+		 gain_ = sample->gain();
+	}
+
 private:
 	SampleData::Entry *entry_;
 	size_t start_;
