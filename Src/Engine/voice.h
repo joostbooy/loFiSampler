@@ -42,8 +42,8 @@ public:
 	}
 
 	void note_on(SampleQue::Event &e) {
-		sample_ = e.sample_;
-		instrument_ = e.instrument_;
+		sample_src_ = e.sample_;
+		instrument_src_ = e.instrument_;
 		port_ = e.midi_event_.port;
 		note_ = e.midi_event_.data[0];
 		channel_ = e.midi_event_.message & 0x0F;
@@ -53,12 +53,13 @@ public:
 		envelope_[1].attack();
 
 		key_pressed_ = true;
+		fade_phase_  = 1.f;
 
-		if (sample_->play_mode() == Sample::FORWARD) {
-			phase_ = sample_->start();
+		if (sample_.play_mode() == Sample::FORWARD) {
+			phase_ = sample_.start();
 			state_ = FORWARD;
 		} else {
-			phase_ = sample_->end();
+			phase_ = sample_.end();
 			state_ = BACKWARD;
 		}
 	}
@@ -69,35 +70,37 @@ public:
 		envelope_[1].release();
 	}
 
-	void fill(Dac::Buffer *buffer, ModulationEngine::Frame *frame, const size_t size) {
-		int16_t *ptr = &buffer[0].channel[instrument_->audio_channel() * 2];
+	void fill(Dac::Buffer *buffer, const size_t size) {
+		sample_.paste(sample_src_);
+		instrument_.paste(instrument_src_);
+
+		apply_modulation();
+
+		int16_t *ptr = &buffer[0].channel[instrument_.audio_channel() * 2];
 
 		for (size_t i = 0; i < size; ++i) {
-			apply_modulation(frame);
-
-			int16_t left = next(frame);
-			int16_t right = next(frame);
-			Dsp::pan(&left, &right, instrument_->pan());
+			int16_t left = next();
+			int16_t right = next();
+			Dsp::pan(&left, &right, instrument_.pan());
 
 			*ptr += left;
 			*(ptr + 1) += right;
 
 			ptr += Dac::kNumChannels;
-			++frame;
 		}
 	}
 
-	int16_t next(ModulationEngine::Frame *frame) {
+	int16_t next() {
 		uint32_t intergral = static_cast<uint32_t>(phase_);
 		float fractional = phase_ - intergral;
 
-		int16_t *a = sample_->data(intergral);
+		int16_t *a = sample_.data(intergral);
 		int16_t *b = (a + state_);
 
-		uint8_t shifts = instrument_->bit_shifts();
+		uint8_t shifts = instrument_.bit_shifts();
 		int16_t value = (Dsp::cross_fade(*a, *b, fractional) >> shifts) << shifts;
 
-		phase_ += get_inc(note_, sample_->root_note(), instrument_->bend_range(), sample_->cents(), frame->data[Modulation::BEND]);
+		phase_ += get_inc(note_, sample_.root_note(), instrument_.bend_range(), sample_.cents(), 0.5f);
 
 		if (state_ == FORWARD) {
 			if (is_looping()) {
@@ -113,7 +116,7 @@ public:
 			}
 		}
 
-		return value * sample_->gain() * instrument_->gain();
+		return value * sample_.gain() * instrument_.gain();
 	}
 
 private:
@@ -126,17 +129,20 @@ private:
 	State state_;
 	float velocity_;
 	float fade_phase_;
-	Sample *sample_;
-	Instrument *instrument_;
+	Sample sample_;
+	Sample *sample_src_;
+	Instrument instrument_;
+	Instrument *instrument_src_;
+	ModulationEngine *modualationEngine_;
 	EnvelopeEngine envelope_[Settings::kNumEnvelopes];
 
 	inline bool is_looping() {
-		return sample_->loop() && key_pressed_;
+		return sample_.loop() && key_pressed_;
 	}
 
 	inline void next_forward(uint32_t phase) {
-		if (phase >= sample_->end()) {
-			if (sample_->u_turn() && (sample_->play_mode() == Sample::FORWARD)) {
+		if (phase >= sample_.end()) {
+			if (sample_.u_turn() && (sample_.play_mode() == Sample::FORWARD)) {
 				state_ = BACKWARD;
 			} else {
 				state_ = IDLE;
@@ -145,8 +151,8 @@ private:
 	}
 
 	inline void next_backward(uint32_t phase) {
-		if (phase <= sample_->start()) {
-			if (sample_->u_turn() && (sample_->play_mode() == Sample::BACKWARD)) {
+		if (phase <= sample_.start()) {
+			if (sample_.u_turn() && (sample_.play_mode() == Sample::BACKWARD)) {
 				state_ = FORWARD;
 			} else {
 				state_ = IDLE;
@@ -155,21 +161,21 @@ private:
 	}
 
 	inline void next_loop_forward(uint32_t phase) {
-		if (phase >= sample_->loop_end()) {
-			if (sample_->u_turn()) {
+		if (phase >= sample_.loop_end()) {
+			if (sample_.u_turn()) {
 				state_ = BACKWARD;
 			} else {
-				phase_ = sample_->loop_start();
+				phase_ = sample_.loop_start();
 			}
 		}
 	}
 
 	inline void next_loop_backward(uint32_t phase) {
-		if (phase <= sample_->loop_start()) {
-			if (sample_->u_turn()) {
+		if (phase <= sample_.loop_start()) {
+			if (sample_.u_turn()) {
 				state_ = FORWARD;
 			} else {
-				phase_ = sample_->loop_end();
+				phase_ = sample_.loop_end();
 			}
 		}
 	}
@@ -182,28 +188,32 @@ private:
 		return Dsp::cross_fade(a, b, c, bend) * state_;
 	}
 
-	inline void apply_modulation(ModulationEngine::Frame *frame) {
+	inline void apply_modulation() {
+		ModulationEngine::Frame *frame = nullptr;
+		modualationEngine_->write_midi_velocity(velocity_);
+		modualationEngine_->write_envelope_1(envelope_[0].next());
+		modualationEngine_->write_envelope_2(envelope_[1].next());
+		modualationEngine_->process(frame);
+
+		// Fade out sample gain if stop requested
 		if (stop_requested_) {
 			if (fade_phase_ > 0.0f) {
-				fade_phase_ -= ((Dac::kSampleRate / 1000) * 4);
+				fade_phase_ -= ((Dac::kUpdateRate / 1000) * 4);
 			} else {
 				stop_requested_ = false;
 				state_ = IDLE;
 			}
 		}
 
-		if (instrument_->modulation()) {
-			// envelope_[0].next();
-			// envelope_[1].next();
-			// sample_.set_gain(sample_src_->gain() * frame->read(Modulation::SAMPLE_GAIN);
-			// sample_.set_start(sample_src_->start() * frame->data[Modulation::START]);
-			// sample_.set_end(sample_src_->end() * frame->data[Modulation::END]);
-			// sample_.set_loop_start(sample_src_->loop_start() * frame->data[Modulation::LOOP_START]);
-			// sample_.set_loop_end(sample_src_->loop_end() * frame->data[Modulation::LOOP_END]);
-			// instrument_.set_pan(instrument_src_->pan() * frame->data[Modulation::PAN]);
-			// instrument_.set_gain(instrument_src_->gain() * frame->data[Modulation::INSTRUMENT_GAIN]);
-			// instrument_.set_bit_depth(instrument_src_->bit_depth() * frame->data[Modulation::BIT_DEPTH]);
-		}
+		sample_.set_gain(fade_phase_ * sample_src_->gain() * frame->data[Modulation::SAMPLE_GAIN]);
+
+		sample_.set_start(sample_src_->start() * frame->data[Modulation::START]);
+		sample_.set_end(sample_src_->end() * frame->data[Modulation::END]);
+		sample_.set_loop_start(sample_src_->loop_start() * frame->data[Modulation::LOOP_START]);
+		sample_.set_loop_end(sample_src_->loop_end() * frame->data[Modulation::LOOP_END]);
+		instrument_.set_pan(instrument_src_->pan() * frame->data[Modulation::PAN]);
+		instrument_.set_gain(instrument_src_->gain() * frame->data[Modulation::INSTRUMENT_GAIN]);
+		instrument_.set_bit_depth(instrument_src_->bit_depth() * frame->data[Modulation::BIT_DEPTH]);
 	}
 
 };

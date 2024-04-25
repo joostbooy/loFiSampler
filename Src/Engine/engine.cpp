@@ -109,8 +109,8 @@ void Engine::fill(Dac::Buffer *buffer, const size_t size) {
 	if (new_voices) {
 		modualationEngine_.retrigger_lfos();
 	}
+	modualationEngine_.tick_lfos();
 
-	modualationEngine_.fill(size);
-	voiceEngine_.fill(buffer, modualationEngine_.frame(), size);
+	voiceEngine_.fill(buffer, size);
 	voiceEngine_.update_available_voices();
 }

@@ -28,12 +28,12 @@ public:
 		return voice_[index];
 	}
 
-	void fill(Dac::Buffer *buffer, ModulationEngine::Frame *frame, const size_t size) {
+	void fill(Dac::Buffer *buffer, const size_t size) {
 		std::fill(&buffer[0].channel[0], &buffer[size].channel[0], 0);
 
 		for (size_t i = 0; i < Settings::kMaxVoices; ++i) {
 			if (voice_[i].state() != Voice::IDLE) {
-				voice_[i].fill(buffer, frame, size);
+				voice_[i].fill(buffer, size);
 			}
 		}
 
