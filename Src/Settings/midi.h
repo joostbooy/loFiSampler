@@ -5,6 +5,7 @@
 #include "fileReader.h"
 #include "uiText.h"
 #include "lookupTables.h"
+#include "midiEngine.h"
 
 class Midi {
 
@@ -53,7 +54,10 @@ public:
 	void init() {
 		set_bpm(120);
 		set_clock_source(INTERNAL);
-		set_send_clock(true);
+
+		for (int i = 0; i < MidiEngine::NUM_PORTS; ++i){
+			set_send_clock(i, true);
+		}
 	}
 
 	// bpm
@@ -83,16 +87,16 @@ public:
 	}
 
 	// clock source
-	bool send_clock() {
-		return send_clock_;
+	bool send_clock(int port) {
+		return send_clock_[port];
 	}
 
-	void set_send_clock(bool value) {
-		send_clock_ = value;
+	void set_send_clock(int port, bool value) {
+		send_clock_[port] = value;
 	}
 
-	const char* send_clock_text() {
-		return UiText::bool_to_on_off(send_clock());
+	const char* send_clock_text(int port) {
+		return UiText::bool_to_on_off(send_clock(port));
 	}
 
 	// Tempo phase inc
@@ -109,19 +113,25 @@ public:
 	void save(FileWriter &fileWriter) {
 		fileWriter.write(bpm_);
 		fileWriter.write(clock_source_);
-		fileWriter.write(send_clock_);
+
+		for (int i = 0; i < MidiEngine::NUM_PORTS; ++i) {
+			fileWriter.write(send_clock_[i]);
+		}
 	}
 
 	void load(FileReader &fileReader) {
 		fileReader.read(bpm_);
 		fileReader.read(clock_source_);
-		fileReader.read(send_clock_);
+
+		for (int i = 0; i < MidiEngine::NUM_PORTS; ++i) {
+			fileReader.read(send_clock_[i]);
+		}
 	}
 
 private:
 	uint16_t bpm_;
 	uint8_t clock_source_;
-	bool send_clock_;
+	bool send_clock_[MidiEngine::NUM_PORTS];
 	//constexpr const float tempo_type_multiplier_[NUM_TYPES] = { 1.f / 1.5f, 1.f, 1.5f };
 
 	static const float tempo_type_multiplier(uint8_t type) {

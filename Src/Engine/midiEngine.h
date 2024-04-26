@@ -38,8 +38,8 @@ public:
 	};
 
 	Que<uint8_t, 32> input_que;
-	Que<uint8_t, 32> output_que;
-	Que<uint8_t, 8> clock_output_que;
+	Que<uint8_t, 32> output_que[NUM_PORTS];
+	Que<uint8_t, 8> clock_output_que[NUM_PORTS];
 
 	void init(Uart *uart, Usb *usb) {
 		usb_ = usb;
@@ -54,14 +54,13 @@ public:
 		}
 
 		if (uart_->writeable()) {
-			if (clock_output_que.readable()) {
-				uart_->write(clock_output_que.read());
-			} else if (output_que.readable()) {
-				uart_->write(output_que.read());
+			if (clock_output_que[UART].readable()) {
+				uart_->write(clock_output_que[UART].read());
+			} else if (output_que[UART].readable()) {
+				uart_->write(output_que[UART].read());
 			}
 		}
 	}
-
 
 	bool pull(Event &e) {
 		while (input_que.readable()) {
@@ -78,22 +77,26 @@ public:
 	}
 
 	bool write(Event &e) {
-		uint8_t size = e.message != last_message_ ? 3 : 2;
-		if (output_que.available_size() >= size) {
+		uint8_t size = e.message != last_message_[e.port] ? 3 : 2;
+
+		if (output_que[e.port].available_size() >= size) {
+
 			if (size == 3) {
-				output_que.write(e.message);
-				last_message_ = e.message;
+				output_que[e.port].write(e.message);
+				last_message_[e.port] = e.message;
 			}
-			output_que.write(e.data[0]);
-			output_que.write(e.data[1]);
+			output_que[e.port].write(e.data[0]);
+			output_que[e.port].write(e.data[1]);
+
 			return true;
 		}
+		
 		return false;
 	}
 
-	bool write(uint8_t message) {
-		if (clock_output_que.writeable()) {
-			clock_output_que.write(message);
+	bool write(uint8_t port, uint8_t message) {
+		if (clock_output_que[port].writeable()) {
+			clock_output_que[port].write(message);
 			return true;
 		}
 		return false;
@@ -104,7 +107,7 @@ private:
 	Uart *uart_;
 
 	Event event_;
-	uint8_t last_message_;
+	uint8_t last_message_[NUM_PORTS];
 	uint8_t num_data_bytes_;
 
 	bool parse(uint8_t reading) {
