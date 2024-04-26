@@ -49,12 +49,12 @@ private:
 	volatile uint8_t requests_ = 0x00;
 
 	uint8_t port_to_kill_;
-	bool last_gate_[Modulation::kNumGatesToNote];
 	SampleQue sampleQue_;
 	MidiEngine midiEngine_;
 	VoiceEngine voiceEngine_;
 	MidiClockEngine midiClockEngine_;
 	ModulationEngine modualationEngine_;
+	bool last_gate_[Modulation::kNumGatesToNote];
 
 	void start();
 	void stop();
