@@ -119,7 +119,7 @@ public:
 		return UiText::str.write("MIDI CC ", midi_cc_number(index));
 	}
 
-	// Trigger to midi
+	// Gate to midi
 	MidiEngine::Event &gate_to_midi(uint8_t gate) {
 		return gate_to_midi_[gate];
 	}
