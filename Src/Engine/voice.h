@@ -194,7 +194,14 @@ private:
 		modualationEngine_->write_envelope_2(envelope_[1].next());
 		ModulationEngine::Frame *frame = modualationEngine_->process(&instrument_src_->matrix());
 
-		// Fade out sample gain if stop requested
+		sample_.set_start(sample_src_->start() * frame->data[Modulation::START]);
+		sample_.set_end(sample_src_->end() * frame->data[Modulation::END]);
+		sample_.set_loop_start(sample_src_->loop_start() * frame->data[Modulation::LOOP_START]);
+		sample_.set_loop_end(sample_src_->loop_end() * frame->data[Modulation::LOOP_END]);
+		instrument_.set_pan(instrument_src_->pan() * frame->data[Modulation::PAN]);
+		instrument_.set_gain(instrument_src_->gain() * frame->data[Modulation::INSTRUMENT_GAIN]);
+		instrument_.set_bit_depth(instrument_src_->bit_depth() * frame->data[Modulation::BIT_DEPTH]);
+
 		if (stop_requested_) {
 			if (fade_phase_ > 0.0f) {
 				fade_phase_ -= ((Dac::kUpdateRate / 1000) * 4);
@@ -203,18 +210,8 @@ private:
 				state_ = IDLE;
 			}
 		}
-
 		sample_.set_gain(fade_phase_ * sample_src_->gain() * frame->data[Modulation::SAMPLE_GAIN]);
-
-		sample_.set_start(sample_src_->start() * frame->data[Modulation::START]);
-		sample_.set_end(sample_src_->end() * frame->data[Modulation::END]);
-		sample_.set_loop_start(sample_src_->loop_start() * frame->data[Modulation::LOOP_START]);
-		sample_.set_loop_end(sample_src_->loop_end() * frame->data[Modulation::LOOP_END]);
-		instrument_.set_pan(instrument_src_->pan() * frame->data[Modulation::PAN]);
-		instrument_.set_gain(instrument_src_->gain() * frame->data[Modulation::INSTRUMENT_GAIN]);
-		instrument_.set_bit_depth(instrument_src_->bit_depth() * frame->data[Modulation::BIT_DEPTH]);
 	}
-
 };
 
 #endif
