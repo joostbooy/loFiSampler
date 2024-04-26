@@ -47,7 +47,7 @@ public:
 		return sample_;
 	}
 
-	float next_sample() {
+	float next() {
 		switch (stage_)
 		{
 		case IDLE:
