@@ -54,7 +54,7 @@ public:
 	}
 
 	void write_midi_cc(uint8_t number, float value) {
-		for (size_t i = 0; i < Modulation::num_user_cc(); ++i) {
+		for (size_t i = 0; i < Modulation::kNumUserCc; ++i) {
 			if (number == modulation_->midi_cc_number(i)) {
 				source_[i + Modulation::MIDI_CC_A] = value;
 			}

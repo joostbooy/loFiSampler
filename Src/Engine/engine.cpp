@@ -59,6 +59,20 @@ void Engine::cc(MidiEngine::Event &e) {
 	modualationEngine_.write_midi_cc(number, data);
 }
 
+void Engine::poll_gates() {
+	MidiEngine::Event e;
+
+	for (size_t i = 0; i < Modulation::kNumGatesToNote; ++i) {
+		bool current = gate.read(i);
+
+		if (current != last_gate_[i]) {
+			last_gate_[i] = current;
+			e = settings.modulation().gate_to_midi(i);
+			current ? note_on(e) : note_off(e);
+		}
+	}
+}
+
 // low priority
 void Engine::process_midi() {
 	MidiEngine::Event e;

@@ -2,6 +2,7 @@
 #define Engine_h
 
 #include "uart.h"
+#include "gate.h"
 #include "micros.h"
 #include "midiEngine.h"
 #include "midiClockEngine.h"
@@ -23,7 +24,7 @@ public:
 	void suspend();
 	void resume();
 	void fill(Dac::Buffer *buffer, const size_t size);
-	
+
 	// requests_
 	void add_request_blocking(Request type) {
 		add_request(type);
@@ -48,7 +49,7 @@ private:
 	volatile uint8_t requests_ = 0x00;
 
 	uint8_t port_to_kill_;
-
+	bool last_gate_[Modulation::kNumGatesToNote];
 	SampleQue sampleQue_;
 	MidiEngine midiEngine_;
 	VoiceEngine voiceEngine_;
@@ -59,6 +60,7 @@ private:
 	void stop();
 	void process_requests();
 	void process_midi();
+	void poll_gates();
 	void note_on(MidiEngine::Event &e);
 	void note_off(MidiEngine::Event &e);
 	void pitch_bend(MidiEngine::Event &e);

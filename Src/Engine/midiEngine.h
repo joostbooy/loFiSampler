@@ -16,6 +16,17 @@ public:
 		NUM_PORTS
 	};
 
+	static const char *port_text(int port) {
+		switch (port)
+		{
+		case UART:	return "UART";
+		case USB:	return "USB";
+		default:
+			break;
+		}
+		return nullptr;
+	}
+
 	enum MessageType {
 		NOTE_OFF			= 0x80,
 		NOTE_ON				= 0x90,
@@ -90,7 +101,7 @@ public:
 
 			return true;
 		}
-		
+
 		return false;
 	}
 

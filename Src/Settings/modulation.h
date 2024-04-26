@@ -4,10 +4,14 @@
 #include "uiText.h"
 #include "fileWriter.h"
 #include "fileReader.h"
+#include "midiEngine.h"
 
 class Modulation {
 
 public:
+
+	static const size_t kNumUserCc = 4;
+	static const size_t kNumGatesToNote = 4;
 
 	enum Destination {
 		PAN,
@@ -90,6 +94,13 @@ public:
 	}
 
 	void init() {
+		for (size_t i = 0; i < kNumGatesToNote; ++i) {
+			set_gate_to_midi_port(i, 0);
+			set_gate_to_midi_channel(i, i);
+			set_gate_to_midi_note(i, i);
+			set_gate_to_midi_velocity(i, 100);
+		}
+
 		for (size_t i = 0; i < kNumUserCc; ++i) {
 			set_midi_cc_number(i, i);
 		}
@@ -108,14 +119,73 @@ public:
 		return UiText::str.write("MIDI CC ", midi_cc_number(index));
 	}
 
-	static constexpr const size_t num_user_cc() {
-		return kNumUserCc;
+	// Trigger to midi
+	MidiEngine::Event &gate_to_midi(uint8_t gate) {
+		return gate_to_midi_[gate];
 	}
+
+	// port
+	uint8_t gate_to_midi_port(uint8_t gate) {
+		return gate_to_midi_[gate].port;
+	}
+
+	void set_gate_to_midi_port(uint8_t gate, uint8_t port) {
+		gate_to_midi_[gate].port = port;
+	}
+
+	const char *gate_to_midi_port_text(uint8_t gate) {
+		return MidiEngine::port_text(gate_to_midi_port(gate));
+	}
+
+
+	// channel
+	uint8_t gate_to_midi_channel(uint8_t gate) {
+		return gate_to_midi_[gate].message;
+	}
+
+	void set_gate_to_midi_channel(uint8_t gate, uint8_t chn) {
+		gate_to_midi_[gate].message = chn;
+	}
+
+	const char *gate_to_midi_channel_text(uint8_t gate) {
+		return UiText::str.write("CHN ", gate_to_midi_channel(gate) + 1);
+	}
+
+	// note
+	uint8_t gate_to_midi_note(uint8_t gate) {
+		return gate_to_midi_[gate].data[0];
+	}
+
+	void set_gate_to_midi_note(uint8_t gate, uint8_t note) {
+		gate_to_midi_[gate].data[0] = note;
+	}
+
+	const char *gate_to_midi_note_text(uint8_t gate) {
+		return UiText::note_to_text(gate_to_midi_note(gate));
+	}
+
+	// velocity
+	uint8_t gate_to_midi_velocity(uint8_t gate) {
+		return gate_to_midi_[gate].data[1];
+	}
+
+	void set_gate_to_midi_velocity(uint8_t gate, uint8_t vel) {
+		gate_to_midi_[gate].data[1] = vel;
+	}
+
+	const char *gate_to_midi_velocity_text(uint8_t gate) {
+		return UiText::str.write("VEL ", gate_to_midi_velocity(gate));
+	}
+
 
 	// Storage
 	void save(FileWriter &fileWriter) {
 		for (size_t i = 0; i < kNumUserCc; ++i) {
 			fileWriter.write(midi_cc_number_[i]);
+		}
+
+		for (size_t i = 0; i < kNumGatesToNote; ++i) {
+			fileWriter.write(gate_to_midi_[i]);
 		}
 	}
 
@@ -123,11 +193,15 @@ public:
 		for (size_t i = 0; i < kNumUserCc; ++i) {
 			fileReader.read(midi_cc_number_[i]);
 		}
+
+		for (size_t i = 0; i < kNumGatesToNote; ++i) {
+			fileReader.read(gate_to_midi_[i]);
+		}
 	}
 
 private:
-	static const size_t kNumUserCc = 4;
 	uint8_t midi_cc_number_[kNumUserCc];
+	MidiEngine::Event gate_to_midi_[kNumGatesToNote];
 };
 
 #endif
