@@ -61,17 +61,17 @@ public:
 		}
 	}
 
-	void process(Frame *frame) {
+	Frame* process(ModulationMatrix *matrix) {
 		for (int y = 0; y < Modulation::NUM_DESTINATIONS; ++y) {
 			frame_.data[y] = 1.f;
 			for (int x = 0; x < Modulation::NUM_SOURCES; ++x) {
-				if (modulation_->read_matrix(x, y)) {
+				if (matrix->read(x, y)) {
 					frame_.data[y] *= source_[x];
 				}
 			}
 		}
 
-		frame = &frame_;
+		return &frame_;
 	}
 
 private:

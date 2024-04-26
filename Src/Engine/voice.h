@@ -30,7 +30,7 @@ public:
 	uint8_t channel() { return channel_; }
 	bool key_pressed() { return key_pressed_; }
 	State state() { return state_; }
-
+	Sample &sample() { return sample_; }
 
 	void request_stop() {
 		stop_requested_ = true;
@@ -189,11 +189,10 @@ private:
 	}
 
 	inline void apply_modulation() {
-		ModulationEngine::Frame *frame = nullptr;
 		modualationEngine_->write_midi_velocity(velocity_);
 		modualationEngine_->write_envelope_1(envelope_[0].next());
 		modualationEngine_->write_envelope_2(envelope_[1].next());
-		modualationEngine_->process(frame);
+		ModulationEngine::Frame *frame = modualationEngine_->process(&instrument_src_->matrix());
 
 		// Fade out sample gain if stop requested
 		if (stop_requested_) {

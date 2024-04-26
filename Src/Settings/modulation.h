@@ -93,10 +93,6 @@ public:
 		for (size_t i = 0; i < kNumUserCc; ++i) {
 			set_midi_cc_number(i, i);
 		}
-
-		clear_matrix();
-		write_matrix(MIDI_VELOCITY, SAMPLE_GAIN, true);
-		write_matrix(ENVELOPE_1, SAMPLE_GAIN, true);
 	}
 
 	// Midi CC
@@ -116,35 +112,10 @@ public:
 		return kNumUserCc;
 	}
 
-	// Matrix
-	bool read_matrix(int src, int dest) {
-		return matrix_[src] & (1 << dest);
-	}
-
-	void write_matrix(int src, int dest, bool state) {
-		uint32_t data = matrix_[src];
-
-		if (state) {
-			matrix_[src] = data | (1 << dest);
-		} else {
-			matrix_[src] = data & ~(1 << dest);
-		}
-	}
-
-	void clear_matrix() {
-		for (size_t i = 0; i < NUM_SOURCES; ++i) {
-			matrix_[i] = 0;
-		}
-	}
-
 	// Storage
 	void save(FileWriter &fileWriter) {
 		for (size_t i = 0; i < kNumUserCc; ++i) {
 			fileWriter.write(midi_cc_number_[i]);
-		}
-
-		for (size_t i = 0; i < NUM_SOURCES; ++i) {
-			fileWriter.write(matrix_[i]);
 		}
 	}
 
@@ -152,16 +123,11 @@ public:
 		for (size_t i = 0; i < kNumUserCc; ++i) {
 			fileReader.read(midi_cc_number_[i]);
 		}
-
-		for (size_t i = 0; i < NUM_SOURCES; ++i) {
-			fileReader.read(matrix_[i]);
-		}
 	}
 
 private:
 	static const size_t kNumUserCc = 4;
 	uint8_t midi_cc_number_[kNumUserCc];
-	uint32_t matrix_[NUM_SOURCES];
 };
 
 #endif

@@ -2,11 +2,12 @@
 #define Instrument_h
 
 #include "uiText.h"
-#include "midiEngine.h"
-#include "sample.h"
+#include "dac.h"
 #include "fileWriter.h"
 #include "fileReader.h"
-#include "dac.h"
+#include "midiEngine.h"
+#include "sample.h"
+#include "modulationMatrix.h"
 
 class Instrument {
 
@@ -49,7 +50,14 @@ public:
 		set_bend_range(2);
 		set_modulation(true);
 
+		matrix().init();
+
 		clear_samples();
+	}
+
+	// matrix
+	ModulationMatrix& matrix() {
+		return matrix_;
 	}
 
 	// Sample
@@ -280,6 +288,8 @@ public:
 		fileWriter.write(sample_rate_);
 		fileWriter.write(bend_range_);
 		fileWriter.write(num_samples_);
+
+		matrix().save(fileWriter);
 	}
 
 	void load(FileReader &fileReader) {
@@ -292,6 +302,8 @@ public:
 		fileReader.read(sample_rate_);
 		fileReader.read(bend_range_);
 		fileReader.read(num_samples_);
+
+		matrix().load(fileReader);
 	}
 
 	void paste(Instrument *instrument) {
@@ -318,9 +330,12 @@ private:
 	uint8_t bend_range_;
 	size_t num_samples_;
 	bool modulation_;
+	size_t index_;
 
 	char name_[kMaxNameLength];
 	Sample *sample_[kMaxNumSamples];
+
+	ModulationMatrix matrix_;
 
 	void swap_samples(int a, int b) {
 		Sample *data = sample_[a];
