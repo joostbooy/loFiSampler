@@ -60,7 +60,7 @@ private:
 	void stop();
 	void process_requests();
 	void process_midi();
-	void poll_gates();
+	void process_gates();
 	void note_on(MidiEngine::Event &e);
 	void note_off(MidiEngine::Event &e);
 	void pitch_bend(MidiEngine::Event &e);

@@ -63,7 +63,7 @@ void Engine::cc(MidiEngine::Event &e) {
 	modualationEngine_.write_midi_cc(number, data);
 }
 
-void Engine::poll_gates() {
+void Engine::process_gates() {
 	MidiEngine::Event e;
 
 	for (size_t i = 0; i < Modulation::kNumGatesToNote; ++i) {
@@ -115,6 +115,7 @@ void Engine::process_requests() {
 
 void Engine::fill(Dac::Buffer *buffer, const size_t size) {
 	process_midi();
+	process_gates();
 	process_requests();
 
 	bool new_voices = false;
