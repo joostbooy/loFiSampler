@@ -48,7 +48,6 @@ public:
 		set_midi_port(MidiEngine::UART);
 		set_bit_depth(16);
 		set_bend_range(2);
-		set_modulation(true);
 
 		matrix().init();
 
@@ -237,19 +236,6 @@ public:
 		return UiText::str.write(bend_range(), " SEMITONES");
 	}
 
-	// Modulation
-	bool modulation() {
-		return modulation_;
-	}
-
-	void set_modulation(bool state) {
-		modulation_ = state;
-	}
-
-	const char* modulation_text() {
-		return UiText::bool_to_on_off(modulation());
-	}
-
 	// name
 	const char *name() {
 		return name_;
@@ -329,8 +315,6 @@ private:
 	int8_t sample_rate_;
 	uint8_t bend_range_;
 	size_t num_samples_;
-	bool modulation_;
-	size_t index_;
 
 	char name_[kMaxNameLength];
 	Sample *sample_[kMaxNumSamples];
