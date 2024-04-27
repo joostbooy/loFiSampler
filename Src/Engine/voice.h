@@ -53,6 +53,7 @@ public:
 		envelope_[1].attack();
 
 		key_pressed_ = true;
+		stop_requested_ = false;
 		fade_phase_  = 1.f;
 
 		if (sample_.play_mode() == Sample::FORWARD) {
