@@ -42,13 +42,15 @@ private:
 
 	void write(Instrument *instrument, MidiEngine::Event &e) {
 		if (instrument->midi_accepted(e)) {
-			for (size_t i = 0; i < instrument->num_samples(); ++i) {
-				if (instrument->sample(i)->within_key_range(e.data[0]) && event_que_.writeable()) {
+			int i = instrument->num_samples();
+			while (event_que_.writeable() && (i--)) {
+				if (instrument->sample(i)->within_key_range(e.data[0])) {
 					event_que_.write( { .instrument_ = instrument, .sample_ = instrument->sample(i), .midi_event_ = e } );
 				}
 			}
 		}
 	}
+
 };
 
 #endif
