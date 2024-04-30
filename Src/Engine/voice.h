@@ -34,7 +34,6 @@ public:
 
 	void request_stop() {
 		stop_requested_ = true;
-		key_pressed_ = false;
 	}
 
 	bool is_available() {
