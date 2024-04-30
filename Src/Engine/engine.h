@@ -16,7 +16,8 @@ class Engine {
 public:
 
 	enum Request {
-		KILL_MIDI_PORT	= (1 << 0),
+		STOP			= (1 << 0),
+		KILL_MIDI_PORT	= (1 << 1),
 	};
 
 	void init(Uart*, Usb*);
@@ -25,16 +26,6 @@ public:
 	void resume();
 	void fill(Dac::Buffer *buffer, const size_t size);
 
-	// requests_
-	void add_request_blocking(Request type) {
-		add_request(type);
-		while (requests_ & type);
-	}
-
-	void clear_request(Request type) {
-		uint8_t flags = requests_;
-		requests_ = flags & ~type;
-	}
 
 	VoiceEngine &voiceEngine() {
 		return voiceEngine_;
@@ -43,6 +34,10 @@ public:
 	void kill_midi_channel_blocking(uint8_t port) {
 		port_to_kill_ = port;
 		add_request_blocking(KILL_MIDI_PORT);
+	}
+
+	void request_stop_blocking() {
+		add_request_blocking(STOP);
 	}
 
 private:
@@ -74,6 +69,16 @@ private:
 	void add_request(Request type) {
 		uint8_t flags = requests_;
 		requests_ = flags | type;
+	}
+
+	void add_request_blocking(Request type) {
+		add_request(type);
+		while (requests_ & type);
+	}
+
+	void clear_request(Request type) {
+		uint8_t flags = requests_;
+		requests_ = flags & ~type;
 	}
 };
 

@@ -24,6 +24,10 @@ public:
 		return most_recent_voice_;
 	}
 
+	inline bool is_idle() {
+		return active_voices_.size() == 0;
+	}
+
 	Voice &voice(uint8_t index) {
 		return voice_[index];
 	}

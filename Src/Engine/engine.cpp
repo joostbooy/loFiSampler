@@ -77,6 +77,10 @@ void Engine::process_gates() {
 	}
 }
 
+//void Engine::clock_start() {
+//	modualationEngine_.reset();
+//}
+
 // low priority
 void Engine::process_midi() {
 	MidiEngine::Event e;
@@ -105,6 +109,18 @@ void Engine::process_midi() {
 void Engine::process_requests() {
 	if (!requests_) {
 		return;
+	}
+
+	if (requests_ & STOP) {
+		// just keeps clearing the que & voices till idle
+		sampleQue_.init();
+		for (size_t i = 0; i < Settings::kMaxVoices; ++i) {
+			voiceEngine_.voice(i).request_stop();
+		}
+
+		if (voiceEngine_.is_idle()) {
+			clear_request(STOP);
+		}
 	}
 
 	if (requests_ & KILL_MIDI_PORT) {
