@@ -189,9 +189,9 @@ private:
 	}
 
 	inline void apply_modulation() {
-		modualationEngine_->write_midi_velocity(velocity_);
-		modualationEngine_->write_envelope_1(envelope_[0].next());
-		modualationEngine_->write_envelope_2(envelope_[1].next());
+		modualationEngine_->set_midi_velocity(velocity_);
+		modualationEngine_->set_envelope(0, envelope_[0].next());
+		modualationEngine_->set_envelope(1, envelope_[1].next());
 		ModulationEngine::Frame *frame = modualationEngine_->process(&instrument_src_->matrix());
 
 		sample_.set_start(sample_src_->start() * frame->data[Modulation::START]);

@@ -54,13 +54,13 @@ void Engine::note_off(MidiEngine::Event &e) {
 
 void Engine::pitch_bend(MidiEngine::Event &e) {
 	float data = (1.f / 16383.f) * MidiEngine::read_14_bit(e);
-	modualationEngine_.write_midi_bend(data);
+	modualationEngine_.set_midi_bend(data);
 }
 
 void Engine::cc(MidiEngine::Event &e) {
 	uint8_t number = e.data[0];
 	float data = (1.f / 127.f) * e.data[1];
-	modualationEngine_.write_midi_cc(number, data);
+	modualationEngine_.set_midi_cc(number, data);
 }
 
 void Engine::process_gates() {

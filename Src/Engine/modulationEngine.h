@@ -21,23 +21,19 @@ public:
 		}
 	}
 
-	void write_envelope_1(float value) {
-		source_[Modulation::ENVELOPE_1] = value;
+	void set_envelope(int index, float value) {
+		source_[Modulation::ENVELOPE_1 + index] = value;
 	}
 
-	void write_envelope_2(float value) {
-		source_[Modulation::ENVELOPE_2] = value;
-	}
-
-	void write_cv(int channel, float value) {
+	void set_cv(int channel, float value) {
 		source_[Modulation::CV_1 + channel] = value;
 	}
 
-	void write_midi_velocity(float value) {
+	void set_midi_velocity(float value) {
 		source_[Modulation::MIDI_VELOCITY] = value;
 	}
 
-	void write_midi_bend(float value) {
+	void set_midi_bend(float value) {
 		source_[Modulation::MIDI_BEND] = value;
 	}
 
@@ -53,7 +49,7 @@ public:
 		}
 	}
 
-	void write_midi_cc(uint8_t number, float value) {
+	void set_midi_cc(uint8_t number, float value) {
 		for (size_t i = 0; i < Modulation::kNumUserCc; ++i) {
 			if (number == modulation_->midi_cc_number(i)) {
 				source_[i + Modulation::MIDI_CC_A] = value;
