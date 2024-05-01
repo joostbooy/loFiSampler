@@ -95,12 +95,12 @@ public:
 		}
 	}
 
-	void kill_midi_port(uint8_t port) {
+	void kill_midi_channel(uint8_t port, uint8_t channel) {
 		uint8_t count = active_voices_.size();
 
 		for (uint8_t i = 0; i < count; ++i) {
 			uint8_t v = active_voices_.read(i);
-			if (voice_[v].port() == port) {
+			if (voice_[v].port() == port && voice_[v].channel() == channel) {
 				voice_[v].request_stop();
 			}
 		}

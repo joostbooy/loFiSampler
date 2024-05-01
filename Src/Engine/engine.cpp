@@ -123,9 +123,9 @@ void Engine::process_requests() {
 		}
 	}
 
-	if (requests_ & KILL_MIDI_PORT) {
-		clear_request(KILL_MIDI_PORT);
-		voiceEngine_.kill_midi_port(port_to_kill_);
+	if (requests_ & KILL_MIDI_CHANNEL) {
+		clear_request(KILL_MIDI_CHANNEL);
+		voiceEngine_.kill_midi_channel(port_to_kill_, channel_to_kill_);
 	}
 }
 

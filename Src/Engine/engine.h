@@ -16,8 +16,8 @@ class Engine {
 public:
 
 	enum Request {
-		STOP			= (1 << 0),
-		KILL_MIDI_PORT	= (1 << 1),
+		STOP				= (1 << 0),
+		KILL_MIDI_CHANNEL	= (1 << 1),
 	};
 
 	void init(Uart*, Usb*);
@@ -31,8 +31,9 @@ public:
 		return voiceEngine_;
 	}
 
-	void set_port_to_kill(uint8_t port) {
+	void set_midi_channel_to_kill(uint8_t port, uint8_t channel) {
 		port_to_kill_ = port;
+		channel_to_kill_ = channel;
 	}
 
 	void add_request_blocking(Request type) {
@@ -44,6 +45,8 @@ private:
 	volatile uint8_t requests_ = 0x00;
 
 	uint8_t port_to_kill_;
+	uint8_t channel_to_kill_;
+
 	SampleQue sampleQue_;
 	MidiEngine midiEngine_;
 	VoiceEngine voiceEngine_;
