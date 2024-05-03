@@ -134,16 +134,14 @@ void Engine::fill(Dac::Buffer *buffer, const size_t size) {
 	process_gates();
 	process_requests();
 
-	bool new_voices = false;
+	SampleQue::Event e;
 
 	while (sampleQue_.readable() && voiceEngine_.available()) {
-		voiceEngine_.assign_voice(sampleQue_.read());
-		new_voices = true;
+		e = sampleQue_.read();
+		voiceEngine_.assign_voice(e);
+		modualationEngine_.retrigger_lfos(e.midi_event_);
 	}
 
-	if (new_voices) {
-		modualationEngine_.retrigger_lfos();
-	}
 	modualationEngine_.tick_lfos();
 
 	voiceEngine_.fill(buffer, size);

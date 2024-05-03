@@ -16,7 +16,8 @@ public:
 		set_skew(0.5f);
 		set_clock_sync(false);
 		set_randomise(false);
-		set_retrigger(false);
+		set_retrigger_port(MidiEngine::UART);
+		set_retrigger_channel(-1);
 	}
 
 	// speed
@@ -88,17 +89,30 @@ public:
 		return UiText::bool_to_on_off(clock_sync());
 	}
 
-	// Retrigger
-	bool retrigger() {
-		return retrigger_;
+	// Retrigger port
+	uint8_t retrigger_port() {
+		return retrigger_port_;
 	}
 
-	void set_retrigger(bool value) {
-		retrigger_ = value;
+	void set_retrigger_port(uint8_t value) {
+		retrigger_port_ = stmlib::clip(0, MidiEngine::NUM_PORTS - 1, value);
 	}
 
-	const char *retrigger_text() {
-		return UiText::bool_to_on_off(retrigger());
+	const char *retrigger_port_text() {
+		return MidiEngine::port_text(retrigger_port());
+	}
+
+	// Retrigger channel
+	uint8_t retrigger_channel() {
+		return retrigger_channel_;
+	}
+
+	void set_retrigger_channel(uint8_t value) {
+		retrigger_channel_ = stmlib::clip(-1, 16, value);
+	}
+
+	const char *retrigger_channel_text() {
+		return UiText::midi_channel_text(retrigger_channel() + 1);
 	}
 
 	// Storage
@@ -108,7 +122,8 @@ public:
 		fileWriter.write(speed_);
 		fileWriter.write(randomise_);
 		fileWriter.write(clock_sync_);
-		fileWriter.write(retrigger_);
+		fileWriter.write(retrigger_port_);
+		fileWriter.write(retrigger_channel_);
 	}
 
 	void load(FileReader &fileReader) {
@@ -117,7 +132,8 @@ public:
 		fileReader.read(speed_);
 		fileReader.read(randomise_);
 		fileReader.read(clock_sync_);
-		fileReader.read(retrigger_);
+		fileReader.read(retrigger_port_);
+		fileReader.read(retrigger_channel_);
 	}
 
 private:
@@ -126,7 +142,8 @@ private:
 	uint8_t speed_;
 	bool randomise_;
 	bool clock_sync_;
-	bool retrigger_;
+	uint8_t retrigger_port_;
+	uint8_t retrigger_channel_;
 };
 
 #endif
