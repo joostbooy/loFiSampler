@@ -138,7 +138,7 @@ public:
 	}
 
 	const char* midi_channel_text() {
-		return midi_channel() >= 16 ? "OMNI" : UiText::str.write(midi_channel() + 1);
+		return UiText::midi_channel_text(midi_channel());
 	}
 
 	bool midi_channel_accepted(int channel) {
