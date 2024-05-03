@@ -102,7 +102,7 @@ public:
 		return MidiEngine::port_text(retrigger_port());
 	}
 
-	uint8_t retrigger_port_accepted(int port) {
+	bool retrigger_port_accepted(int port) {
 		return port == retrigger_port();
 	}
 
@@ -120,7 +120,7 @@ public:
 		return UiText::midi_channel_text(retrigger_channel());
 	}
 
-	int retrigger_channel_accepted(int channel) {
+	bool retrigger_channel_accepted(int channel) {
 		return (retrigger_channel() >= 16) || (retrigger_channel() == channel);
 	}
 
