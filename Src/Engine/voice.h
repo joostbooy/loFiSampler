@@ -55,11 +55,11 @@ public:
 		stop_requested_ = false;
 		fade_phase_  = 1.f;
 
-		if (sample_.play_mode() == Sample::FORWARD) {
-			phase_ = sample_.start();
+		if (sample_src_->play_mode() == Sample::FORWARD) {
+			phase_ = sample_src_->start();
 			state_ = FORWARD;
 		} else {
-			phase_ = sample_.end();
+			phase_ = sample_src_->end();
 			state_ = BACKWARD;
 		}
 	}
