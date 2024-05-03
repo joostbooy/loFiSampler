@@ -143,7 +143,7 @@ private:
 	bool randomise_;
 	bool clock_sync_;
 	uint8_t retrigger_port_;
-	uint8_t retrigger_channel_;
+	int retrigger_channel_;
 };
 
 #endif
