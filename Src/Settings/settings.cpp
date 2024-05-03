@@ -21,6 +21,25 @@ bool Settings::save() {
 
 	fileWriter.start(&disk.file, path.read(), current_version());
 
+	midi().save(fileWriter);
+	modulation().save(fileWriter);
+
+	for (size_t i = 0; i < kNumLfos; ++i) {
+		lfo(i).save(fileWriter);
+	}
+
+	for (size_t i = 0; i < kNumEnvelopes; ++i) {
+		envelope(i).save(fileWriter);
+	}
+
+	for (size_t i = 0; i < kMaxSamples; ++i) {
+		sample(i).save(fileWriter);
+	}
+
+	for (size_t i = 0; i < kMaxInstruments; ++i) {
+		instrument(i).save(fileWriter);
+	}
+
 	if (!fileWriter.write_ok()) {
 		fileWriter.stop();
 		return false;
@@ -33,6 +52,25 @@ bool Settings::load(const char* new_path) {
 	init();	// also clears the path
 
 	fileReader.start(&disk.file, new_path);
+
+	midi().load(fileReader);
+	modulation().load(fileReader);
+
+	for (size_t i = 0; i < kNumLfos; ++i) {
+		lfo(i).load(fileReader);
+	}
+
+	for (size_t i = 0; i < kNumEnvelopes; ++i) {
+		envelope(i).load(fileReader);
+	}
+
+	for (size_t i = 0; i < kMaxSamples; ++i) {
+		sample(i).load(fileReader);
+	}
+
+	for (size_t i = 0; i < kMaxInstruments; ++i) {
+		instrument(i).load(fileReader);
+	}
 
 	if (!fileReader.read_ok()) {
 		fileReader.stop();
