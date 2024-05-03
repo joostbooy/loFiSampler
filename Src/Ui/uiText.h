@@ -55,6 +55,15 @@ public:
 
 		return str.read();
 	}
+	static const char* midi_channel_text(int channel) {
+		if (channel < 0) {
+			return "NONE";
+		} else if (channel >= 16) {
+			return "OMNI";
+		}
+
+		return str.write(channel + 1);
+	}
 
 	static const char* kb_to_mem_size_text(uint32_t kb) {
 		uint32_t gb = kb / 1000000;
