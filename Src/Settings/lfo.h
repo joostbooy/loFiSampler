@@ -117,7 +117,7 @@ public:
 	}
 
 	const char *retrigger_channel_text() {
-		return UiText::midi_channel_text(retrigger_channel() + 1);
+		return UiText::midi_channel_text(retrigger_channel());
 	}
 
 	int retrigger_channel_accepted(int channel) {
