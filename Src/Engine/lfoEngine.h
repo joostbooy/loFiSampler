@@ -26,7 +26,7 @@ public:
 	}
 
 	void retrigger(uint8_t port, uint8_t channel) {
-		if (lfo_->retrigger_port() == port && lfo_->retrigger_channel() == channel) {
+		if (lfo_->retrigger_port_accepted(port) && lfo_->retrigger_channel_accepted(channel)) {
 			reset();
 		}
 	}

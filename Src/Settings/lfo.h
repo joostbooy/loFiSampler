@@ -102,8 +102,13 @@ public:
 		return MidiEngine::port_text(retrigger_port());
 	}
 
+	uint8_t retrigger_port_accepted(int port) {
+		return port == retrigger_port();
+	}
+
+
 	// Retrigger channel
-	uint8_t retrigger_channel() {
+	int retrigger_channel() {
 		return retrigger_channel_;
 	}
 
@@ -113,6 +118,10 @@ public:
 
 	const char *retrigger_channel_text() {
 		return UiText::midi_channel_text(retrigger_channel() + 1);
+	}
+
+	int retrigger_channel_accepted(int channel) {
+		return (retrigger_channel() >= 16) || (retrigger_channel() == channel);
 	}
 
 	// Storage
