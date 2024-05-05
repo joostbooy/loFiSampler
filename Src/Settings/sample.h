@@ -75,6 +75,10 @@ public:
 		return entry_->num_channels == 2;
 	}
 
+	int num_channels() {
+		return entry_->num_channels;
+	}
+
 	// start
 	void set_start(size_t value) {
 		start_ = stmlib::clip(0, end() - 1, value);

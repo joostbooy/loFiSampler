@@ -95,7 +95,7 @@ public:
 		float fractional = phase_ - intergral;
 
 		int16_t *a = sample_.data(intergral);
-		int16_t *b = a + (sample_.num_channels() * state_));
+		int16_t *b = a + (sample_.num_channels() * state_);
 
 		uint8_t shifts = instrument_.bit_shifts();
 		int16_t value = (Dsp::cross_fade(*a, *b, fractional) >> shifts) << shifts;
