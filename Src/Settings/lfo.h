@@ -112,7 +112,7 @@ public:
 		return retrigger_channel_;
 	}
 
-	void set_retrigger_channel(uint8_t value) {
+	void set_retrigger_channel(int value) {
 		retrigger_channel_ = stmlib::clip(-1, 16, value);
 	}
 
