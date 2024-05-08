@@ -25,14 +25,8 @@ public:
 
 	void toggle(size_t src, size_t dest) {
 		uint32_t data = matrix_[src];
-
-		if (read(src, dest)) {
-			matrix_[src] = data & ~(1 << dest);
-		} else {
-			matrix_[src] = data | (1 << dest);
-		}
+		matrix_[src] = data ^ (1 << dest);
 	}
-
 
 	// Storage
 	void save(FileWriter &fileWriter) {
