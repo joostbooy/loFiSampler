@@ -48,6 +48,7 @@ public:
 		set_midi_port(MidiEngine::UART);
 		set_bit_depth(16);
 		set_bend_range(2);
+		set_bend(0.5);
 
 		matrix().init();
 
@@ -236,6 +237,19 @@ public:
 		return UiText::str.write(bend_range(), " SEMITONES");
 	}
 
+	// Bend
+	float bend() {
+		return bend_;
+	}
+
+	void set_bend(float value) {
+		bend_ = stmlib::clip_float(value);
+	}
+
+	const char* bend_text() {
+		return UiText::str.write(Dsp::cross_fade(-1, 1, bend()));
+	}
+
 	// name
 	const char *name() {
 		return name_;
@@ -267,6 +281,7 @@ public:
 	void save(FileWriter &fileWriter) {
 		fileWriter.write(pan_);
 		fileWriter.write(gain_);
+		fileWriter.write(bend_);
 		fileWriter.write(audio_channel_);
 		fileWriter.write(midi_port_);
 		fileWriter.write(midi_channel_);
@@ -281,6 +296,7 @@ public:
 	void load(FileReader &fileReader) {
 		fileReader.read(pan_);
 		fileReader.read(gain_);
+		fileReader.read(bend_);
 		fileReader.read(audio_channel_);
 		fileReader.read(midi_port_);
 		fileReader.read(midi_channel_);
@@ -295,6 +311,7 @@ public:
 	void paste(Instrument *instrument) {
 		pan_ = instrument->pan();
 		gain_ = instrument->gain();
+		bend_ = instrument->bend();
 		audio_channel_ = instrument->audio_channel();
 		midi_port_ = instrument->midi_port();
 		midi_channel_ = instrument->midi_channel();
@@ -308,6 +325,7 @@ public:
 private:
 	float pan_;
 	float gain_;
+	float bend_;
 	int8_t audio_channel_;
 	int8_t midi_port_;
 	int8_t midi_channel_;

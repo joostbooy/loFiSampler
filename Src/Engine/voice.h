@@ -100,7 +100,7 @@ public:
 		uint8_t shifts = instrument_.bit_shifts();
 		int16_t value = (Dsp::cross_fade(*a, *b, fractional) >> shifts) << shifts;
 
-		phase_ += get_inc(note_, sample_.root_note(), instrument_.bend_range(), sample_.cents(), 0.5f);
+		phase_ += get_inc(note_, sample_.root_note(), instrument_.bend_range(), instrument_.bend(), sample_.cents());
 
 		if (state_ == FORWARD) {
 			if (is_looping()) {
@@ -180,7 +180,7 @@ private:
 		}
 	}
 
-	inline float get_inc(int note, int root_note, int bend_range, float cents, float bend) {
+	inline float get_inc(int note, int root_note, int bend_range, float bend, float cents) {
 		int semitone = 128 - (note - root_note);
 		float a = lut_semitone_ratio[stmlib::clip_min(0, semitone - bend_range)];
 		float b = lut_semitone_ratio[semitone];
@@ -200,6 +200,7 @@ private:
 		sample_.set_loop_end(sample_src_->loop_end() * frame->data[Modulation::LOOP_END]);
 		instrument_.set_pan(instrument_src_->pan() * frame->data[Modulation::PAN]);
 		instrument_.set_gain(instrument_src_->gain() * frame->data[Modulation::INSTRUMENT_GAIN]);
+		instrument_.set_bend(instrument_src_->bend() * frame->data[Modulation::BEND]);
 		instrument_.set_bit_depth(instrument_src_->bit_depth() * frame->data[Modulation::BIT_DEPTH]);
 
 		if (stop_requested_) {
