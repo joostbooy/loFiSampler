@@ -38,11 +38,19 @@ public:
 		set_loop(false);
 		set_u_turn(false);
 		set_play_mode(FORWARD);
-		set_cents(0.0);
+		set_cents(0);
 		set_root_note(60);
-		set_key_range_low(0);
-		set_key_range_high(127);
 		set_gain(1.0);
+		set_pan(0.5f);
+
+		// these need to be initialised without setters,
+		// because they depend on eachother
+		start_ = 0;
+		end_ = 1;
+		loop_start_ = 0;
+		loop_end_ = 1;
+		key_range_low_ = 0;
+		key_range_high_ = 127;
 	}
 
 	// data
@@ -145,16 +153,16 @@ public:
 	}
 
 	// Cents
-	void set_cents(float value) {
-		cents_ = stmlib::clip_float(value);
+	void set_cents(int value) {
+		cents_ = stmlib::clip(-99, 99, value);
 	}
 
-	float cents() {
+	int cents() {
 		return cents_;
 	}
 
 	const char *cents_text() {
-		return UiText::float_to_text(-99, 99, cents());
+		return UiText::str.write(cents());
 	}
 
 	// Root note
@@ -239,6 +247,19 @@ public:
 		return UiText::percentage_to_text(gain() * 100, 100);
 	}
 
+	// pan
+	float pan() {
+		return pan_;
+	}
+
+	void set_pan(float value) {
+		pan_ = stmlib::clip_float(value);
+	}
+
+	const char* pan_text() {
+		return UiText::float_to_text(-100, 100, pan());
+	}
+
 
 	// Storage
 	void save(FileWriter &fileWriter) {
@@ -255,6 +276,7 @@ public:
 		fileWriter.write(key_range_low_);
 		fileWriter.write(key_range_high_);
 		fileWriter.write(gain_);
+		fileWriter.write(pan_);
 	}
 
 	void load(FileReader &fileReader) {
@@ -271,6 +293,7 @@ public:
 		fileReader.read(key_range_low_);
 		fileReader.read(key_range_high_);
 		fileReader.read(gain_);
+		fileReader.read(pan_);
 	}
 
 	void paste(Sample *sample) {
@@ -286,6 +309,7 @@ public:
 		 key_range_low_ = sample->key_range_low();
 		 key_range_high_ = sample->key_range_high();
 		 gain_ = sample->gain();
+		 pan_ = sample->gain();
 	}
 
 private:
@@ -297,11 +321,12 @@ private:
 	uint8_t play_mode_;
 	size_t loop_start_;
 	size_t loop_end_;
-	float cents_;
+	int cents_;
 	uint8_t root_note_;
 	uint8_t key_range_low_;
 	uint8_t key_range_high_;
 	float gain_;
+	float pan_;
 };
 
 #endif

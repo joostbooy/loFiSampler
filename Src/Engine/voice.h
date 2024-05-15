@@ -81,7 +81,7 @@ public:
 		for (size_t i = 0; i < size; ++i) {
 			int16_t left = next();
 			int16_t right = next();
-			Dsp::pan(&left, &right, instrument_.pan());
+			Dsp::pan(&left, &right, sample_.pan());
 
 			*ptr += left;
 			*(ptr + 1) += right;
@@ -180,12 +180,12 @@ private:
 		}
 	}
 
-	inline float get_inc(int note, int root_note, int bend_range, float bend, float cents) {
+	inline float get_inc(int note, int root_note, int bend_range, float bend, int cents) {
 		int semitone = 128 - (note - root_note);
 		float a = lut_semitone_ratio[stmlib::clip_min(0, semitone - bend_range)];
 		float b = lut_semitone_ratio[semitone];
 		float c = lut_semitone_ratio[stmlib::clip_max(255, semitone + bend_range)];
-		return Dsp::cross_fade(a, b, c, bend) * state_;
+		return Dsp::cross_fade(a, b, c, bend) * lut_cent_ratio[cents + 99] * state_;
 	}
 
 	inline void apply_modulation() {
@@ -198,7 +198,7 @@ private:
 		sample_.set_end(sample_src_->end() * frame->data[Modulation::END]);
 		sample_.set_loop_start(sample_src_->loop_start() * frame->data[Modulation::LOOP_START]);
 		sample_.set_loop_end(sample_src_->loop_end() * frame->data[Modulation::LOOP_END]);
-		instrument_.set_pan(instrument_src_->pan() * frame->data[Modulation::PAN]);
+		sample_.set_pan(sample_src_->pan() * frame->data[Modulation::PAN]);
 		instrument_.set_gain(instrument_src_->gain() * frame->data[Modulation::INSTRUMENT_GAIN]);
 		instrument_.set_bend(instrument_src_->bend() * frame->data[Modulation::BEND]);
 		instrument_.set_bit_depth(instrument_src_->bit_depth() * frame->data[Modulation::BIT_DEPTH]);
