@@ -244,7 +244,7 @@ public:
 	}
 
 	const char *gain_text() {
-		return UiText::percentage_to_text(gain() * 100, 100);
+		return UiText::float_to_text(0, 100, gain());
 	}
 
 	// pan
@@ -260,6 +260,16 @@ public:
 		return UiText::float_to_text(-100, 100, pan());
 	}
 
+
+	// name to note
+	bool map_name_to_root_note(const char *name) {
+		uint8_t note;
+		if (name_to_midi_note(name, &note)) {
+			root_note_ = note;
+			return true;
+		}
+		return false;
+	}
 
 	// Storage
 	void save(FileWriter &fileWriter) {
@@ -297,19 +307,19 @@ public:
 	}
 
 	void paste(Sample *sample) {
-		 start_ = sample->start();
-		 end_ = sample->end();
-		 loop_ = sample->loop();
-		 u_turn_ = sample->u_turn();
-		 play_mode_ = sample->play_mode();
-		 loop_start_ = sample->loop_start();
-		 loop_end_ = sample->loop_end();
-		 cents_ = sample->cents();
-		 root_note_ = sample->root_note();
-		 key_range_low_ = sample->key_range_low();
-		 key_range_high_ = sample->key_range_high();
-		 gain_ = sample->gain();
-		 pan_ = sample->gain();
+		start_ = sample->start();
+		end_ = sample->end();
+		loop_ = sample->loop();
+		u_turn_ = sample->u_turn();
+		play_mode_ = sample->play_mode();
+		loop_start_ = sample->loop_start();
+		loop_end_ = sample->loop_end();
+		cents_ = sample->cents();
+		root_note_ = sample->root_note();
+		key_range_low_ = sample->key_range_low();
+		key_range_high_ = sample->key_range_high();
+		gain_ = sample->gain();
+		pan_ = sample->gain();
 	}
 
 private:
@@ -327,6 +337,10 @@ private:
 	uint8_t key_range_high_;
 	float gain_;
 	float pan_;
+
+	static bool name_to_midi_note(const char *name, uint8_t *note);
+	static constexpr const uint8_t char_to_note_[7] = { 9, 11, 0, 2, 4, 5, 7 };
+	static constexpr const bool has_seminote_[12] = { 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0 };
 };
 
 #endif
