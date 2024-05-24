@@ -28,6 +28,7 @@ void Ui::init() {
 	last_interval = 0;
 	display_interval = 0;
 	controller.init();
+	canvas.init();
 	pages.init();
 	ui_que.clear();
 }

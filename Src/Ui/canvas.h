@@ -39,6 +39,10 @@ public:
 
 	FrameBuffer <width_, height_> buffer;
 
+	void init() {
+		buffer.clear();
+		set_font(Font::SMALL);
+	}
 
 	void draw_pixel(int x, int y, Color color) {
 		if (buffer.inside(x, y) == false) {

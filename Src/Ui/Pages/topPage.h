@@ -23,7 +23,7 @@ namespace TopPage {
 	StringBuilderBase<64>str;
 
 	void init() {
-		canvas.set_font(Font::SMALL);
+
 	}
 
 	void enter() {
