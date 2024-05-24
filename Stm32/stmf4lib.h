@@ -1,16 +1,7 @@
-#ifndef STM32F4Lib_h
-#define STM32F4Lib_h
+#ifndef StmLib_h
+#define StmLib_h
 
 #include "stm32f4xx.h"
-#include <functional>
-#include <stdlib.h>
-#include <stdint.h>
-#include <limits>
-#include <cstring>
-#include <cmath>
-
-//#include <assert.h>
-//#include <algorithm>
 
 #define CCM_RAM __attribute__((section(".ccmram")))
 #define FORCE_INLINE __attribute__((always_inline))
@@ -45,29 +36,6 @@ public:
 		type temp = a;
 		a = b;
 		b = temp;
-	}
-
-	template<typename type>
-	static inline float int_to_float(type value) {
-		return (1.0f / abs(std::numeric_limits<type>::min())) * value;
-	}
-
-	template<typename type>
-	static inline type float_to_int(float value) {
-		const type min = std::numeric_limits<type>::min();
-		const type max = std::numeric_limits<type>::max();
-		return clip(min, max, value * abs(min));
-	}
-
-	template<typename type>
-	static inline float uint_to_float(type value) {
-		return (1.0f / std::numeric_limits<type>::max()) * value;
-	}
-
-	template<typename type>
-	static inline type float_to_uint(float value) {
-		const type max = std::numeric_limits<type>::max();
-		return clip(0, max, value * max);
 	}
 };
 

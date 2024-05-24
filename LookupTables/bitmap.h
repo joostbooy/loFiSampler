@@ -2,6 +2,7 @@
 #define Bitmap_h
 
 #include "stmf4lib.h"
+#include <cmath>
 
 class Bitmap {
 

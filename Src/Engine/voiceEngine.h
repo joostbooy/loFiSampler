@@ -5,6 +5,7 @@
 #include "voice.h"
 #include "stack.h"
 #include "sampleQue.h"
+#include <algorithm>
 
 class VoiceEngine {
 
