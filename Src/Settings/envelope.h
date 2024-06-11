@@ -215,6 +215,19 @@ public:
 		fileReader.read(release_shape_);
 	}
 
+	void paste(Envelope *envelope) {
+		clock_sync_ = envelope->clock_sync();
+		mode_ = envelope->mode();
+		attack_time_ = envelope->attack_time();
+		attack_shape_ = envelope->attack_shape();
+		decay_time_ = envelope->decay_time();
+		decay_shape_ = envelope->decay_shape();
+		hold_time_ = envelope->hold_time();
+		sustain_level_ = envelope->sustain_level();
+		release_time_ = envelope->release_time();
+		release_shape_ = envelope->release_shape();
+	}
+
 private:
 	bool clock_sync_;
 	uint8_t mode_;

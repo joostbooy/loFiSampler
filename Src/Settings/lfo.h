@@ -145,6 +145,16 @@ public:
 		fileReader.read(retrigger_channel_);
 	}
 
+	void paste(Lfo *lfo) {
+		skew_ = lfo->skew();
+		shape_ = lfo->shape();
+		speed_ = lfo->speed();
+		randomise_ = lfo->randomise();
+		clock_sync_ = lfo->clock_sync();
+		retrigger_port_ = lfo->retrigger_port();
+		retrigger_channel_ = lfo->retrigger_channel();
+	}
+
 private:
 	float skew_;
 	float shape_;
