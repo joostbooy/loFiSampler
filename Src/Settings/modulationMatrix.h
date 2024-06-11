@@ -9,8 +9,8 @@ public:
 
 	void init() {
 		clear();
-		toggle(Modulation::ENVELOPE_1, Modulation::SAMPLE_GAIN);
-		toggle(Modulation::MIDI_VELOCITY, Modulation::SAMPLE_GAIN);
+ 		toggle(Modulation::MIDI_VELOCITY, Modulation::GAIN);
+		toggle(Modulation::ENVELOPE_1, Modulation::GAIN);
 	}
 
 	bool read(size_t src, size_t dest) {
