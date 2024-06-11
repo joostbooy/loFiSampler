@@ -16,12 +16,11 @@ public:
 	enum Destination {
 		PAN,
 		BEND,
+		GAIN,
 		START,
 		END,
 		LOOP_START,
 		LOOP_END,
-		SAMPLE_GAIN,
-		INSTRUMENT_GAIN,
 		BIT_DEPTH,
 
 		NUM_DESTINATIONS
@@ -34,12 +33,11 @@ public:
 		{
 		case PAN:				return "PAN";
 		case BEND:				return "BEND";
+		case GAIN:				return "GAIN";
 		case START:				return "START";
 		case END:				return "END";
 		case LOOP_START:		return "LOOP START";
 		case LOOP_END:			return "LOOP END";
-		case SAMPLE_GAIN:		return "SAMPLE GAIN";
-		case INSTRUMENT_GAIN:	return "INSTRUMENT GAIN";
 		case BIT_DEPTH:			return "BIT DEPTH";
 		default:
 			break;
@@ -130,7 +128,7 @@ public:
 	}
 
 	void set_gate_to_midi_port(uint8_t gate, uint8_t port) {
-		gate_to_midi_[gate].port = port;
+		gate_to_midi_[gate].port = stmlib::clip(0, MidiEngine::NUM_PORTS - 1, port);
 	}
 
 	const char *gate_to_midi_port_text(uint8_t gate) {
@@ -144,7 +142,7 @@ public:
 	}
 
 	void set_gate_to_midi_channel(uint8_t gate, uint8_t chn) {
-		gate_to_midi_[gate].message = chn;
+		gate_to_midi_[gate].message = stmlib::clip(0, 15, chn);
 	}
 
 	const char *gate_to_midi_channel_text(uint8_t gate) {
@@ -157,7 +155,7 @@ public:
 	}
 
 	void set_gate_to_midi_note(uint8_t gate, uint8_t note) {
-		gate_to_midi_[gate].data[0] = note;
+		gate_to_midi_[gate].data[0] = stmlib::clip(0, 127, note);
 	}
 
 	const char *gate_to_midi_note_text(uint8_t gate) {
@@ -170,7 +168,7 @@ public:
 	}
 
 	void set_gate_to_midi_velocity(uint8_t gate, uint8_t vel) {
-		gate_to_midi_[gate].data[1] = vel;
+		gate_to_midi_[gate].data[1] = stmlib::clip(0, 127, vel);
 	}
 
 	const char *gate_to_midi_velocity_text(uint8_t gate) {
