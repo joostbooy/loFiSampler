@@ -58,7 +58,7 @@ public:
 		return clock_sync_;
 	}
 
-	void set_mode(bool value) {
+	void set_mode(uint8_t value) {
 		mode_ = value;
 	}
 
@@ -67,12 +67,12 @@ public:
 	}
 
 	// Attack time
-	uint8_t attack_time() {
+	float attack_time() {
 		return attack_time_;
 	}
 
-	void set_attack_time(int value) {
-		attack_time_ = stmlib::clip(0, 255, value);
+	void set_attack_time(float value) {
+		attack_time_ = stmlib::clip_float(value);
 	}
 
 	const char *attack_time_text() {
@@ -80,29 +80,34 @@ public:
 	}
 
 	float attack_inc() {
-		return 0.f; //lut_phase_inc[attack_time()];
+		if (clock_sync()) {
+			// return lut_synced_phase_inc[int(decay_time() * (SYNCED_PHASE_TABLE_SIZE - 1))];
+			return 0.0f;
+		} else {
+			return lut_phase_inc[int(attack_time() * (PHASE_TABLE_SIZE - 1))];
+		}
 	}
 
 	// Attack shape
-	uint8_t attack_shape() {
+	float attack_shape() {
 		return attack_shape_;
 	}
 
-	void set_attack_shape(int value) {
-		attack_shape_ = stmlib::clip(0, 255, value);
+	void set_attack_shape(float value) {
+		attack_shape_ = stmlib::clip_float(value);
 	}
 
 	const char *attack_shape_text() {
-		return nullptr;
+		return UiText::int_to_text(attack_shape() * 100);
 	}
 
 	// Decay time
-	uint8_t decay_time() {
+	float decay_time() {
 		return attack_time_;
 	}
 
-	void set_decay_time(int value) {
-		attack_time_ = stmlib::clip(0, 255, value);
+	void set_decay_time(float value) {
+		attack_time_ = stmlib::clip_float(value);
 	}
 
 	const char *decay_time_text() {
@@ -110,29 +115,34 @@ public:
 	}
 
 	float decay_inc() {
-		return 0.f; //lut_phase_inc[decay_time()];
+		if (clock_sync()) {
+			// return lut_synced_phase_inc[int(decay_time() * (SYNCED_PHASE_TABLE_SIZE - 1))];
+			return 0.0f;
+		} else {
+			return lut_phase_inc[int(decay_time() * (PHASE_TABLE_SIZE - 1))];
+		}
 	}
 
 	// Decay shape
-	uint8_t decay_shape() {
-		return attack_shape_;
+	float decay_shape() {
+		return decay_shape_;
 	}
 
-	void set_decay_shape(int value) {
-		attack_shape_ = stmlib::clip(0, 255, value);
+	void set_decay_shape(float value) {
+		decay_shape_ = stmlib::clip_float(value);
 	}
 
 	const char *decay_shape_text() {
-		return nullptr;
+		return UiText::int_to_text(decay_shape() * 100);
 	}
 
 	// Hold time
-	uint8_t hold_time() {
+	float hold_time() {
 		return hold_time_;
 	}
 
-	void set_hold_time(int value) {
-		hold_time_ = stmlib::clip(0, 255, value);
+	void set_hold_time(float value) {
+		hold_time_ = stmlib::clip_float(value);
 	}
 
 	const char *hold_time_text() {
@@ -140,7 +150,12 @@ public:
 	}
 
 	float hold_inc() {
-		return 0.f; //lut_phase_inc[sustain_time()];
+		if (clock_sync()) {
+			// return lut_synced_phase_inc[int(hold_time() * (SYNCED_PHASE_TABLE_SIZE - 1))];
+			return 0.0f;
+		} else {
+			return lut_phase_inc[int(hold_time() * (PHASE_TABLE_SIZE - 1))];
+		}
 	}
 
 
@@ -149,21 +164,21 @@ public:
 		return sustain_level_;
 	}
 
-	void set_sustain_level(int value) {
-		sustain_level_ = stmlib::clip(0, 255, value);
+	void set_sustain_level(float value) {
+		sustain_level_ = stmlib::clip_float(value);
 	}
 
 	const char *sustain_level_text() {
-		return nullptr;
+		return UiText::int_to_text(sustain_level() * 100);
 	}
 
 	// Release time
-	uint8_t release_time() {
+	float release_time() {
 		return release_time_;
 	}
 
-	void set_release_time(int value) {
-		release_time_ = stmlib::clip(0, 255, value);
+	void set_release_time(float value) {
+		release_time_ = stmlib::clip_float(value);
 	}
 
 	const char *release_time_text() {
@@ -171,21 +186,25 @@ public:
 	}
 
 	float release_inc() {
-		return 0.f; //lut_phase_inc[release_time()];
+		if (clock_sync()) {
+			// return lut_synced_phase_inc[int(release_time() * (SYNCED_PHASE_TABLE_SIZE - 1))];
+			return 0.0f;
+		} else {
+			return lut_phase_inc[int(release_time() * (PHASE_TABLE_SIZE - 1))];
+		}
 	}
 
-
 	// Release shape
-	uint8_t release_shape() {
+	float release_shape() {
 		return release_shape_;
 	}
 
-	void set_release_shape(int value) {
-		release_shape_ = stmlib::clip(0, 255, value);
+	void set_release_shape(float value) {
+		release_shape_ = stmlib::clip_float(value);
 	}
 
 	const char *release_shape_text() {
-		return nullptr;
+		return UiText::int_to_text(release_shape() * 100);
 	}
 
 	// Storage
@@ -231,14 +250,14 @@ public:
 private:
 	bool clock_sync_;
 	uint8_t mode_;
-	uint8_t attack_time_;
-	uint8_t attack_shape_;
-	uint8_t decay_time_;
-	uint8_t decay_shape_;
-	uint8_t hold_time_;
-	uint8_t sustain_level_;
-	uint8_t release_time_;
-	uint8_t release_shape_;
+	float attack_time_;
+	float attack_shape_;
+	float decay_time_;
+	float decay_shape_;
+	float hold_time_;
+	float sustain_level_;
+	float release_time_;
+	float release_shape_;
 };
 
 #endif
