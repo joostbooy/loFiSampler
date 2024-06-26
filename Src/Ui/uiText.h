@@ -11,11 +11,7 @@ public:
 
 	static StringBuilderBase<31>str;
 
-	static const char* signed_int_to_text(int32_t value) {
-		return str.write(value);
-	}
-
-	static const char* unsigned_int_to_text(uint32_t value) {
+	static const char* int_to_text(int value) {
 		return str.write(value);
 	}
 
