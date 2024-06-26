@@ -30,9 +30,10 @@ tables.append(values.astype(int))
 ________________________'''
 name = 'phase_inc'
 
+phase_table_size = 256
 freq_min = 1.0 / (sample_rate * 10.0)
 freq_max = 1.0 / (sample_rate / 10.0)
-steps = numpy.linspace(freq_min, freq_max, 256)
+steps = numpy.linspace(freq_min, freq_max, phase_table_size)
 
 tables.append('float ' + name)
 tables.append(steps.astype('float32'))
@@ -96,7 +97,8 @@ tables.append('float ' + name)
 tables.append(values.astype('float32'))
 
 name = 'cent_ratio'
-values = pow(2, numpy.arange(-99, 99) / 199.0 / 12.0);
+values = pow(2, numpy.arange(-99, 99) / 198.0 / 12.0);
+#values = pow(2, numpy.arange(0, 256) / 256.0 / 12.0)
 
 tables.append('float ' + name)
 tables.append(values.astype('float32'))
@@ -106,11 +108,12 @@ tables.append(values.astype('float32'))
 ________________________'''
 
 defines = [
-'SAMPLE_RATE '			+ str(sample_rate),
-'PPQN '					+ str(ppqn),
-'MAX_BPM '				+ str(max_bpm),
-'CLOCK_ISR_FREQ '		+ str(clock_isr_freq),
-'EXP_TABLE_SIZE '		+ str(exp_table_size)
+'SAMPLE_RATE '				+ str(sample_rate),
+'PPQN '						+ str(ppqn),
+'MAX_BPM '					+ str(max_bpm),
+'CLOCK_ISR_FREQ '			+ str(clock_isr_freq),
+'EXP_TABLE_SIZE '			+ str(exp_table_size),
+'PHASE_TABLE_SIZE '			+ str(phase_table_size),
 ]
 
 

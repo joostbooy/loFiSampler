@@ -8,6 +8,7 @@
 #define MAX_BPM 300
 #define CLOCK_ISR_FREQ 8000
 #define EXP_TABLE_SIZE 1024
+#define PHASE_TABLE_SIZE 256
 
 extern const uint32_t lut_bpm_inc[];
 extern const float lut_phase_inc[];
