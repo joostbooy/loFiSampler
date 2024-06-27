@@ -3,59 +3,52 @@
 
 #include "fileWriter.h"
 #include "fileReader.h"
-#include "uiText.h"
 #include "lookupTables.h"
-#include "midiEngine.h"
+#include "uiText.h"
 
 class Midi {
 
 public:
 
-	enum ClockSource {
+	enum Port {
 		UART,
 		USB,
+
+		NUM_PORTS
+	};
+
+	static const char *port_text(int port) {
+		switch (port)
+		{
+		case UART:	return "UART";
+		case USB:	return "USB";
+		default:
+			break;
+		}
+		return nullptr;
+	}
+
+
+	enum ClockSource {
+		EXTERNAL = NUM_PORTS,
 		INTERNAL,
-		ANALOG,
 
 		NUM_CLOCK_SOURCES
 	};
 
 	static const char* clock_source_text(int value) {
-		switch (value)
-		{
-		case UART:		return "UART";
-		case USB:		return "USB";
-		case INTERNAL:	return "INTERNAL";
-		case ANALOG:	return "ANALOG";
-		default:		break;
+		if (value < INTERNAL) {
+			return Midi::port_text(value);
+		} else {
+			return "INTERNAL";
 		}
-		return nullptr;
-	}
-
-	enum TempoType {
-		DOTTED,
-		WHOLE,
-		TRIPLET,
-
-		NUM_TYPES
-	};
-
-	static const char* tempo_type_text(int value) {
-		switch (value)
-		{
-		case DOTTED:	return "DOTTED";
-		case WHOLE:		return "WHOLE";
-		case TRIPLET:	return "TRIPLET";
-		default:		break;
-		}
-		return nullptr;
 	}
 
 	void init() {
 		set_bpm(120);
 		set_clock_source(INTERNAL);
 
-		for (int i = 0; i < MidiEngine::NUM_PORTS; ++i){
+		for (int i = 0; i < NUM_PORTS; ++i){
 			set_send_clock(i, true);
 		}
 	}
@@ -99,22 +92,12 @@ public:
 		return UiText::bool_to_on_off(send_clock(port));
 	}
 
-	// Tempo phase inc
-	static const char *tempo_text(int steps, int type) {
-		return UiText::str.write("1/", steps, tempo_type_text(type));
-	}
-
-	static float read_tempo_phase_inc(int bpm, int steps, int type) {
-		return steps * lut_tempo_sync_phase_inc[bpm] * tempo_type_multiplier(type);
-	}
-
-
 	// Storage
 	void save(FileWriter &fileWriter) {
 		fileWriter.write(bpm_);
 		fileWriter.write(clock_source_);
 
-		for (int i = 0; i < MidiEngine::NUM_PORTS; ++i) {
+		for (int i = 0; i < NUM_PORTS; ++i) {
 			fileWriter.write(send_clock_[i]);
 		}
 	}
@@ -123,7 +106,7 @@ public:
 		fileReader.read(bpm_);
 		fileReader.read(clock_source_);
 
-		for (int i = 0; i < MidiEngine::NUM_PORTS; ++i) {
+		for (int i = 0; i < NUM_PORTS; ++i) {
 			fileReader.read(send_clock_[i]);
 		}
 	}
@@ -131,20 +114,7 @@ public:
 private:
 	uint16_t bpm_;
 	uint8_t clock_source_;
-	bool send_clock_[MidiEngine::NUM_PORTS];
-	//constexpr const float tempo_type_multiplier_[NUM_TYPES] = { 1.f / 1.5f, 1.f, 1.5f };
-
-	static const float tempo_type_multiplier(uint8_t type) {
-		switch (type)
-		{
-		case DOTTED:	return 1.f / 1.5f;
-		case WHOLE:		return 1.f;
-		case TRIPLET:	return 1.5f;
-		default:
-			break;
-		}
-		return 0.f;
-	}
+	bool send_clock_[NUM_PORTS];
 };
 
 #endif

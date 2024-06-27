@@ -4,6 +4,7 @@
 #include "uiText.h"
 #include "fileWriter.h"
 #include "fileReader.h"
+#include "midiSync.h"
 
 class Envelope {
 
@@ -76,13 +77,16 @@ public:
 	}
 
 	const char *attack_time_text() {
-		return nullptr;
+		if (clock_sync()) {
+			return MidiSync::tempo_text(attack_time() * MidiSync::max_value());
+		} else {
+			return nullptr;
+		}
 	}
 
 	float attack_inc() {
 		if (clock_sync()) {
-			// return lut_synced_phase_inc[int(decay_time() * (SYNCED_PHASE_TABLE_SIZE - 1))];
-			return 0.0f;
+			return MidiSync::read_inc(attack_time() * MidiSync::max_value());
 		} else {
 			return lut_phase_inc[int(attack_time() * (PHASE_TABLE_SIZE - 1))];
 		}
@@ -98,7 +102,7 @@ public:
 	}
 
 	const char *attack_shape_text() {
-		return UiText::int_to_text(attack_shape() * 100);
+		return UiText::int_to_text((attack_shape() * 100) - 50);
 	}
 
 	// Decay time
@@ -111,13 +115,16 @@ public:
 	}
 
 	const char *decay_time_text() {
-		return nullptr;
+		if (clock_sync()) {
+			return MidiSync::tempo_text(decay_time() * MidiSync::max_value());
+		} else {
+			return nullptr;
+		}
 	}
 
 	float decay_inc() {
 		if (clock_sync()) {
-			// return lut_synced_phase_inc[int(decay_time() * (SYNCED_PHASE_TABLE_SIZE - 1))];
-			return 0.0f;
+			return MidiSync::read_inc(decay_time() * MidiSync::max_value());
 		} else {
 			return lut_phase_inc[int(decay_time() * (PHASE_TABLE_SIZE - 1))];
 		}
@@ -133,7 +140,7 @@ public:
 	}
 
 	const char *decay_shape_text() {
-		return UiText::int_to_text(decay_shape() * 100);
+		return UiText::int_to_text((decay_shape() * 100) - 50);
 	}
 
 	// Hold time
@@ -142,17 +149,24 @@ public:
 	}
 
 	void set_hold_time(float value) {
-		hold_time_ = stmlib::clip_float(value);
+		if (mode() == TRIGGER) {
+			hold_time_ = stmlib::clip_float(value);
+		}
 	}
 
 	const char *hold_time_text() {
-		return nullptr;
+		if (mode() == GATE) {
+			return "-";
+		} else if (clock_sync()) {
+			return MidiSync::tempo_text(hold_time() * MidiSync::max_value());
+		} else {
+			return nullptr;
+		}
 	}
 
 	float hold_inc() {
 		if (clock_sync()) {
-			// return lut_synced_phase_inc[int(hold_time() * (SYNCED_PHASE_TABLE_SIZE - 1))];
-			return 0.0f;
+			return MidiSync::read_inc(hold_time() * MidiSync::max_value());
 		} else {
 			return lut_phase_inc[int(hold_time() * (PHASE_TABLE_SIZE - 1))];
 		}
@@ -182,13 +196,16 @@ public:
 	}
 
 	const char *release_time_text() {
-		return nullptr;
+		if (clock_sync()) {
+			return MidiSync::tempo_text(release_time() * MidiSync::max_value());
+		} else {
+			return nullptr;
+		}
 	}
 
 	float release_inc() {
 		if (clock_sync()) {
-			// return lut_synced_phase_inc[int(release_time() * (SYNCED_PHASE_TABLE_SIZE - 1))];
-			return 0.0f;
+			return MidiSync::read_inc(release_time() * MidiSync::max_value());
 		} else {
 			return lut_phase_inc[int(release_time() * (PHASE_TABLE_SIZE - 1))];
 		}
@@ -204,7 +221,7 @@ public:
 	}
 
 	const char *release_shape_text() {
-		return UiText::int_to_text(release_shape() * 100);
+		return UiText::int_to_text((release_shape() * 100) - 50);
 	}
 
 	// Storage

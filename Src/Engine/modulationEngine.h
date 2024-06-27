@@ -4,6 +4,8 @@
 #include "dac.h"
 #include "lfoEngine.h"
 #include "modulation.h"
+#include "modulationMatrix.h"
+#include "settings.h"
 
 class ModulationEngine {
 
@@ -35,6 +37,12 @@ public:
 
 	void set_midi_bend(float value) {
 		source_[Modulation::MIDI_BEND] = value;
+	}
+
+	void reset_lfos() {
+		for (size_t i = 0; i < Settings::kNumLfos; ++i) {
+			lfoEngine_[i].reset();
+		}
 	}
 
 	void retrigger_lfos(MidiEngine::Event &e) {

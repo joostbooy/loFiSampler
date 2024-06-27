@@ -5,6 +5,7 @@
 #include "fileWriter.h"
 #include "fileReader.h"
 #include "midi.h"
+#include "midiSync.h"
 
 class Lfo {
 
@@ -16,25 +17,33 @@ public:
 		set_skew(0.5f);
 		set_clock_sync(false);
 		set_randomise(false);
-		set_retrigger_port(MidiEngine::UART);
+		set_retrigger_port(Midi::UART);
 		set_retrigger_channel(-1);
 	}
 
 	// speed
-	uint8_t speed() {
+	float speed() {
 		return speed_;
 	}
 
-	void set_speed(int value) {
-		speed_ = stmlib::clip(0, 255, value);
+	void set_speed(float value) {
+		speed_ = stmlib::clip_float(value);
 	}
 
 	const char *speed_text() {
-		return nullptr;
+		if (clock_sync()) {
+			return MidiSync::tempo_text(speed() * MidiSync::max_value());
+		} else {
+			return nullptr;
+		}
 	}
 
 	float inc() {
-		return clock_sync() ? Midi::read_tempo_phase_inc(0, 0, 0) : 0.f;
+		if (clock_sync()) {
+			return MidiSync::read_inc(speed() * MidiSync::max_value());
+		} else {
+			return lut_phase_inc[int(speed() * (PHASE_TABLE_SIZE - 1))];
+		}
 	}
 
 	// shape
@@ -95,11 +104,11 @@ public:
 	}
 
 	void set_retrigger_port(uint8_t value) {
-		retrigger_port_ = stmlib::clip(0, MidiEngine::NUM_PORTS - 1, value);
+		retrigger_port_ = stmlib::clip(0, Midi::NUM_PORTS - 1, value);
 	}
 
 	const char *retrigger_port_text() {
-		return MidiEngine::port_text(retrigger_port());
+		return Midi::port_text(retrigger_port());
 	}
 
 	bool retrigger_port_accepted(int port) {
@@ -158,7 +167,7 @@ public:
 private:
 	float skew_;
 	float shape_;
-	uint8_t speed_;
+	float speed_;
 	bool randomise_;
 	bool clock_sync_;
 	uint8_t retrigger_port_;

@@ -4,28 +4,11 @@
 #include "que.h"
 #include "uart.h"
 #include "usb.h"
+#include "midi.h"
 
 class MidiEngine {
 
 public:
-
-	enum Port {
-		UART,
-		USB,
-
-		NUM_PORTS
-	};
-
-	static const char *port_text(int port) {
-		switch (port)
-		{
-		case UART:	return "UART";
-		case USB:	return "USB";
-		default:
-			break;
-		}
-		return nullptr;
-	}
 
 	enum MessageType {
 		NOTE_OFF			= 0x80,
@@ -49,8 +32,8 @@ public:
 	};
 
 	Que<uint8_t, 32> input_que;
-	Que<uint8_t, 32> output_que[NUM_PORTS];
-	Que<uint8_t, 8> clock_output_que[NUM_PORTS];
+	Que<uint8_t, 32> output_que[Midi::NUM_PORTS];
+	Que<uint8_t, 8> clock_output_que[Midi::NUM_PORTS];
 
 	void init(Uart *uart, Usb *usb) {
 		usb_ = usb;
@@ -65,10 +48,10 @@ public:
 		}
 
 		if (uart_->writeable()) {
-			if (clock_output_que[UART].readable()) {
-				uart_->write(clock_output_que[UART].read());
-			} else if (output_que[UART].readable()) {
-				uart_->write(output_que[UART].read());
+			if (clock_output_que[Midi::UART].readable()) {
+				uart_->write(clock_output_que[Midi::UART].read());
+			} else if (output_que[Midi::UART].readable()) {
+				uart_->write(output_que[Midi::UART].read());
 			}
 		}
 	}
@@ -85,6 +68,14 @@ public:
 
 	static inline uint16_t read_14_bit(Event &e) {
 		return (e.data[0] & 0x7F) | (e.data[1] << 7);
+	}
+
+	static inline bool is_clock_message(Event &e) {
+		return e.message >= 0xF8;
+	}
+
+	static inline uint8_t read_message(Event &e) {
+		return is_clock_message(e) ? e.message : e.message & 0xF0;
 	}
 
 	bool write(Event &e) {
@@ -118,7 +109,7 @@ private:
 	Uart *uart_;
 
 	Event event_;
-	uint8_t last_message_[NUM_PORTS];
+	uint8_t last_message_[Midi::NUM_PORTS];
 	uint8_t num_data_bytes_;
 
 	bool parse(uint8_t reading) {
