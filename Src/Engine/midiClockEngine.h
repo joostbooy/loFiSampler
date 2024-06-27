@@ -1,14 +1,15 @@
-#ifndef MidiClock_h
-#define MidiClock_h
+#ifndef MidiClockEngine_h
+#define MidiClockEngine_h
 
-#include "settings.h"
+#include "midi.h"
 #include "lookupTables.h"
 
 class MidiClockEngine {
 
 public:
 
-	void init() {
+	void init(Midi *midi) {
+		midi_ = midi;
 		ext_bpm_ = 120;
 		reset();
 	}
@@ -20,11 +21,15 @@ public:
 		tempo_phase = 0;
 	}
 
+	static uint16_t bpm() {
+		return bpm_;
+	}
+
 	bool tick() {
 		uint16_t bpm;
 
-		if (settings.midi().clock_source() == Midi::INTERNAL) {
-			bpm = settings.midi().bpm();
+		if (midi_->clock_source() == Midi::INTERNAL) {
+			bpm = midi_->bpm();
 		} else {
 			bpm = ext_bpm_;
 		}
@@ -46,9 +51,10 @@ public:
 	}
 
 private:
-	uint16_t bpm_ = 120;
-	uint16_t bpm_fractional_ = 0;
+	Midi *midi_;
 	uint8_t sync_port_;
+	static uint16_t bpm_;
+	static uint16_t bpm_fractional_;
 
 	volatile uint16_t ext_bpm_;
 	volatile uint32_t tempo_inc, tempo_phase, ticks, isr_ticks, isr_average;
