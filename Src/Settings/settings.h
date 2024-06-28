@@ -21,7 +21,9 @@ public:
 
 	void init() {
 		selected_sample_ = 0;
+		selected_lfo_index_ = 0;
 		selected_instrument_ = 0;
+		selected_envelope_index_ = 0;
 
 		path.clear();
 
@@ -61,14 +63,6 @@ public:
 		return instrument_[index];
 	}
 
-	Lfo &lfo(size_t index) {
-		return lfo_[index];
-	}
-
-	Envelope &envelope(size_t index) {
-		return envelope_[index];
-	}
-
 	int selected_sample() {
 		return selected_sample_;
 	}
@@ -84,6 +78,40 @@ public:
 	void set_selected_instrument(int index) {
 		selected_instrument_ = stmlib::clip(0, kMaxInstruments - 1, index);
 		set_selected_sample(selected_sample_);
+	}
+
+	// Envelope
+	Envelope &envelope(size_t index) {
+		return envelope_[index];
+	}
+
+	int selected_envelope_index() {
+		return selected_envelope_index_;
+	}
+
+	void select_envelope_index(int index) {
+		selected_envelope_index_ = stmlib::clip(0, kNumEnvelopes - 1, index);
+	}
+
+	Envelope &selected_envelope() {
+		return envelope_[selected_envelope_index_];
+	}
+
+	// Lfo
+	Lfo &lfo(size_t index) {
+		return lfo_[index];
+	}
+
+	int selected_lfo_index() {
+		return selected_lfo_index_;
+	}
+
+	void select_lfo_index(int index) {
+		selected_lfo_index_ = stmlib::clip(0, kNumLfos - 1, index);
+	}
+
+	Lfo &selected_lfo() {
+		return lfo_[selected_lfo_index_];
 	}
 
 	// save & load
@@ -116,8 +144,10 @@ private:
 	FileWriter fileWriter;
 	FileReader fileReader;
 
+	int selected_lfo_index_;
 	int selected_sample_;
 	int selected_instrument_;
+	int selected_envelope_index_;
 };
 
 extern Settings settings;
