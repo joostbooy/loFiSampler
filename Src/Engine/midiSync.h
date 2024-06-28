@@ -28,7 +28,7 @@ public:
 	}
 
 	static const size_t max_value() {
-		return 16 * 4;
+		return 16 * NUM_TYPES;
 	}
 
 	static const char *tempo_text(int value) {
