@@ -10,6 +10,7 @@ public:
 
 	void init(Midi *midi) {
 		midi_ = midi;
+		bpm_ = 120;
 		ext_bpm_ = 120;
 		reset();
 	}
@@ -26,16 +27,14 @@ public:
 	}
 
 	bool tick() {
-		uint16_t bpm;
-
 		if (midi_->clock_source() == Midi::INTERNAL) {
-			bpm = midi_->bpm();
+			bpm_ = midi_->bpm();
 		} else {
-			bpm = ext_bpm_;
+			bpm_ = ext_bpm_;
 		}
 
 		++isr_ticks;
-		tempo_phase += lut_bpm_inc[bpm];
+		tempo_phase += lut_bpm_inc[bpm_];
 		return tempo_phase < tempo_inc;
 	}
 
