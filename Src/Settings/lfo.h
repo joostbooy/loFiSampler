@@ -56,7 +56,7 @@ public:
 	}
 
 	const char *shape_text() {
-		return UiText::str.write((shape() * 100) - 50);
+		return UiText::float_to_text(shape(), -100, 100);
 	}
 
 	// Skew
@@ -69,7 +69,7 @@ public:
 	}
 
 	const char *skew_text() {
-		return UiText::str.write((skew() * 100) - 50);
+		return UiText::float_to_text(skew(), -100, 100);
 	}
 
 	// clock sync

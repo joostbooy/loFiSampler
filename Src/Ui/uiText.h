@@ -15,7 +15,7 @@ public:
 		return str.write(value);
 	}
 
-	static const char* float_to_text(int min, int max, float value) {
+	static const char* float_to_text(float value, int min, int max) {
 		return str.write(Dsp::cross_fade(min, max, value));
 	}
 
