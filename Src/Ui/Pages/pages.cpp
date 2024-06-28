@@ -1,13 +1,18 @@
 #include "pages.h"
 #include "stack.h"
 #include "topPage.h"
-
+#include "listPage.h"
+#include "envelopePage.h"
+#include "confirmationPage.h"
 
 Pages pages;
 Stack <uint8_t, 8> page_stack;
 
 const Pages::EventHandlers* eventHandlers[Pages::NUM_OF_PAGES] = {
 	[Pages::TOP_PAGE]				= &TopPage::eventHandlers,
+	[Pages::LIST_PAGE]				= &ListPage::eventHandlers,
+	[Pages::ENVELOPE_PAGE]			= &EnvelopePage::eventHandlers,
+	[Pages::CONFIRMATION_PAGE]		= &ConfirmationPage::eventHandlers,
 };
 
 void Pages::init() {
