@@ -39,14 +39,10 @@ public:
 			++oct;
 		}
 
-		str.write(note_text[note]);
+		str.write(note_text_[note]);
 
 		if (print_octave) {
-			if (oct == 10) {
-				str.append("X");
-			} else {
-				str.append(oct);
-			}
+			str.append(oct);
 		}
 
 		return str.read();
@@ -77,7 +73,7 @@ public:
 	}
 
 private:
-	static const char* note_text[12];
+	static const char* note_text_[12];
 };
 
 #endif
