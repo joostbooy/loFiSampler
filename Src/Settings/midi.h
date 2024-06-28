@@ -37,7 +37,7 @@ public:
 	};
 
 	static const char* clock_source_text(int value) {
-		if (value < INTERNAL) {
+		if (value <= EXTERNAL) {
 			return Midi::port_text(value);
 		} else {
 			return "INTERNAL";
