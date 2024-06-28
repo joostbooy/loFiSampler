@@ -11,6 +11,7 @@ public:
 	enum Id {
 		TOP_PAGE,
 		LIST_PAGE,
+		LFO_PAGE,
 		ENVELOPE_PAGE,
 		CONFIRMATION_PAGE,
 		NUM_OF_PAGES
