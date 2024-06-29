@@ -36,12 +36,13 @@ bool Settings::save() {
 		sample(i).save(fileWriter);
 	}
 
-	for (size_t i = 0; i < kMaxInstruments; ++i) {
+	for (size_t i = 0; i < kNumInstruments; ++i) {
 		instrument(i).save(fileWriter);
 	}
 
+	fileWriter.stop();
+
 	if (!fileWriter.write_ok()) {
-		fileWriter.stop();
 		return false;
 	}
 
@@ -68,7 +69,7 @@ bool Settings::load(const char* new_path) {
 		sample(i).load(fileReader);
 	}
 
-	for (size_t i = 0; i < kMaxInstruments; ++i) {
+	for (size_t i = 0; i < kNumInstruments; ++i) {
 		instrument(i).load(fileReader);
 	}
 

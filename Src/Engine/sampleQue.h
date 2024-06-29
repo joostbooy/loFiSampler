@@ -30,7 +30,7 @@ public:
 	size_t note_on(MidiEngine::Event &e) {
 		size_t last_size = event_que_.size();
 
-		for (size_t i = 0; i < Settings::kMaxInstruments; ++i) {
+		for (size_t i = 0; i < Settings::kNumInstruments; ++i) {
 			write(&settings.instrument(i), e);
 		}
 
