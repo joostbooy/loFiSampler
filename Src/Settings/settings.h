@@ -121,6 +121,10 @@ public:
 		return instrument_[selected_instrument_index_];
 	}
 
+	ModulationMatrix &selected_modulation_matrix() {
+		return instrument_[selected_instrument_index_].matrix();
+	}
+
 	// save & load
 	bool save();
 	bool save(const char* new_path);
