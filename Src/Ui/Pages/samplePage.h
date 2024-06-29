@@ -25,13 +25,17 @@ namespace SamplePage {
 		settings.selected_sample().init();
 	}
 
+	bool pasteable() {
+		return pasteable_;
+	}
+
 	void copy() {
 		sample_.paste(&settings.selected_sample());
 		pasteable_ = true;
 	}
 
 	bool paste() {
-		if (pasteable_) {
+		if (pasteable()) {
 			settings.selected_sample().paste(&sample_);
 			return true;
 		}
@@ -48,6 +52,7 @@ namespace SamplePage {
 		ListPage::set_clear_callback(&clear);
 		ListPage::set_copy_callback(&copy);
 		ListPage::set_paste_callback(&paste);
+		ListPage::set_pasteable_callback(&pasteable);
 		ListPage::enter();
 	}
 
