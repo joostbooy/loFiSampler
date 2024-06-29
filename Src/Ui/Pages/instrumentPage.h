@@ -34,17 +34,13 @@ namespace InstrumentPage {
 		settings.selected_instrument().init();
 	}
 
-	bool pasteable() {
-		return pasteable_;
-	}
-
 	void copy() {
 		instument_.paste(&settings.selected_instrument());
 		pasteable_ = true;
 	}
 
 	bool paste() {
-		if (pasteable()) {
+		if (pasteable_) {
 			settings.selected_instrument().paste(&instument_);
 			return true;
 		}
@@ -61,7 +57,6 @@ namespace InstrumentPage {
 		ListPage::set_clear_callback(&clear);
 		ListPage::set_copy_callback(&copy);
 		ListPage::set_paste_callback(&paste);
-		ListPage::set_pasteable_callback(&pasteable);
 		ListPage::enter();
 	}
 

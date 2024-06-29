@@ -25,17 +25,13 @@ namespace LfoPage {
 		settings.selected_lfo().init();
 	}
 
-	bool pasteable() {
-		return pasteable_;
-	}
-
 	void copy() {
 		lfo_.paste(&settings.selected_lfo());
 		pasteable_ = true;
 	}
 
 	bool paste() {
-		if (pasteable()) {
+		if (pasteable_) {
 			settings.selected_lfo().paste(&lfo_);
 			return true;
 		}
@@ -52,7 +48,6 @@ namespace LfoPage {
 		ListPage::set_clear_callback(&clear);
 		ListPage::set_copy_callback(&copy);
 		ListPage::set_paste_callback(&paste);
-		ListPage::set_pasteable_callback(&pasteable);
 		ListPage::enter();
 	}
 

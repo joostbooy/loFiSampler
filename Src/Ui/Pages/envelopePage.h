@@ -25,17 +25,13 @@ namespace EnvelopePage {
 		settings.selected_envelope().init();
 	}
 
-	bool pasteable() {
-		return pasteable_;
-	}
-
 	void copy() {
 		envelope_.paste(&settings.selected_envelope());
 		pasteable_ = true;
 	}
 
 	bool paste() {
-		if (pasteable()) {
+		if (pasteable_) {
 			settings.selected_envelope().paste(&envelope_);
 			return true;
 		}
@@ -52,7 +48,6 @@ namespace EnvelopePage {
 		ListPage::set_clear_callback(&clear);
 		ListPage::set_copy_callback(&copy);
 		ListPage::set_paste_callback(&paste);
-		ListPage::set_pasteable_callback(&pasteable);
 		ListPage::enter();
 	}
 

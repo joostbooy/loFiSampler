@@ -22,7 +22,6 @@ namespace ListPage {
 	void(*clear_callback_)() = nullptr;
 	void(*copy_callback_)() = nullptr;
 	bool(*paste_callback_)() = nullptr;
-	bool(*pasteable_callback_)() = nullptr;
 
 	UiList *list_;
 
@@ -56,10 +55,6 @@ namespace ListPage {
 		copy_callback_ = callback;
 	}
 
-	void set_pasteable_callback(bool(*callback)()) {
-		pasteable_callback_ = callback;
-	}
-
 	void init() {
 
 	}
@@ -72,24 +67,23 @@ namespace ListPage {
 		clear_callback_ = nullptr;
 		paste_callback_ = nullptr;
 		copy_callback_ = nullptr;
-		pasteable_callback_ = nullptr;
 	}
 
 	void onEncoder(uint8_t id, int inc) {
-		if (id == Controller::MENU_ENC || id == Controller::Y_ENC) {
-			bool shifted = controller.is_pressed(Controller::SHIFT_BUTTON);
-			list_->on_encoder(inc, shifted);
-			window.scroll_to_row(list_->selected_item());
-		}
+		//	if (id == Controller::MENU_ENC || id == Controller::Y_ENC) {
+		//		bool shifted = controller.is_pressed(Controller::SHIFT_BUTTON);
+		//		list_->on_encoder(inc, shifted);
+		//		window.scroll_to_row(list_->selected_item());
+		//	}
 	}
 
 	void onButton(uint8_t id, uint8_t value) {
-		if (id == Controller::MENU_ENC_PUSH || id == Controller::Y_ENC_PUSH || id == Controller::EDIT_BUTTON) {
-			if (value > 0) {
-				list_->on_click();
-			}
-			return;
-		}
+		//	if (id == Controller::MENU_ENC_PUSH || id == Controller::Y_ENC_PUSH || id == Controller::EDIT_BUTTON) {
+		//		if (value > 0) {
+		//			list_->on_click();
+		//		}
+		//		return;
+		//	}
 
 		if (id == Controller::CLEAR_BUTTON && value >= 1 && clear_callback_ != nullptr) {
 			ConfirmationPage::set("CLEAR SETTINGS ?", [](uint8_t option) {
@@ -107,10 +101,10 @@ namespace ListPage {
 			return;
 		}
 
-		if (id == Controller::PASTE_BUTTON && value >= 1 && paste_callback_ != nullptr && pasteable_callback_() == true) {
+		if (id == Controller::PASTE_BUTTON && value >= 1 && paste_callback_ != nullptr) {
 			ConfirmationPage::set("OVERWRITE SETTINGS ?", [](uint8_t option) {
-				if (option == ConfirmationPage::CONFIRM) {
-					paste_callback_();
+				if (option == ConfirmationPage::CONFIRM && paste_callback_() == true) {
+					MessagePainter::show("SETTINGS PASTED");
 				}
 			});
 			pages.open(Pages::CONFIRMATION_PAGE);
@@ -129,12 +123,7 @@ namespace ListPage {
 		LedPainter::set_menu(Matrix::GREEN);
 
 		if (copy_callback_ && paste_callback_) {
-			if (pasteable_callback_()) {
-				LedPainter::set_paste(Matrix::GREEN);
-				LedPainter::set_copy(Matrix::ORANGE);
-			} else {
-				LedPainter::set_copy(Matrix::GREEN);
-			}
+			LedPainter::set_copy(Matrix::GREEN);
 		}
 	}
 
