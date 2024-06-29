@@ -4,7 +4,6 @@
 #include "pages.h"
 #include "canvas.h"
 #include "uiList.h"
-#include "clipboard.h"
 #include "confirmationPage.h"
 
 namespace ListPage {
