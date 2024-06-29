@@ -32,7 +32,7 @@ public:
 	const char* item_text(int item) override {
 		switch (item)
 		{
-		case INDEX:			return "INDEX";
+		case INDEX:			return "ENVELOPE";
 		case MODE:			return "MODE";
 		case CLOCK_SYNC:	return "CLOCK SYNC";
 		case ATTACK_TIME:	return "ATTACK TIME";

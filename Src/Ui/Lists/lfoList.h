@@ -29,7 +29,7 @@ public:
 	const char* item_text(int item) override {
 		switch (item)
 		{
-		case INDEX:				return "INDEX";
+		case INDEX:				return "LFO";
 		case SPEED:				return "SPEED";
 		case SHAPE:				return "SHAPE";
 		case SKEW:				return "SKEW";
@@ -48,7 +48,7 @@ public:
 
 		switch (item)
 		{
-		case INDEX:				return UiText::int_to_text(settings.selected_lfo_index() + 1);
+		case INDEX:			return UiText::int_to_text(settings.selected_lfo_index() + 1);
 		case SPEED:				return lfo.speed_text();
 		case SHAPE:				return lfo.shape_text();
 		case SKEW:				return lfo.skew_text();
