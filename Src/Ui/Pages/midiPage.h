@@ -24,7 +24,7 @@ namespace MidiPage {
 	}
 
 	void init() {
-		// midiList.init();
+
 	}
 
 	void enter() {
