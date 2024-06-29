@@ -107,7 +107,7 @@ namespace ListPage {
 			return;
 		}
 
-		if (id == Controller::PASTE_BUTTON && value >= 1 && paste_callback_ != nullptr && pasteable_callback_ !- nullptr && pasteable_callback_() == true) {
+		if (id == Controller::PASTE_BUTTON && value >= 1 && paste_callback_ != nullptr && pasteable_callback_ != nullptr && pasteable_callback_() == true) {
 			ConfirmationPage::set("OVERWRITE SETTINGS ?", [](uint8_t option) {
 				if (option == ConfirmationPage::CONFIRM) {
 					paste_callback_();
