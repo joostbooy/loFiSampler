@@ -26,26 +26,34 @@ namespace InstrumentPage {
 
 	const char* const footer_option_text[NUM_FOOTER_OPTIONS] = { "MOD MATRIX", "SAMPLES" };
 
+	bool pasteable_;
+	Instrument instument_;
 	InstrumentList instrumentList;
 
 	void clear() {
 		settings.selected_instrument().init();
 	}
 
+	bool pasteable() {
+		return pasteable_;
+	}
+
 	void copy() {
-		clipboard.copy(&settings.selected_instrument());
+		instument_.paste(&settings.selected_instrument());
+		pasteable_ = true;
 	}
 
 	bool paste() {
-		return clipboard.paste(&settings.selected_instrument());
-	}
-
-	bool pasteable() {
-		return clipboard.instrument_pasteable();
+		if (pasteable()) {
+			settings.selected_instrument().paste(&instument_);
+			return true;
+		}
+		return false;
 	}
 
 	void init() {
-		// instrumentList.init();
+		pasteable_ = false;
+		instument_.init();
 	}
 
 	void enter() {

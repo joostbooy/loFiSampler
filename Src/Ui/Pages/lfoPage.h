@@ -17,26 +17,34 @@ namespace LfoPage {
 	const uint16_t targetFps();
 
 	// Variables
+	bool pasteable_;
+	Lfo lfo_;
 	LfoList lfoList;
 
 	void clear() {
 		settings.selected_lfo().init();
 	}
 
+	bool pasteable() {
+		return pasteable_;
+	}
+
 	void copy() {
-		clipboard.copy(&settings.selected_lfo());
+		lfo_.paste(&settings.selected_lfo());
+		pasteable_ = true;
 	}
 
 	bool paste() {
-		return clipboard.paste(&settings.selected_lfo());
-	}
-
-	bool pasteable() {
-		return clipboard.lfo_pastable();
+		if (pasteable()) {
+			settings.selected_lfo().paste(&lfo_);
+			return true;
+		}
+		return false;
 	}
 
 	void init() {
-		// lfoList.init();
+		lfo_.init();
+		pasteable_ = false;
 	}
 
 	void enter() {

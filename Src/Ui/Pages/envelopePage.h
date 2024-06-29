@@ -17,26 +17,34 @@ namespace EnvelopePage {
 	const uint16_t targetFps();
 
 	// Variables
+	bool pasteable_;
+	Envelope envelope_;
 	EnvelopeList envelopeList;
 
 	void clear() {
 		settings.selected_envelope().init();
 	}
 
+	bool pasteable() {
+		return pasteable_;
+	}
+
 	void copy() {
-		clipboard.copy(&settings.selected_envelope());
+		envelope_.paste(&settings.selected_envelope());
+		pasteable_ = true;
 	}
 
 	bool paste() {
-		return clipboard.paste(&settings.selected_envelope());
-	}
-
-	bool pasteable() {
-		return clipboard.envelope_pastable();
+		if (pasteable()) {
+			settings.selected_envelope().paste(&envelope_);
+			return true;
+		}
+		return false;
 	}
 
 	void init() {
-		// envelopeList.init();
+		pasteable_ = false;
+		envelope_.init();
 	}
 
 	void enter() {
