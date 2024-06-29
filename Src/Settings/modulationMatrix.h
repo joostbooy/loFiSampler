@@ -25,14 +25,14 @@ public:
 	const char *destination_text(int value) {
 		switch (value)
 		{
-		case PAN:				return "PAN";
-		case BEND:				return "BEND";
-		case GAIN:				return "GAIN";
-		case START:				return "START";
-		case END:				return "END";
-		case LOOP_START:		return "LOOP START";
-		case LOOP_END:			return "LOOP END";
-		case BIT_DEPTH:			return "BIT DEPTH";
+		case PAN:			return "PAN";
+		case BEND:			return "BEND";
+		case GAIN:			return "GAIN";
+		case START:			return "START";
+		case END:			return "END";
+		case LOOP_START:	return "LOOP START";
+		case LOOP_END:		return "LOOP END";
+		case BIT_DEPTH:		return "BIT DEPTH";
 		default:
 			break;
 		}
@@ -73,10 +73,10 @@ public:
 		case CV_4:			return "CV 4";
 		case MIDI_BEND:		return "MIDI BEND";
 		case MIDI_VELOCITY:	return "MIDI VELOCITY";
-		case MIDI_CC_A:		return "MIDI CC A";
-		case MIDI_CC_B:		return "MIDI CC B";
-		case MIDI_CC_C:		return "MIDI CC C";
-		case MIDI_CC_D:		return "MIDI CC D";
+		case MIDI_CC_A:		return modulation_->midi_cc_number_text(0);
+		case MIDI_CC_B:		return modulation_->midi_cc_number_text(1);
+		case MIDI_CC_C:		return modulation_->midi_cc_number_text(2);
+		case MIDI_CC_D:		return modulation_->midi_cc_number_text(3);
 		case ENVELOPE_1:	return "ENVELOPE 1";
 		case ENVELOPE_2:	return "ENVELOPE 2";
 		default:
@@ -85,7 +85,8 @@ public:
 		return nullptr;
 	}
 
-	void init() {
+	void init(Modulation *modulation) {
+		modulation_ = modulation;
 		clear();
 		toggle(MIDI_VELOCITY, GAIN);
 		toggle(ENVELOPE_1, GAIN);
@@ -131,6 +132,7 @@ public:
 	}
 
 private:
+	Modulation *modulation_;
 	uint32_t matrix_[NUM_SOURCES];
 };
 

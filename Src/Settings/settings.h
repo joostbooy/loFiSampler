@@ -43,7 +43,7 @@ public:
 		}
 
 		for (size_t i = 0; i < kMaxInstruments; ++i) {
-			instrument(i).init();
+			instrument(i).init(&modulation_);
 		}
 	}
 

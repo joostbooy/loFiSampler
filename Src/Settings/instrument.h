@@ -39,18 +39,18 @@ public:
 	static const size_t kMaxNameLength = 16;
 	static const size_t kMaxNumSamples = 128;
 
-	void init() {
+	void init(Modulation *modulation) {
 		set_name("NEW INSTRUMENT");
 		set_gain(1.0);
 		set_pan(0.5);
 		set_audio_channel(0);
 		set_midi_channel(16);
-		set_midi_port(MidiEngine::UART);
+		set_midi_port(Midi::UART);
 		set_bit_depth(16);
 		set_bend_range(2);
 		set_bend(0.5);
 
-		matrix().init();
+		matrix().init(modulation);
 
 		clear_samples();
 	}
@@ -152,7 +152,7 @@ public:
 	}
 
 	void set_midi_port(int8_t value) {
-		midi_port_ = stmlib::clip(0, MidiEngine::NUM_PORTS, value);
+		midi_port_ = stmlib::clip(0, Midi::NUM_PORTS - 1, value);
 	}
 
 	const char* midi_port_text() {
