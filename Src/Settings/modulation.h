@@ -13,84 +13,6 @@ public:
 	static const size_t kNumUserCc = 4;
 	static const size_t kNumGatesToNote = 4;
 
-	enum Destination {
-		PAN,
-		BEND,
-		GAIN,
-		START,
-		END,
-		LOOP_START,
-		LOOP_END,
-		BIT_DEPTH,
-
-		NUM_DESTINATIONS
-	};
-
-	static_assert(NUM_DESTINATIONS < 32, "Too many destinations !");
-
-	const char *destination_text(int value) {
-		switch (value)
-		{
-		case PAN:				return "PAN";
-		case BEND:				return "BEND";
-		case GAIN:				return "GAIN";
-		case START:				return "START";
-		case END:				return "END";
-		case LOOP_START:		return "LOOP START";
-		case LOOP_END:			return "LOOP END";
-		case BIT_DEPTH:			return "BIT DEPTH";
-		default:
-			break;
-		}
-		return nullptr;
-	}
-
-	enum Source {
-		LFO_1,
-		LFO_2,
-		LFO_3,
-		LFO_4,
-		CV_1,
-		CV_2,
-		CV_3,
-		CV_4,
-		MIDI_BEND,
-		MIDI_VELOCITY,
-		MIDI_CC_A,
-		MIDI_CC_B,
-		MIDI_CC_C,
-		MIDI_CC_D,
-		ENVELOPE_1,
-		ENVELOPE_2,
-
-		NUM_SOURCES
-	};
-
-	const char *source_text(int value) {
-		switch (value)
-		{
-		case LFO_1:			return "LFO 1";
-		case LFO_2:			return "LFO 2";
-		case LFO_3:			return "LFO 3";
-		case LFO_4:			return "LFO 4";
-		case CV_1:			return "CV 1";
-		case CV_2:			return "CV 2";
-		case CV_3:			return "CV 3";
-		case CV_4:			return "CV 4";
-		case MIDI_BEND:		return "MIDI BEND";
-		case MIDI_VELOCITY:	return "MIDI VELOCITY";
-		case MIDI_CC_A:		return midi_cc_number_text(0);
-		case MIDI_CC_B:		return midi_cc_number_text(1);
-		case MIDI_CC_C:		return midi_cc_number_text(2);
-		case MIDI_CC_D:		return midi_cc_number_text(3);
-		case ENVELOPE_1:	return "ENVELOPE 1";
-		case ENVELOPE_2:	return "ENVELOPE 2";
-		default:
-			break;
-		}
-		return nullptr;
-	}
-
 	void init() {
 		for (size_t i = 0; i < kNumGatesToNote; ++i) {
 			set_gate_to_midi_port(i, 0);
@@ -114,7 +36,7 @@ public:
 	}
 
 	const char* midi_cc_number_text(int index) {
-		return UiText::str.write("MIDI CC ", midi_cc_number(index));
+		return UiText::int_to_text(midi_cc_number(index));
 	}
 
 	// Gate to midi
@@ -128,11 +50,11 @@ public:
 	}
 
 	void set_gate_to_midi_port(uint8_t gate, uint8_t port) {
-		gate_to_midi_[gate].port = stmlib::clip(0, MidiEngine::NUM_PORTS - 1, port);
+		gate_to_midi_[gate].port = stmlib::clip(0, Midi::NUM_PORTS - 1, port);
 	}
 
 	const char *gate_to_midi_port_text(uint8_t gate) {
-		return MidiEngine::port_text(gate_to_midi_port(gate));
+		return Midi::port_text(gate_to_midi_port(gate));
 	}
 
 

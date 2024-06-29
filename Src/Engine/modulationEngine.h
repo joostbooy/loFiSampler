@@ -12,7 +12,7 @@ class ModulationEngine {
 public:
 
 	struct Frame {
-		float data[Modulation::NUM_DESTINATIONS];
+		float data[ModulationMatrix::NUM_DESTINATIONS];
 	};
 
 	void init(Settings *settings) {
@@ -24,19 +24,19 @@ public:
 	}
 
 	void set_envelope(int index, float value) {
-		source_[Modulation::ENVELOPE_1 + index] = value;
+		source_[ModulationMatrix::ENVELOPE_1 + index] = value;
 	}
 
 	void set_cv(int channel, float value) {
-		source_[Modulation::CV_1 + channel] = value;
+		source_[ModulationMatrix::CV_1 + channel] = value;
 	}
 
 	void set_midi_velocity(float value) {
-		source_[Modulation::MIDI_VELOCITY] = value;
+		source_[ModulationMatrix::MIDI_VELOCITY] = value;
 	}
 
 	void set_midi_bend(float value) {
-		source_[Modulation::MIDI_BEND] = value;
+		source_[ModulationMatrix::MIDI_BEND] = value;
 	}
 
 	void reset_lfos() {
@@ -53,22 +53,22 @@ public:
 
 	void tick_lfos() {
 		for (size_t i = 0; i < Settings::kNumLfos; ++i) {
-			source_[i + Modulation::LFO_1] = lfoEngine_[i].next();
+			source_[i + ModulationMatrix::LFO_1] = lfoEngine_[i].next();
 		}
 	}
 
 	void set_midi_cc(uint8_t number, float value) {
 		for (size_t i = 0; i < Modulation::kNumUserCc; ++i) {
 			if (number == modulation_->midi_cc_number(i)) {
-				source_[i + Modulation::MIDI_CC_A] = value;
+				source_[i + ModulationMatrix::MIDI_CC_A] = value;
 			}
 		}
 	}
 
 	Frame* process(ModulationMatrix *matrix) {
-		for (int y = 0; y < Modulation::NUM_DESTINATIONS; ++y) {
+		for (int y = 0; y < ModulationMatrix::NUM_DESTINATIONS; ++y) {
 			frame_.data[y] = 1.f;
-			for (int x = 0; x < Modulation::NUM_SOURCES; ++x) {
+			for (int x = 0; x < ModulationMatrix::NUM_SOURCES; ++x) {
 				if (matrix->read(x, y)) {
 					frame_.data[y] *= source_[x];
 				}
@@ -81,7 +81,7 @@ public:
 private:
 	Frame frame_;
 	Modulation *modulation_;
-	float source_[Modulation::NUM_SOURCES];
+	float source_[ModulationMatrix::NUM_SOURCES];
 	LfoEngine lfoEngine_[Settings::kNumLfos];
 };
 
