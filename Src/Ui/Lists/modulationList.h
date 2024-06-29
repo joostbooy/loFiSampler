@@ -35,7 +35,7 @@ public:
 		case MIDI_CC_D:		return "";
 		case GATE_INDEX:	return "GATE INDEX";
 		case GATE_PORT:		return "GATE PORT";
-		case GATE_CHANNEL:	return "GATE CHANNEl";
+		case GATE_CHANNEL:	return "GATE CHANNEL";
 		case GATE_NOTE:		return "GATE NOTE";
 		case GATE_VELOCITY:	return "GATE VELOCITY";
 		default:
