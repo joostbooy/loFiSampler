@@ -17,7 +17,7 @@ public:
 		for (size_t i = 0; i < kNumGatesToNote; ++i) {
 			set_gate_to_midi_port(i, 0);
 			set_gate_to_midi_channel(i, i);
-			set_gate_to_midi_note(i, i);
+			set_gate_to_midi_note(i, 60 + i);
 			set_gate_to_midi_velocity(i, 100);
 		}
 
