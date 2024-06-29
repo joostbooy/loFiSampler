@@ -20,7 +20,7 @@ public:
 	static const size_t kNumEnvelopes = 2;
 
 	void init() {
-		selected_sample_ = 0;
+		selected_sample_index_ = 0;
 		selected_lfo_index_ = 0;
 		selected_instrument_index_ = 0;
 		selected_envelope_index_ = 0;
@@ -57,16 +57,21 @@ public:
 		return modulation_;
 	}
 
+	// Sample
 	Sample &sample(size_t index) {
 		return sample_[index];
 	}
 
-	int selected_sample() {
-		return selected_sample_;
+	int selected_sample_index() {
+		return selected_sample_index_;
 	}
 
-	void set_selected_sample(int index) {
-		selected_sample_ = stmlib::clip(0, instrument(0).num_samples() - 1, index);
+	void select_sample_index(int index) {
+		//selected_sample_index_ = stmlib::clip(0, instrument(0).num_samples() - 1, index);
+	}
+
+	Sample &selected_sample() {
+		return sample_[selected_sample_index_];
 	}
 
 	// Envelope
@@ -114,7 +119,7 @@ public:
 
 	void select_instrument_index(int index) {
 		selected_instrument_index_ = stmlib::clip(0, selected_instrument_index_ - 1, index);
-		set_selected_sample(selected_sample_);
+		//set_selected_sample(selected_sample_index_);
 	}
 
 	Instrument &selected_instrument() {
@@ -156,7 +161,7 @@ private:
 	FileReader fileReader;
 
 	int selected_lfo_index_;
-	int selected_sample_;
+	int selected_sample_index_;
 	int selected_instrument_index_;
 	int selected_envelope_index_;
 };

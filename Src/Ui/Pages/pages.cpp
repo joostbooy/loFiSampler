@@ -4,6 +4,7 @@
 #include "lfoPage.h"
 #include "midiPage.h"
 #include "envelopePage.h"
+#include "samplePage.h"
 #include "modulationPage.h"
 #include "instrumentPage.h"
 #include "confirmationPage.h"
@@ -16,6 +17,7 @@ const Pages::EventHandlers* eventHandlers[Pages::NUM_OF_PAGES] = {
 	[Pages::LFO_PAGE]				= &LfoPage::eventHandlers,
 	[Pages::MIDI_PAGE]				= &MidiPage::eventHandlers,
 	[Pages::ENVELOPE_PAGE]			= &EnvelopePage::eventHandlers,
+	[Pages::SAMPLE_PAGE]			= &SamplePage::eventHandlers,
 	[Pages::MODULATION_PAGE]		= &ModulationPage::eventHandlers,
 	[Pages::INSTRUMENT_PAGE]		= &InstrumentPage::eventHandlers,
 	[Pages::CONFIRMATION_PAGE]		= &ConfirmationPage::eventHandlers,
