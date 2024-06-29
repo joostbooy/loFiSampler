@@ -36,7 +36,7 @@ public:
 	}
 
 	const char* midi_cc_number_text(int index) {
-		return UiText::int_to_text(midi_cc_number(index));
+		return UiText::str.write("CC ", midi_cc_number(index));
 	}
 
 	// Gate to midi
