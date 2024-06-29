@@ -39,7 +39,7 @@ public:
 	static const size_t kMaxNameLength = 16;
 	static const size_t kMaxNumSamples = 128;
 
-	void init(Modulation *modulation) {
+	void init() {
 		set_name("NEW INSTRUMENT");
 		set_gain(1.0);
 		set_pan(0.5);
@@ -50,7 +50,7 @@ public:
 		set_bend_range(2);
 		set_bend(0.5);
 
-		matrix().init(modulation);
+		matrix().init();
 
 		clear_samples();
 	}
@@ -189,7 +189,7 @@ public:
 		return sample_rate_;
 	}
 
-	void set_sample_rate_(int8_t value) {
+	void set_sample_rate(int8_t value) {
 		sample_rate_ = stmlib::clip(0, NUM_SAMPLE_RATES - 1, value);
 	}
 
@@ -320,6 +320,8 @@ public:
 		bend_range_ = instrument->bend_range();
 		bit_depth_ = instrument->bit_depth();
 		num_samples_ = instrument->num_samples();
+
+		matrix().paste(&instrument->matrix());
 	}
 
 private:
