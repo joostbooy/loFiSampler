@@ -5,6 +5,7 @@
 #include "midiPage.h"
 #include "envelopePage.h"
 #include "modulationPage.h"
+#include "instrumentPage.h"
 #include "confirmationPage.h"
 
 Pages pages;
@@ -16,6 +17,7 @@ const Pages::EventHandlers* eventHandlers[Pages::NUM_OF_PAGES] = {
 	[Pages::MIDI_PAGE]				= &MidiPage::eventHandlers,
 	[Pages::ENVELOPE_PAGE]			= &EnvelopePage::eventHandlers,
 	[Pages::MODULATION_PAGE]		= &ModulationPage::eventHandlers,
+	[Pages::INSTRUMENT_PAGE]		= &InstrumentPage::eventHandlers,
 	[Pages::CONFIRMATION_PAGE]		= &ConfirmationPage::eventHandlers,
 };
 
