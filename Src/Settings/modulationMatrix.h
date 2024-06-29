@@ -85,8 +85,11 @@ public:
 		return nullptr;
 	}
 
-	void init(Modulation *modulation) {
+	static void init(Modulation *modulation) {
 		modulation_ = modulation;
+	}
+
+	void init() {
 		clear();
 		toggle(MIDI_VELOCITY, GAIN);
 		toggle(ENVELOPE_1, GAIN);
@@ -132,7 +135,7 @@ public:
 	}
 
 private:
-	Modulation *modulation_;
+	static Modulation *modulation_;
 	uint32_t matrix_[NUM_SOURCES];
 };
 

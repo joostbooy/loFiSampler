@@ -15,14 +15,14 @@ public:
 
 	static const size_t kMaxVoices = 8;
 	static const size_t kMaxSamples = 128;
-	static const size_t kMaxInstruments = 8;
+	static const size_t kNumInstruments = 8;
 	static const size_t kNumLfos = 4;
 	static const size_t kNumEnvelopes = 2;
 
 	void init() {
 		selected_sample_ = 0;
 		selected_lfo_index_ = 0;
-		selected_instrument_ = 0;
+		selected_instrument_index_ = 0;
 		selected_envelope_index_ = 0;
 
 		path.clear();
@@ -42,9 +42,11 @@ public:
 			sample(i).init();
 		}
 
-		for (size_t i = 0; i < kMaxInstruments; ++i) {
-			instrument(i).init(&modulation_);
+		for (size_t i = 0; i < kNumInstruments; ++i) {
+			instrument(i).init();
 		}
+
+		ModulationMatrix::init(&modulation_);
 	}
 
 	Midi &midi() {
@@ -59,25 +61,12 @@ public:
 		return sample_[index];
 	}
 
-	Instrument &instrument(size_t index) {
-		return instrument_[index];
-	}
-
 	int selected_sample() {
 		return selected_sample_;
 	}
 
 	void set_selected_sample(int index) {
 		selected_sample_ = stmlib::clip(0, instrument(0).num_samples() - 1, index);
-	}
-
-	int selected_instrument() {
-		return selected_instrument_;
-	}
-
-	void set_selected_instrument(int index) {
-		selected_instrument_ = stmlib::clip(0, kMaxInstruments - 1, index);
-		set_selected_sample(selected_sample_);
 	}
 
 	// Envelope
@@ -114,6 +103,24 @@ public:
 		return lfo_[selected_lfo_index_];
 	}
 
+	// Instrument
+	Instrument &instrument(size_t index) {
+		return instrument_[index];
+	}
+
+	int selected_instrument_index() {
+		return selected_instrument_index_;
+	}
+
+	void select_instrument_index(int index) {
+		selected_instrument_index_ = stmlib::clip(0, selected_instrument_index_ - 1, index);
+		set_selected_sample(selected_sample_);
+	}
+
+	Instrument &selected_instrument() {
+		return instrument_[selected_instrument_index_];
+	}
+
 	// save & load
 	bool save();
 	bool save(const char* new_path);
@@ -139,14 +146,14 @@ private:
 	Lfo lfo_[kNumLfos];
 	Sample sample_[kMaxSamples];
 	Envelope envelope_[kNumEnvelopes];
-	Instrument instrument_[kMaxInstruments];
+	Instrument instrument_[kNumInstruments];
 
 	FileWriter fileWriter;
 	FileReader fileReader;
 
 	int selected_lfo_index_;
 	int selected_sample_;
-	int selected_instrument_;
+	int selected_instrument_index_;
 	int selected_envelope_index_;
 };
 
