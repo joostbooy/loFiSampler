@@ -3,6 +3,7 @@
 #include "topPage.h"
 #include "listPage.h"
 #include "lfoPage.h"
+#include "midiPage.h"
 #include "envelopePage.h"
 #include "confirmationPage.h"
 
@@ -13,6 +14,7 @@ const Pages::EventHandlers* eventHandlers[Pages::NUM_OF_PAGES] = {
 	[Pages::TOP_PAGE]				= &TopPage::eventHandlers,
 	[Pages::LIST_PAGE]				= &ListPage::eventHandlers,
 	[Pages::LFO_PAGE]				= &LfoPage::eventHandlers,
+	[Pages::MIDI_PAGE]				= &MidiPage::eventHandlers,
 	[Pages::ENVELOPE_PAGE]			= &EnvelopePage::eventHandlers,
 	[Pages::CONFIRMATION_PAGE]		= &ConfirmationPage::eventHandlers,
 };
