@@ -16,8 +16,6 @@ public:
 
 	void init(Lfo *lfo) {
 		lfo_ = lfo;
-		value_ = 0.f;
-		stage_ = RISING;
 		reset();
 	}
 
@@ -61,11 +59,11 @@ public:
 
 private:
 	Lfo *lfo_;
-	Stage stage_;
-	float phase_;
-	float value_;
-	float last_value_;
-	float target_value_;
+	Stage stage_ = RISING;
+	float phase_ = 0.f;
+	float value_ = 0.f;
+	float last_value_ = 0.f;
+	float target_value_ = 0.f;
 
 	inline void set_stage(Stage stage) {
 		if (stage_ != stage) {
