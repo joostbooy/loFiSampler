@@ -106,7 +106,7 @@ public:
 		case FUNCTION_ENC_B:	return is_pressed(FUNCTION_ENC_PUSH_B);
 		case FUNCTION_ENC_C:	return is_pressed(FUNCTION_ENC_PUSH_C);
 		case FUNCTION_ENC_D:	return is_pressed(FUNCTION_ENC_PUSH_D);
-		default:			return false;
+		default:				return false;
 			break;
 		}
 	}
