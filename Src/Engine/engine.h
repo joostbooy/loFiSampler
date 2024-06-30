@@ -31,6 +31,10 @@ public:
 		return voiceEngine_;
 	}
 
+	ModulationEngine &modulationEngine() {
+		return modulationEngine_;
+	}
+
 	void set_midi_channel_to_kill(uint8_t port, uint8_t channel) {
 		port_to_kill_ = port;
 		channel_to_kill_ = channel;
@@ -51,7 +55,7 @@ private:
 	MidiEngine midiEngine_;
 	VoiceEngine voiceEngine_;
 	MidiClockEngine midiClockEngine_;
-	ModulationEngine modualationEngine_;
+	ModulationEngine modulationEngine_;
 	bool last_gate_[Modulation::kNumGatesToNote];
 
 	void start();

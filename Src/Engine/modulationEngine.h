@@ -15,6 +15,10 @@ public:
 		float data[ModulationMatrix::NUM_DESTINATIONS];
 	};
 
+	LfoEngine &lfoEngine(int index) {
+		return lfoEngine_[index];
+	}
+
 	void init(Settings *settings) {
 		modulation_ = &settings->modulation();
 

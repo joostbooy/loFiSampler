@@ -4,7 +4,7 @@ Engine engine;
 
 void Engine::init(Uart *uart, Usb* usb) {
 	//midiEngine_.init(uart, usb);
-	modualationEngine_.init(&settings);
+	modulationEngine_.init(&settings);
 	voiceEngine_.init();
 
 	for (size_t i = 0; i < Modulation::kNumGatesToNote; ++i) {
@@ -62,13 +62,13 @@ void Engine::note_off(MidiEngine::Event &e) {
 
 void Engine::pitch_bend(MidiEngine::Event &e) {
 	float data = (1.f / 16383.f) * MidiEngine::read_14_bit(e);
-	modualationEngine_.set_midi_bend(data);
+	modulationEngine_.set_midi_bend(data);
 }
 
 void Engine::cc(MidiEngine::Event &e) {
 	uint8_t number = e.data[0];
 	float data = (1.f / 127.f) * e.data[1];
-	modualationEngine_.set_midi_cc(number, data);
+	modulationEngine_.set_midi_cc(number, data);
 }
 
 void Engine::process_gates() {
@@ -86,7 +86,7 @@ void Engine::process_gates() {
 }
 
 //void Engine::clock_start() {
-//	modualationEngine_.reset();
+//	modulationEngine_.reset();
 //}
 
 // low priority
@@ -145,10 +145,10 @@ void Engine::fill(Dac::Buffer *buffer, const size_t size) {
 	while (sampleQue_.readable() && voiceEngine_.available()) {
 		SampleQue::Event e = sampleQue_.read();
 		voiceEngine_.assign_voice(e);
-		modualationEngine_.retrigger_lfos(e.midi_event_);
+		modulationEngine_.retrigger_lfos(e.midi_event_);
 	}
 
-	modualationEngine_.tick_lfos();
+	modulationEngine_.tick_lfos();
 	voiceEngine_.fill(buffer, size);
 	voiceEngine_.update_available_voices();
 }
