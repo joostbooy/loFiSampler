@@ -74,6 +74,30 @@ namespace EnvelopePage {
 	// Bottom to top
 	void drawDisplay() {
 		ListPage::drawDisplay();
+
+		Envelope envelope;
+		EnvelopeEngine envelopeEngine;
+
+		envelope.paste(&settings.selected_envelope());
+		envelope.set_clock_sync(false);
+		envelopeEngine.init(&envelope);
+
+		const int x = 128;
+		const int y = 5;
+		const int w = 32;
+		const int h = 32;
+
+		// Todo! figure out how many times we need to loop
+		for (int x2 = 0; x2 < 255; ++x2) {
+			//int x2 = w * envelopeEngine.phase();
+			int y2 = h * (1.f - envelopeEngine.next());
+			canvas.draw_pixel(x + x2, y + y2, Canvas::BLACK);
+		}
+
+		int index = settings.selected_envelope_index();
+		float phase = engine.voiceEngine().most_recent_voice().envelopeEngine(index).phase();
+
+		canvas.vertical_line(x + (phase * w), y, h, Canvas::BLACK);
 	}
 
 	const uint16_t targetFps() {
