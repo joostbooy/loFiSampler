@@ -30,14 +30,13 @@ namespace ListPage {
 		.y = 12,
 		.width = canvas.width() - 1,
 		.height = 40,
-		.collumns = 3,
-		.rows = 4,
+		.collumns = 4,
+		.rows = 2,
 	};
 
 	void set_list(SettingsList *list) {
 		list_ = list;
 		list_->select_item(0);
-		//list_->set_mode(SettingsList::SELECT);
 
 		window.set_row_items_total(list_->num_items());
 		window.scroll_to_row(list_->top_item());
@@ -70,23 +69,27 @@ namespace ListPage {
 	}
 
 	void onEncoder(uint8_t id, int inc) {
-		//	if (id == Controller::MENU_ENC || id == Controller::Y_ENC) {
-		//		bool shifted = controller.is_pressed(Controller::SHIFT_BUTTON);
-		//		list_->on_encoder(inc, shifted);
-		//		window.scroll_to_row(list_->top_item());
-		//	}
+		int index = Controller::encoder_to_function(id);
+		if (index >= 0) {
+			bool pressed = Controller::encoder_is_pressed(index);
+			bool shifted = Controller::is_pressed(Controller::SHIFT_BUTTON);
+			list_->on_encoder(index, inc, pressed || shifted);
+		}
 	}
 
 	void onButton(uint8_t id, uint8_t value) {
-		//	if (id == Controller::MENU_ENC_PUSH || id == Controller::Y_ENC_PUSH || id == Controller::EDIT_BUTTON) {
-		//		if (value > 0) {
-		//			list_->on_click();
-		//		}
-		//		return;
-		//	}
+		if (id == Controller::UP_BUTTON && value > 0) {
+			list_->on_up_button();
+			return;
+		}
+
+		if (id == Controller::DOWN_BUTTON && value > 0) {
+			list_->on_down_button();
+			return;
+		}
 
 		if (id == Controller::CLEAR_BUTTON && value >= 1 && clear_callback_ != nullptr) {
-			ConfirmationPage::set("CLEAR SETTINGS ?", [](uint8_t option) {
+			ConfirmationPage::set("CLEAR ALL SETTINGS ?", [](uint8_t option) {
 				if (option == ConfirmationPage::CONFIRM) {
 					clear_callback_();
 				}
@@ -148,10 +151,6 @@ namespace ListPage {
 			WindowPainter::text(window.cell(0, i), list_->item_text(i), Canvas::LEFT, Canvas::CENTER, color);
 			WindowPainter::text(window.cell(1, i), list_->value_text(i), Canvas::LEFT, Canvas::CENTER, color);
 		}
-
-	//	if (list_->mode() == SettingsList::EDIT) {
-	//		WindowPainter::highlight(window.cell(1, item));
-	//	}
 
 		WindowPainter::vertical_scrollbar(window);
 
