@@ -32,7 +32,7 @@ void Engine::resume() {
 
 void Engine::tick() {
 	if (midiClockEngine_.tick()) {
-		for (int i = 0; i < MidiEngine::NUM_PORTS; ++i) {
+		for (int i = 0; i < Midi::NUM_PORTS; ++i) {
 			if (settings.midi().send_clock(i)) {
 				midiEngine_.write(i, MidiEngine::CLOCK_PULSE);
 			}
