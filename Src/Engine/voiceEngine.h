@@ -21,10 +21,6 @@ public:
 		}
 	}
 
-	inline uint8_t most_recent_voice() {
-		return most_recent_voice_;
-	}
-
 	inline bool is_idle() {
 		return active_voices_.size() == 0;
 	}
@@ -33,6 +29,10 @@ public:
 		return voice_[index];
 	}
 
+	Voice &most_recent_voice() {
+		return voice_[most_recent_voice_];
+	}
+	
 	void fill(Dac::Buffer *buffer, const size_t size) {
 		std::fill(&buffer[0].channel[0], &buffer[size].channel[0], 0);
 
