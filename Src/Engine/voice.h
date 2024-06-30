@@ -20,8 +20,8 @@ public:
 		state_ = IDLE;
 		key_pressed_ = false;
 		stop_requested_ = false;
-		envelope_[0].init(&settings.envelope(0));
-		envelope_[1].init(&settings.envelope(1));
+		envelopeEngine_[0].init(&settings.envelope(0));
+		envelopeEngine_[1].init(&settings.envelope(1));
 	}
 
 	uint8_t port() { return port_; }
@@ -31,6 +31,7 @@ public:
 	bool key_pressed() { return key_pressed_; }
 	State state() { return state_; }
 	Sample &sample() { return sample_; }
+	EnvelopeEngine &envelopeEngine(int index) { return envelopeEngine_[index]; }
 
 	void request_stop() {
 		stop_requested_ = true;
@@ -48,8 +49,8 @@ public:
 		channel_ = e.midi_event_.message & 0x0F;
 		velocity_ = e.midi_event_.data[1] * (1.f / 127.f);
 
-		envelope_[0].attack();
-		envelope_[1].attack();
+		envelopeEngine_[0].attack();
+		envelopeEngine_[1].attack();
 
 		key_pressed_ = true;
 		stop_requested_ = false;
@@ -66,8 +67,8 @@ public:
 
 	void note_off() {
 		key_pressed_ = false;
-		envelope_[0].release();
-		envelope_[1].release();
+		envelopeEngine_[0].release();
+		envelopeEngine_[1].release();
 	}
 
 	void fill(Dac::Buffer *buffer, const size_t size) {
@@ -134,7 +135,7 @@ private:
 	Instrument instrument_;
 	Instrument *instrument_src_;
 	ModulationEngine *modualationEngine_;
-	EnvelopeEngine envelope_[Settings::kNumEnvelopes];
+	EnvelopeEngine envelopeEngine_[Settings::kNumEnvelopes];
 
 	inline bool is_looping() {
 		return sample_.loop() && key_pressed_;
@@ -190,8 +191,8 @@ private:
 
 	inline void apply_modulation() {
 		modualationEngine_->set_midi_velocity(velocity_);
-		modualationEngine_->set_envelope(0, envelope_[0].next());
-		modualationEngine_->set_envelope(1, envelope_[1].next());
+		modualationEngine_->set_envelope(0, envelopeEngine_[0].next());
+		modualationEngine_->set_envelope(1, envelopeEngine_[1].next());
 		ModulationEngine::Frame *frame = modualationEngine_->process(&instrument_src_->matrix());
 
 		instrument_.set_bend(instrument_src_->bend() * frame->data[ModulationMatrix::BEND]);
