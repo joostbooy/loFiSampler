@@ -74,6 +74,30 @@ namespace LfoPage {
 	// Bottom to top
 	void drawDisplay() {
 		ListPage::drawDisplay();
+
+		Lfo lfo;
+		LfoEngine lfoEngine;
+
+		lfo.paste(&settings.selected_lfo());
+		lfo.set_randomise(false);
+		lfo.set_clock_sync(false);
+		lfo.set_speed(1.f);
+		lfoEngine.init(&lfo);
+
+		const int x = 128;
+		const int y = 5;
+		const int w = 32;
+		const int h = 32;
+
+		for (int x2 = 0; x2 < 32; ++x2) {
+			int y2 = h * (1.f - lfoEngine.next());
+			canvas.draw_pixel(x + x2, y + y2, Canvas::BLACK);
+		}
+
+		int index = settings.selected_lfo_index();
+		float phase = engine.modulationEngine().lfoEngine(index).phase();
+
+		canvas.vertical_line(x + (phase * w), 0, h, Canvas::BLACK);
 	}
 
 	const uint16_t targetFps() {
