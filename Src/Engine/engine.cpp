@@ -15,24 +15,25 @@ void Engine::init(Uart *uart, Usb* usb) {
 /*	Engine commands */
 
 void Engine::start() {
-
+	modualationEngine_.reset_lfos();
+	for (int i = 0; i < Midi::NUM_PORTS; ++i) {
+		if (settings.midi().send_clock(i)) {
+			midiEngine_.write(i, MidiEngine::CLOCK_START);
+		}
+	}
 }
 
 void Engine::stop() {
-
-}
-
-void Engine::suspend() {
-
-}
-
-void Engine::resume() {
-
+	for (int i = 0; i < Midi::NUM_PORTS; ++i) {
+		if (settings.midi().send_clock(i)) {
+			midiEngine_.write(i, MidiEngine::CLOCK_STOP);
+		}
+	}
 }
 
 void Engine::tick() {
 	if (midiClockEngine_.tick()) {
-		for (int i = 0; i < MidiEngine::NUM_PORTS; ++i) {
+		for (int i = 0; i < Midi::NUM_PORTS; ++i) {
 			if (settings.midi().send_clock(i)) {
 				midiEngine_.write(i, MidiEngine::CLOCK_PULSE);
 			}
@@ -86,7 +87,7 @@ void Engine::process_midi() {
 	MidiEngine::Event e;
 
 	while (midiEngine_.pull(e)) {
-		switch (e.message & 0xF0)
+		switch (MidiEngine::read_message(e))
 		{
 		case MidiEngine::NOTE_ON:
 			note_on(e);
@@ -100,6 +101,21 @@ void Engine::process_midi() {
 		case MidiEngine::CONTROLLER_CHANGE:
 			cc(e);
 			break;
+		//	case MidiEngine::CLOCK_START:
+		//		if (e.port == settings.midi().clock_source()) {
+		//			start();
+		//		}
+		//		break;
+	//	case MidiEngine::CLOCK_STOP:
+	//			if (e.port == settings.midi().clock_source()) {
+	//				stop();
+	//			}
+	//			break;
+	//		case MidiEngine::CLOCK_PULSE:
+	//			if (e.port == settings.midi().clock_source()) {
+	//				tick();
+	//			}
+	//			break;
 		default:
 			break;
 		}

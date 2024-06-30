@@ -18,12 +18,16 @@ public:
 		return 4095 - ADC1->DR;
 	}
 
-	inline uint8_t curr_channel(){
-		return channel;
+	inline uint8_t channel(){
+		return channel_;
 	}
 
 	inline void convert_next_channel() {
-		switch (++channel &= 3)
+		if (++channel_ >= kNumChannels) {
+			channel_ = 0;
+		}
+
+		switch (channel_)
 		{
 		case 0:	ADC1->SQR3 = ADC_CHANNEL_8;
 			break;
@@ -33,14 +37,20 @@ public:
 			break;
 		case 3:	ADC1->SQR3 = ADC_CHANNEL_15;
 			break;
+		case 4:	ADC1->SQR3 = ADC_CHANNEL_15;
+			break;
+		case 5:	ADC1->SQR3 = ADC_CHANNEL_4;
+			break;
 		default:
 			break;
 		}
+
 		ADC1->CR2 |= ADC_CR2_SWSTART;
 	}
 
 private:
-	uint8_t channel = 0;
+	uint8_t channel_ = 0;
+	static const size_t kNumChannels = 5;
 };
 
 extern Adc adc;

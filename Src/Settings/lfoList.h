@@ -4,7 +4,7 @@
 #include "uiText.h"
 #include "settings.h"
 
-class LfoList : public UiList {
+class LfoList : public SettingsList {
 
 public:
 

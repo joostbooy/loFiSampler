@@ -3,7 +3,7 @@
 
 #include "pages.h"
 #include "canvas.h"
-#include "uiList.h"
+#include "SettingsList.h"
 #include "confirmationPage.h"
 
 namespace ListPage {
@@ -23,7 +23,7 @@ namespace ListPage {
 	void(*copy_callback_)() = nullptr;
 	bool(*paste_callback_)() = nullptr;
 
-	UiList *list_;
+	SettingsList *list_;
 
 	Window window = {
 		.x = 0,
@@ -34,10 +34,10 @@ namespace ListPage {
 		.rows = 4,
 	};
 
-	void set_list(UiList *list) {
+	void set_list(SettingsList *list) {
 		list_ = list;
 		list_->select_item(0);
-		list_->set_mode(UiList::SELECT);
+		list_->set_mode(SettingsList::SELECT);
 
 		window.set_row_items_total(list_->num_items());
 		window.scroll_to_row(list_->selected_item());
@@ -149,7 +149,7 @@ namespace ListPage {
 			WindowPainter::text(window.cell(1, i), list_->value_text(i), Canvas::LEFT, Canvas::CENTER, color);
 		}
 
-		if (list_->mode() == UiList::EDIT) {
+		if (list_->mode() == SettingsList::EDIT) {
 			WindowPainter::highlight(window.cell(1, item));
 		}
 

@@ -4,7 +4,7 @@
 #include "uiText.h"
 #include "settings.h"
 
-class SampleList : public UiList {
+class SampleList : public SettingsList {
 
 public:
 

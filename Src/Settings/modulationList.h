@@ -4,7 +4,7 @@
 #include "uiText.h"
 #include "settings.h"
 
-class ModulationList : public UiList {
+class ModulationList : public SettingsList {
 
 public:
 

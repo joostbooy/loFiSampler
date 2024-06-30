@@ -4,7 +4,7 @@
 #include "uiText.h"
 #include "settings.h"
 
-class EnvelopeList : public UiList {
+class EnvelopeList : public SettingsList {
 
 public:
 

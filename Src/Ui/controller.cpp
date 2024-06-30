@@ -3,31 +3,22 @@
 Controller controller;
 
 void Controller::init() {
-	prev_touched_encoder_ = 0;
-	curr_touched_encoder_ = 0;
-	for (int i = 0; i < (16 * 8) / 32; ++i) {
-		pressed[i] = 0;
-	}
-}
-
-void Controller::on_encoder(uint8_t id) {
-	if (id != curr_touched_encoder_) {
-		prev_touched_encoder_ = curr_touched_encoder_;
-		curr_touched_encoder_ = id;
+	for (int i = 0; i < (8 * 8) / 32; ++i) {
+		pressed_[i] = 0;
 	}
 }
 
 void Controller::on_button(uint8_t id, bool state) {
 	uint8_t index = id / 32;
 	uint32_t mask = 1 << (id & 31);
-	pressed[index] &= ~(mask);
+	pressed_[index] &= ~(mask);
 	if (state) {
-		pressed[index] |= mask;
+		pressed_[index] |= mask;
 	}
 }
 
 bool Controller::is_pressed(uint8_t id) {
 	uint8_t index = id / 32;
 	uint32_t mask = 1 << (id & 31);
-	return pressed[index] & mask;
+	return pressed_[index] & mask;
 }

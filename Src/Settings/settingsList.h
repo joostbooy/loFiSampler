@@ -1,9 +1,9 @@
-#ifndef UiList_h
-#define UiList_h
+#ifndef SettingsList_h
+#define SettingsList_h
 
 #include "uiText.h"
 
-class UiList {
+class SettingsList {
 
 public:
 
