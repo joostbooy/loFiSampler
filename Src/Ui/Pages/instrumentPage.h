@@ -72,7 +72,7 @@ namespace InstrumentPage {
 		ListPage::onButton(id, value);
 
 		if (value > 0) {
-			switch (controller.button_to_function(id))
+			switch (Controller::button_to_function(id))
 			{
 			case MOD_MATRIX:
 				//pages.open(Pages::MOD_MATRIX_PAGE);

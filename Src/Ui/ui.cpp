@@ -27,7 +27,6 @@ void addEvent(Ui::ControlType type, uint8_t id, int8_t value)  {
 void Ui::init() {
 	last_interval = 0;
 	display_interval = 0;
-	controller.init();
 	canvas.init();
 	pages.init();
 	ui_que.clear();
@@ -75,11 +74,9 @@ void Ui::process() {
 		switch (e.type)
 		{
 		case Ui::BUTTON:
-			controller.on_button(e.id, e.value);
 			pages.onButton(e.id, e.value);
 			break;
 		case Ui::ENCODER:
-			controller.on_encoder(e.id);
 			pages.onEncoder(e.id, e.value);
 			break;
 		default:

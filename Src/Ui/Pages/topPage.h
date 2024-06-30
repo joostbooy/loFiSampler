@@ -23,7 +23,7 @@ namespace TopPage {
 	StringBuilderBase<64>str;
 
 	void init() {
-
+		Controller::init();
 	}
 
 	void enter() {
@@ -35,11 +35,11 @@ namespace TopPage {
 	}
 
 	void onEncoder(uint8_t id, int inc) {
-
+		Controller::on_encoder(id);
 	}
 
 	void onButton(uint8_t id, uint8_t state) {
-
+		Controller::on_button(id, state);
 	}
 
 	void drawLeds() {

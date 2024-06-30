@@ -66,7 +66,7 @@ namespace ConfirmationPage {
 	}
 
 	void onButton(uint8_t id, uint8_t state) {
-		int selected_option = controller.button_to_function(id);
+		int selected_option = Controller::button_to_function(id);
 		if (state >= 1 && selected_option >= 0 && selected_option < NUM_OPTIONS) {
 			callback_(selected_option);
 			pages.close(Pages::CONFIRMATION_PAGE);
