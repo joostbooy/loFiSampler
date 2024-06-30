@@ -15,11 +15,19 @@ void Engine::init(Uart *uart, Usb* usb) {
 /*	Engine commands */
 
 void Engine::start() {
-
+	for (int i = 0; i < Midi::NUM_PORTS; ++i) {
+		if (settings.midi().send_clock(i)) {
+			midiEngine_.write(i, MidiEngine::CLOCK_START);
+		}
+	}
 }
 
 void Engine::stop() {
-
+	for (int i = 0; i < Midi::NUM_PORTS; ++i) {
+		if (settings.midi().send_clock(i)) {
+			midiEngine_.write(i, MidiEngine::CLOCK_STOP);
+		}
+	}
 }
 
 void Engine::suspend() {
@@ -134,16 +142,13 @@ void Engine::fill(Dac::Buffer *buffer, const size_t size) {
 	process_gates();
 	process_requests();
 
-	SampleQue::Event e;
-
 	while (sampleQue_.readable() && voiceEngine_.available()) {
-		e = sampleQue_.read();
+		SampleQue::Event e = sampleQue_.read();
 		voiceEngine_.assign_voice(e);
 		modualationEngine_.retrigger_lfos(e.midi_event_);
 	}
 
 	modualationEngine_.tick_lfos();
-
 	voiceEngine_.fill(buffer, size);
 	voiceEngine_.update_available_voices();
 }
