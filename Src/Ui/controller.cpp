@@ -5,7 +5,7 @@ Controller controller;
 void Controller::init() {
 	prev_touched_encoder_ = 0;
 	curr_touched_encoder_ = 0;
-	for (int i = 0; i < (16 * 8) / 32; ++i) {
+	for (int i = 0; i < (8 * 8) / 32; ++i) {
 		pressed[i] = 0;
 	}
 }
