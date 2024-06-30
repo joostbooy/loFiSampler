@@ -95,19 +95,19 @@ public:
 			sample.set_pan(sample.pan() + f_inc(inc, shifted));
 			break;
 		case START:
-			sample.set_start(sample.start() + (inc * (shifted ? kHalfSecond : kMillisecond)));
+			sample.set_start(sample.start() + (inc * (shifted ? kQuarterSecond : kMillisecond)));
 			break;
 		case END:
-			sample.set_end(sample.end() + (inc * (shifted ? kHalfSecond : kMillisecond)));
+			sample.set_end(sample.end() + (inc * (shifted ? kQuarterSecond : kMillisecond)));
 			break;
 		case LOOP:
 			sample.set_loop(inc > 0);
 			break;
 		case LOOP_START:
-			sample.set_loop_start(sample.loop_start() + (inc * (shifted ? kHalfSecond : kMillisecond)));
+			sample.set_loop_start(sample.loop_start() + (inc * (shifted ? kQuarterSecond : kMillisecond)));
 			break;
 		case LOOP_END:
-			sample.set_loop_end(sample.loop_end() + (inc * (shifted ? kHalfSecond : kMillisecond)));
+			sample.set_loop_end(sample.loop_end() + (inc * (shifted ? kQuarterSecond : kMillisecond)));
 			break;
 		case U_TURN:
 			sample.set_u_turn(inc > 0);
@@ -135,7 +135,7 @@ public:
 private:
 
 	static const uint32_t kMillisecond = SAMPLE_RATE / 1000;
-	static const uint32_t kHalfSecond = SAMPLE_RATE / 2;
+	static const uint32_t kQuarterSecond = SAMPLE_RATE / 4;
 
 	inline float f_inc(int inc, bool shift) {
 		return inc * (1.f / 100.f) * (shift ? 10.f : 1.f);
