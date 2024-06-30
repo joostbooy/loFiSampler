@@ -15,11 +15,6 @@ class Engine {
 
 public:
 
-	//	enum State {
-	//		RUNNING,
-	//		STOPPED
-	//	};
-
 	enum Request {
 		STOP				= (1 << 0),
 		KILL_MIDI_CHANNEL	= (1 << 1),
@@ -27,6 +22,8 @@ public:
 
 	void init(Uart*, Usb*);
 	void tick();
+	void suspend();
+	void resume();
 	void fill(Dac::Buffer *buffer, const size_t size);
 
 
@@ -45,7 +42,6 @@ public:
 	}
 
 private:
-	//State state_;
 	volatile uint8_t requests_ = 0x00;
 
 	uint8_t port_to_kill_;

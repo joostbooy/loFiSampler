@@ -20,7 +20,7 @@ namespace TopPage {
 	const uint16_t targetFps();
 
 	//variables
-	StringBuilderBase<63>str;
+	StringBuilderBase<64>str;
 
 	void init() {
 
@@ -39,7 +39,7 @@ namespace TopPage {
 	}
 
 	void onButton(uint8_t id, uint8_t state) {
-		controller.on_button(id, state);
+
 	}
 
 	void drawLeds() {

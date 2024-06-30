@@ -1,11 +1,5 @@
 #include "sample.h"
 
-/*
-*	For example :
-*	E0.wav
-*	C#7_mySample.wav;
-*/
-
  bool Sample::name_to_midi_note(const char *name, uint8_t *note) {
 	int oct_ = -1;
 	int note_ = -1;

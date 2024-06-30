@@ -307,13 +307,13 @@ public:
 	}
 
 	void paste(Sample *sample) {
-	//	start_ = sample->start();
-	//	end_ = sample->end();
+		start_ = sample->start();
+		end_ = sample->end();
 		loop_ = sample->loop();
 		u_turn_ = sample->u_turn();
 		play_mode_ = sample->play_mode();
-	//	loop_start_ = sample->loop_start();
-	//	loop_end_ = sample->loop_end();
+		loop_start_ = sample->loop_start();
+		loop_end_ = sample->loop_end();
 		cents_ = sample->cents();
 		root_note_ = sample->root_note();
 		key_range_low_ = sample->key_range_low();

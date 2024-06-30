@@ -3,7 +3,7 @@
 
 #include "pages.h"
 #include "canvas.h"
-#include "SettingsList.h"
+#include "settingsList.h"
 #include "confirmationPage.h"
 
 namespace ListPage {

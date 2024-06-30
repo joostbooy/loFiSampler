@@ -28,7 +28,7 @@ public:
 
 		for (size_t i = 0; i < kBlockSize; ++i) {
 			for (size_t chn = 0; chn < kNumChannels; ++chn) {
-				uint16_t sample = buffer_[i].channel[chn] + 32768;
+				uint16_t sample = buffer_[i].channel[chn];
 				*ptr++ = 0x1000 | (chn << 9) | (sample >> 8);
 				*ptr++ = sample << 8;
 			}

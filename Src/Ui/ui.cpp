@@ -75,9 +75,11 @@ void Ui::process() {
 		switch (e.type)
 		{
 		case Ui::BUTTON:
+			controller.on_button(e.id, e.value);
 			pages.onButton(e.id, e.value);
 			break;
 		case Ui::ENCODER:
+			controller.on_encoder(e.id);
 			pages.onEncoder(e.id, e.value);
 			break;
 		default:
