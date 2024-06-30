@@ -7,41 +7,30 @@ class SettingsList {
 
 public:
 
-	enum Mode {
-		SELECT,
-		EDIT
-	};
-
-	Mode mode() {
-		return mode_;
-	}
-
-	void set_mode(Mode mode) {
-		mode_ = mode;
-	}
-
-	int selected_item() {
-		return selected_item_;
+	int top_item() {
+		return top_item_;
 	}
 
 	void select_item(int item) {
-		selected_item_ = stmlib::clip(0, num_items() - 1, item);
+		top_item_ = stmlib::clip(0, num_items() - 1, item);
 	}
 
-	void on_click() {
-		if (mode() == SELECT) {
-			set_mode(EDIT);
-		} else {
-			set_mode(SELECT);
+	void on_up_button() {
+		int value = top_item() - 4;
+		if (value >= 0)  {
+			select_item(value);
 		}
 	}
 
-	void on_encoder(int inc, bool shifted) {
-		if (mode_ == SELECT) {
-			select_item(selected_item() + inc);
-		} else {
-			edit(selected_item(), inc, shifted);
+	void on_down_button() {
+		int value = top_item() + 4;
+		if (value < num_items())  {
+			select_item(value);
 		}
+	}
+
+	void on_encoder(int index, int inc, bool shifted) {
+		edit(top_item() + index, inc, shifted);
 	}
 
 	virtual const int num_items();
@@ -50,8 +39,7 @@ public:
 	virtual void edit(int item, int inc, bool shifted);
 
 private:
-	Mode mode_ = SELECT;
-	int selected_item_ = 0;
+	int top_item_ = 0;
 };
 
 #endif

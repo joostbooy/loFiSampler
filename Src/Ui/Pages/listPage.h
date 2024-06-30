@@ -37,10 +37,10 @@ namespace ListPage {
 	void set_list(SettingsList *list) {
 		list_ = list;
 		list_->select_item(0);
-		list_->set_mode(SettingsList::SELECT);
+		//list_->set_mode(SettingsList::SELECT);
 
 		window.set_row_items_total(list_->num_items());
-		window.scroll_to_row(list_->selected_item());
+		window.scroll_to_row(list_->top_item());
 	}
 
 	void set_clear_callback(void(*callback)()) {
@@ -73,7 +73,7 @@ namespace ListPage {
 		//	if (id == Controller::MENU_ENC || id == Controller::Y_ENC) {
 		//		bool shifted = controller.is_pressed(Controller::SHIFT_BUTTON);
 		//		list_->on_encoder(inc, shifted);
-		//		window.scroll_to_row(list_->selected_item());
+		//		window.scroll_to_row(list_->top_item());
 		//	}
 	}
 
@@ -141,7 +141,7 @@ namespace ListPage {
 
 		Canvas::Color color;
 		canvas.set_font(Font::SMALL);
-		int item = list_->selected_item();
+		int item = list_->top_item();
 
 		for (int i = window.row().first; i <= window.row().last; ++i) {
 			color = (item == i) ? Canvas::BLACK : Canvas::LIGHT_GRAY;
@@ -149,9 +149,9 @@ namespace ListPage {
 			WindowPainter::text(window.cell(1, i), list_->value_text(i), Canvas::LEFT, Canvas::CENTER, color);
 		}
 
-		if (list_->mode() == SettingsList::EDIT) {
-			WindowPainter::highlight(window.cell(1, item));
-		}
+	//	if (list_->mode() == SettingsList::EDIT) {
+	//		WindowPainter::highlight(window.cell(1, item));
+	//	}
 
 		WindowPainter::vertical_scrollbar(window);
 
