@@ -17,6 +17,7 @@ public:
 	void init(Lfo *lfo) {
 		lfo_ = lfo;
 		value_ = 0.f;
+		stage_ = RISING;
 		reset();
 	}
 
