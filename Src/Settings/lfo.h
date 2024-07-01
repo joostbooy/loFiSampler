@@ -87,7 +87,7 @@ public:
 		return UiText::float_to_text(min(), 0, 100);
 	}
 
-	// Min
+	// Max
 	float max() {
 		return min_;
 	}
