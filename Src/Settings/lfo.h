@@ -15,6 +15,8 @@ public:
 		set_speed(0);
 		set_shape(0.5f);
 		set_skew(0.5f);
+		set_min(0.0f);
+		set_max(1.0f);
 		set_clock_sync(false);
 		set_randomise(false);
 		set_retrigger_port(Midi::UART);
@@ -70,6 +72,32 @@ public:
 
 	const char *skew_text() {
 		return UiText::float_to_text(skew(), -100, 100);
+	}
+
+	// Min
+	float min() {
+		return min_;
+	}
+
+	void set_min(float value) {
+		min_ = stmlib::clip_float(value);
+	}
+
+	const char *min_text() {
+		return UiText::float_to_text(min(), 0, 100);
+	}
+
+	// Min
+	float max() {
+		return min_;
+	}
+
+	void set_max(float value) {
+		max_ = stmlib::clip_float(value);
+	}
+
+	const char *max_text() {
+		return UiText::float_to_text(max(), 0, 100);
 	}
 
 	// clock sync
@@ -138,6 +166,8 @@ public:
 		fileWriter.write(skew_);
 		fileWriter.write(shape_);
 		fileWriter.write(speed_);
+		fileWriter.write(min_);
+		fileWriter.write(max_);
 		fileWriter.write(randomise_);
 		fileWriter.write(clock_sync_);
 		fileWriter.write(retrigger_port_);
@@ -148,6 +178,8 @@ public:
 		fileReader.read(skew_);
 		fileReader.read(shape_);
 		fileReader.read(speed_);
+		fileReader.read(min_);
+		fileReader.read(max_);
 		fileReader.read(randomise_);
 		fileReader.read(clock_sync_);
 		fileReader.read(retrigger_port_);
@@ -158,6 +190,8 @@ public:
 		skew_ = lfo->skew();
 		shape_ = lfo->shape();
 		speed_ = lfo->speed();
+		min_ = lfo->min();
+		max_ = lfo->max();
 		randomise_ = lfo->randomise();
 		clock_sync_ = lfo->clock_sync();
 		retrigger_port_ = lfo->retrigger_port();
@@ -168,6 +202,8 @@ private:
 	float skew_;
 	float shape_;
 	float speed_;
+	float min_;
+	float max_;
 	bool randomise_;
 	bool clock_sync_;
 	uint8_t retrigger_port_;

@@ -13,6 +13,8 @@ public:
 		SPEED,
 		SHAPE,
 		SKEW,
+		MIN,
+		MAX,
 		RANDOMISE,
 		CLOCK_SYNC,
 		RETRIGGER_PORT,
@@ -33,6 +35,8 @@ public:
 		case SPEED:				return "SPEED";
 		case SHAPE:				return "SHAPE";
 		case SKEW:				return "SKEW";
+		case MIN:				return "MIN";
+		case MAX:				return "MAX";
 		case RANDOMISE:			return "RANDOMISE";
 		case CLOCK_SYNC:		return "CLOCK SYNC";
 		case RETRIGGER_PORT:	return "RETRIGGER PORT";
@@ -52,6 +56,8 @@ public:
 		case SPEED:				return lfo.speed_text();
 		case SHAPE:				return lfo.shape_text();
 		case SKEW:				return lfo.skew_text();
+		case MIN:				return lfo.min_text();
+		case MAX:				return lfo.max_text();
 		case RANDOMISE:			return lfo.randomise_text();
 		case CLOCK_SYNC:		return lfo.clock_sync_text();
 		case RETRIGGER_PORT:	return lfo.retrigger_port_text();
@@ -78,6 +84,12 @@ public:
 			break;
 		case SKEW:
 			lfo.set_skew(lfo.skew() + f_inc(inc, shifted));
+			break;
+		case MIN:
+			lfo.set_min(lfo.min() + f_inc(inc, shifted));
+			break;
+		case MAX:
+			lfo.set_max(lfo.max() + f_inc(inc, shifted));
 			break;
 		case RANDOMISE:
 			lfo.set_randomise(inc > 0);

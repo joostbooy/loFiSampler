@@ -72,9 +72,9 @@ private:
 			last_value_ = value_;
 
 			if (lfo_->randomise()) {
-				target_value_ = Rng::reciprocal();
+				target_value_ = Rng::reciprocal(lfo_->min(), lfo_->max());
 			} else {
-				target_value_ = (stage_ == RISING) ? 1.f : 0.f;
+				target_value_ = (stage_ == RISING) ? lfo_->max() : lfo_->min();
 			}
 		}
 	}

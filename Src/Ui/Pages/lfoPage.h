@@ -89,7 +89,9 @@ namespace LfoPage {
 		const int w = 32;
 		const int h = 32;
 
-		for (int x2 = 0; x2 < 32; ++x2) {
+		// Todo! figure out how many times we need to loop
+		for (int x2 = 0; x2 < 255; ++x2) {
+			//int x2 = w * lfoEngine.phase();
 			int y2 = h * (1.f - lfoEngine.next());
 			canvas.draw_pixel(x + x2, y + y2, Canvas::BLACK);
 		}
@@ -97,7 +99,7 @@ namespace LfoPage {
 		int index = settings.selected_lfo_index();
 		float phase = engine.modulationEngine().lfoEngine(index).phase();
 
-		canvas.vertical_line(x + (phase * w), 0, h, Canvas::BLACK);
+		canvas.vertical_line(x + (phase * w), y, h, Canvas::BLACK);
 	}
 
 	const uint16_t targetFps() {
