@@ -84,12 +84,15 @@ public:
 			selected_gate_ = stmlib::clip(0, Modulation::kNumGatesToNote - 1, selected_gate_ + inc);
 			break;
 		case GATE_PORT:
+			kill_midi(modulation, selected_gate_);
 			modulation.set_gate_to_midi_port(selected_gate_, modulation.gate_to_midi_port(selected_gate_) + inc);
 			break;
 		case GATE_CHANNEL:
+			kill_midi(modulation, selected_gate_);
 			modulation.set_gate_to_midi_channel(selected_gate_, modulation.gate_to_midi_channel(selected_gate_) + inc);
 			break;
 		case GATE_NOTE:
+			kill_midi(modulation, selected_gate_);
 			modulation.set_gate_to_midi_note(selected_gate_, modulation.gate_to_midi_note(selected_gate_) + inc);
 			break;
 		case GATE_VELOCITY:
@@ -101,6 +104,14 @@ public:
 	}
 
 private:
+
+	void kill_midi(Modulation &modulation, int gate) {
+		if (engine.last_gate(gate) > 0) {
+			engine.set_midi_channel_to_kill(modulation.gate_to_midi_port(gate), modulation.gate_to_midi_channel(gate));
+			engine.add_request_blocking(Engine::KILL_MIDI_CHANNEL);
+		}
+	}
+
 	int selected_gate_ = 0;
 };
 

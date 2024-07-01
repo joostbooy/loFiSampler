@@ -88,9 +88,11 @@ public:
 			instrument.set_audio_channel(instrument.audio_channel() + inc);
 			break;
 		case MIDI_PORT:
+			kill_midi(instrument);
 			instrument.set_midi_port(instrument.midi_port() + inc);
 			break;
 		case MIDI_CHANNEL:
+			kill_midi(instrument);
 			instrument.set_midi_channel(instrument.midi_channel() + inc);
 			break;
 		case BIT_DEPTH:
@@ -108,6 +110,11 @@ public:
 	}
 
 private:
+
+	void kill_midi(Instrument &instrument) {
+		engine.set_midi_channel_to_kill(instrument.midi_port(), instrument.midi_channel());
+		engine.add_request_blocking(Engine::KILL_MIDI_CHANNEL);
+	}
 
 	inline float f_inc(int inc, bool shift) {
 		return inc * (1.f / 100.f) * (shift ? 10.f : 1.f);

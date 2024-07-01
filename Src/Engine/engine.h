@@ -26,6 +26,9 @@ public:
 	void resume();
 	void fill(Dac::Buffer *buffer, const size_t size);
 
+	bool last_gate(int index) {
+		return last_gate_[index];
+	}
 
 	VoiceEngine &voiceEngine() {
 		return voiceEngine_;
