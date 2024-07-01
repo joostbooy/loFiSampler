@@ -55,7 +55,7 @@ uint8_t Pages::bottom() {
 // this does not call page->enter() it only moves the page
 void Pages::move_to_top(Id page) {
 	if (curr_page_ != page) {
-		page_stack.remove_value(page);
+		page_stack.remove_by_value(page);
 		if (page_stack.writeable()) {
 			page_stack.push(page);
 			curr_page_ = page;
@@ -81,7 +81,7 @@ void Pages::open(Id page) {
 void Pages::close(Id page) {
 	int8_t idx = page_stack.find(page);
 	if (idx >= 0) {
-		page_stack.remove_indexed(idx);
+		page_stack.remove_by_index(idx);
 		eventHandlers[page]->exit();
 		curr_page_ = top();
 	}

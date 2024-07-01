@@ -88,7 +88,7 @@ public:
 		while (index < active_voices_.size()) {
 			uint8_t v = active_voices_.read(index);
 			if (voice_[v].is_available()) {
-				active_voices_.remove_indexed(index);
+				active_voices_.remove_by_index(index);
 				available_voices_.push(v);
 			} else {
 				++index;
