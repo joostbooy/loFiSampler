@@ -16,12 +16,12 @@ public:
 		FORWARD		= 1
 	};
 
-	void init() {
+	void init(Settings *settings) {
 		state_ = IDLE;
 		key_pressed_ = false;
 		stop_requested_ = false;
-		envelopeEngine_[0].init(&settings.envelope(0));
-		envelopeEngine_[1].init(&settings.envelope(1));
+		envelopeEngine_[0].init(&settings->envelope(0));
+		envelopeEngine_[1].init(&settings->envelope(1));
 	}
 
 	uint8_t port() { return port_; }

@@ -11,12 +11,12 @@ class VoiceEngine {
 
 public:
 
-	void init() {
+	void init(Settings *settings) {
 		active_voices_.clear();
 		available_voices_.clear();
 
 		for (size_t i = 0; i < Settings::kMaxVoices; ++i) {
-			voice_[i].init();
+			voice_[i].init(settings);
 			available_voices_.push(i);
 		}
 	}
@@ -32,7 +32,7 @@ public:
 	Voice &most_recent_voice() {
 		return voice_[most_recent_voice_];
 	}
-	
+
 	void fill(Dac::Buffer *buffer, const size_t size) {
 		std::fill(&buffer[0].channel[0], &buffer[size].channel[0], 0);
 
