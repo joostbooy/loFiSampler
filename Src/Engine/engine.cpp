@@ -3,7 +3,7 @@
 Engine engine;
 
 void Engine::init(Uart *uart, Usb* usb) {
-	//midiEngine_.init(uart, usb);
+	midiEngine_.init(uart, usb);
 	modulationEngine_.init(&settings);
 	voiceEngine_.init(&settings);
 
