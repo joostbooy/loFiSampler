@@ -87,10 +87,6 @@ void Engine::process_gates() {
 	}
 }
 
-//void Engine::clock_start() {
-//	modulationEngine_.reset();
-//}
-
 // low priority
 void Engine::process_midi() {
 	MidiEngine::Event e;
