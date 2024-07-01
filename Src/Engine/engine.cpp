@@ -15,6 +15,8 @@ void Engine::init(Uart *uart, Usb* usb) {
 /*	Engine commands */
 
 void Engine::start() {
+	modulationEngine_.reset_lfos();
+
 	for (int i = 0; i < Midi::NUM_PORTS; ++i) {
 		if (settings.midi().send_clock(i)) {
 			midiEngine_.write(i, MidiEngine::CLOCK_START);
