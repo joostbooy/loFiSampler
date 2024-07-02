@@ -36,7 +36,7 @@ namespace ListPage {
 
 	void set_list(SettingsList *list) {
 		list_ = list;
-		list_->select_item(0);
+		list_->set_top_item(0);
 
 		window.set_row_items_total(list_->num_items());
 		window.scroll_to_row(list_->top_item());

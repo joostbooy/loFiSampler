@@ -11,21 +11,21 @@ public:
 		return top_item_;
 	}
 
-	void select_item(int item) {
+	void set_top_item(int item) {
 		top_item_ = stmlib::clip(0, num_items() - 1, item);
 	}
 
 	void on_up_button() {
-		int value = top_item() - 4;
-		if (value >= 0)  {
-			select_item(value);
+		int item = top_item() - 4;
+		if (item >= 0)  {
+			set_top_item(item);
 		}
 	}
 
 	void on_down_button() {
-		int value = top_item() + 4;
-		if (value < num_items())  {
-			select_item(value);
+		int item = top_item() + 4;
+		if (item < num_items())  {
+			set_top_item(item);
 		}
 	}
 
