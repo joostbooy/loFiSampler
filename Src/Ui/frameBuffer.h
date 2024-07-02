@@ -1,7 +1,7 @@
 #ifndef FrameBuffer_h
 #define FrameBuffer_h
 
-#include "stmf4lib.h"
+#include "stm32f4xx.h"
 
 // 4 bit grayscale buffer
 

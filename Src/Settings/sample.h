@@ -2,6 +2,7 @@
 #define Sample_h
 
 #include "settingsText.h"
+#include "settingsUtils.h"
 #include "sampleData.h"
 #include "stringUtils.h"
 #include "fileWriter.h"
@@ -89,7 +90,7 @@ public:
 
 	// start
 	void set_start(size_t value) {
-		start_ = stmlib::clip(0, end() - 1, value);
+		start_ = SettingsUtils::clip(0, end() - 1, value);
 	}
 
 	size_t start() {
@@ -102,7 +103,7 @@ public:
 
 	// end
 	void set_end(size_t value) {
-		end_ = stmlib::clip(start() + 1, size(), value);
+		end_ = SettingsUtils::clip(start() + 1, size(), value);
 	}
 
 	size_t end() {
@@ -115,7 +116,7 @@ public:
 
 	// loop start
 	void set_loop_start(size_t value) {
-		loop_start_ = stmlib::clip(1, loop_end(), value);
+		loop_start_ = SettingsUtils::clip(1, loop_end(), value);
 	}
 
 	size_t loop_start() {
@@ -128,7 +129,7 @@ public:
 
 	// loop end
 	void set_loop_end(size_t value) {
-		loop_end_ = stmlib::clip(loop_start(), size() - 1, value);
+		loop_end_ = SettingsUtils::clip(loop_start(), size() - 1, value);
 	}
 
 	size_t loop_end() {
@@ -154,7 +155,7 @@ public:
 
 	// Cents
 	void set_cents(int value) {
-		cents_ = stmlib::clip(-99, 99, value);
+		cents_ = SettingsUtils::clip(-99, 99, value);
 	}
 
 	int cents() {
@@ -167,7 +168,7 @@ public:
 
 	// Root note
 	void set_root_note(uint8_t value) {
-		root_note_ = stmlib::clip(0, 127, value);
+		root_note_ = SettingsUtils::clip(0, 127, value);
 	}
 
 	uint8_t root_note() {
@@ -180,7 +181,7 @@ public:
 
 	// Key range low
 	void set_key_range_low(uint8_t value) {
-		key_range_low_ = stmlib::clip(0, key_range_high(), value);
+		key_range_low_ = SettingsUtils::clip(0, key_range_high(), value);
 	}
 
 	uint8_t key_range_low() {
@@ -193,7 +194,7 @@ public:
 
 	// Key range high
 	void set_key_range_high(uint8_t value) {
-		key_range_low_ = stmlib::clip(key_range_low(), 127, value);
+		key_range_low_ = SettingsUtils::clip(key_range_low(), 127, value);
 	}
 
 	uint8_t key_range_high() {
@@ -210,7 +211,7 @@ public:
 
 	// Play mode
 	void set_play_mode(uint8_t value) {
-		play_mode_ = stmlib::clip(0, NUM_PLAY_MODES - 1, value);
+		play_mode_ = SettingsUtils::clip(0, NUM_PLAY_MODES - 1, value);
 	}
 
 	uint8_t play_mode() {
@@ -236,7 +237,7 @@ public:
 
 	// Gain
 	void set_gain(float value) {
-		gain_ = stmlib::clip_float(value);
+		gain_ = SettingsUtils::clip_float(value);
 	}
 
 	float gain() {
@@ -253,7 +254,7 @@ public:
 	}
 
 	void set_pan(float value) {
-		pan_ = stmlib::clip_float(value);
+		pan_ = SettingsUtils::clip_float(value);
 	}
 
 	const char* pan_text() {

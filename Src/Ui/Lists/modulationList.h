@@ -81,7 +81,7 @@ public:
 			modulation.set_midi_cc_number(3, modulation.midi_cc_number(3) + (inc * (shifted ? 10 : 1)));
 			break;
 		case GATE_INDEX:
-			selected_gate_ = stmlib::clip(0, Modulation::kNumGatesToNote - 1, selected_gate_ + inc);
+			selected_gate_ = SettingsUtils::clip(0, Modulation::kNumGatesToNote - 1, selected_gate_ + inc);
 			break;
 		case GATE_PORT:
 			kill_midi(modulation, selected_gate_);

@@ -1,8 +1,8 @@
 #ifndef Pages_h
 #define Pages_h
 
-#include "stmf4lib.h"
-#include "StringBuilder.h"
+#include "stm32f4xx.h"
+#include "stringBuilder.h"
 
 class Pages {
 

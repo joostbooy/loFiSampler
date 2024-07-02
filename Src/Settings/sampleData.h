@@ -1,7 +1,8 @@
 #ifndef SampleData_h
 #define SampleData_h
 
-#include "stmf4lib.h"
+#include <cstddef>
+#include <stdint.h>
 
 class SampleData {
 

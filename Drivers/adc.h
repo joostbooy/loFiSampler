@@ -1,7 +1,7 @@
 #ifndef adc_h
 #define adc_h
 
-#include "stmf4lib.h"
+#include "stm32f4xx.h"
 
 
 class Adc {

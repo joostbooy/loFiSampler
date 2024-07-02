@@ -1,12 +1,7 @@
-#ifndef StmLib_h
-#define StmLib_h
+#ifndef SettingsUtils_h
+#define SettingsUtils_h
 
-#include "stm32f4xx.h"
-
-#define CCM_RAM __attribute__((section(".ccmram")))
-#define FORCE_INLINE __attribute__((always_inline))
-
-class stmlib {
+class SettingsUtils {
 
 public:
 

@@ -5,6 +5,7 @@
 #include "fileReader.h"
 #include "lookupTables.h"
 #include "settingsText.h"
+#include "settingsUtils.h"
 
 class Midi {
 
@@ -59,7 +60,7 @@ public:
 	}
 
 	void set_bpm(int value) {
-		bpm_ = stmlib::clip(1, MAX_BPM - 1, value);
+		bpm_ = SettingsUtils::clip(1, MAX_BPM - 1, value);
 	}
 
 	const char *bpm_text() {
@@ -72,7 +73,7 @@ public:
 	}
 
 	void set_clock_source(int value) {
-		clock_source_ = stmlib::clip(0, NUM_CLOCK_SOURCES - 1, value);
+		clock_source_ = SettingsUtils::clip(0, NUM_CLOCK_SOURCES - 1, value);
 	}
 
 	const char* clock_source_text() {

@@ -2,6 +2,7 @@
 #define Instrument_h
 
 #include "settingsText.h"
+#include "settingsUtils.h"
 #include "dac.h"
 #include "fileWriter.h"
 #include "fileReader.h"
@@ -122,7 +123,7 @@ public:
 	}
 
 	void set_pan(float value) {
-		pan_ = stmlib::clip_float(value);
+		pan_ = SettingsUtils::clip_float(value);
 	}
 
 	const char* pan_text() {
@@ -135,7 +136,7 @@ public:
 	}
 
 	void set_midi_channel(int8_t value) {
-		midi_channel_ = stmlib::clip(0, 16, value);
+		midi_channel_ = SettingsUtils::clip(0, 16, value);
 	}
 
 	const char* midi_channel_text() {
@@ -152,7 +153,7 @@ public:
 	}
 
 	void set_midi_port(int8_t value) {
-		midi_port_ = stmlib::clip(0, Midi::NUM_PORTS - 1, value);
+		midi_port_ = SettingsUtils::clip(0, Midi::NUM_PORTS - 1, value);
 	}
 
 	const char* midi_port_text() {
@@ -169,7 +170,7 @@ public:
 
 	// Bit depth
 	void set_bit_depth(int value) {
-		bit_depth_ = stmlib::clip(2, 16, value);
+		bit_depth_ = SettingsUtils::clip(2, 16, value);
 	}
 
 	uint8_t bit_depth() {
@@ -190,7 +191,7 @@ public:
 	}
 
 	void set_sample_rate(int8_t value) {
-		sample_rate_ = stmlib::clip(0, NUM_SAMPLE_RATES - 1, value);
+		sample_rate_ = SettingsUtils::clip(0, NUM_SAMPLE_RATES - 1, value);
 	}
 
 	const char* sample_rate_text() {
@@ -216,7 +217,7 @@ public:
 	}
 
 	void set_audio_channel(int8_t value) {
-		audio_channel_ = stmlib::clip(0, (Dac::kNumChannels / 2) - 1, value);
+		audio_channel_ = SettingsUtils::clip(0, (Dac::kNumChannels / 2) - 1, value);
 	}
 
 	const char* audio_channel_text() {
@@ -230,7 +231,7 @@ public:
 	}
 
 	void set_bend_range(int value) {
-		bend_range_ = stmlib::clip(0, 24, value);
+		bend_range_ = SettingsUtils::clip(0, 24, value);
 	}
 
 	const char* bend_range_text() {
@@ -243,7 +244,7 @@ public:
 	}
 
 	void set_bend(float value) {
-		bend_ = stmlib::clip_float(value);
+		bend_ = SettingsUtils::clip_float(value);
 	}
 
 	const char* bend_text() {
@@ -269,7 +270,7 @@ public:
 	}
 
 	void set_gain(float value) {
-		gain_ = stmlib::clip_float(value);
+		gain_ = SettingsUtils::clip_float(value);
 	}
 
 	const char *gain_text() {

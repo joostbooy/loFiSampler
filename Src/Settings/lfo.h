@@ -2,6 +2,7 @@
 #define Lfo_h
 
 #include "settingsText.h"
+#include "settingsUtils.h"
 #include "fileWriter.h"
 #include "fileReader.h"
 #include "midi.h"
@@ -29,7 +30,7 @@ public:
 	}
 
 	void set_speed(float value) {
-		speed_ = stmlib::clip_float(value);
+		speed_ = SettingsUtils::clip_float(value);
 	}
 
 	const char *speed_text() {
@@ -54,7 +55,7 @@ public:
 	}
 
 	void set_shape(float value) {
-		shape_ = stmlib::clip_float(value);
+		shape_ = SettingsUtils::clip_float(value);
 	}
 
 	const char *shape_text() {
@@ -67,7 +68,7 @@ public:
 	}
 
 	void set_skew(float value) {
-		skew_ = stmlib::clip_float(value);
+		skew_ = SettingsUtils::clip_float(value);
 	}
 
 	const char *skew_text() {
@@ -80,7 +81,7 @@ public:
 	}
 
 	void set_min(float value) {
-		min_ = stmlib::clip_float(value);
+		min_ = SettingsUtils::clip_float(value);
 	}
 
 	const char *min_text() {
@@ -93,7 +94,7 @@ public:
 	}
 
 	void set_max(float value) {
-		max_ = stmlib::clip_float(value);
+		max_ = SettingsUtils::clip_float(value);
 	}
 
 	const char *max_text() {
@@ -132,7 +133,7 @@ public:
 	}
 
 	void set_retrigger_port(uint8_t value) {
-		retrigger_port_ = stmlib::clip(0, Midi::NUM_PORTS - 1, value);
+		retrigger_port_ = SettingsUtils::clip(0, Midi::NUM_PORTS - 1, value);
 	}
 
 	const char *retrigger_port_text() {
@@ -150,7 +151,7 @@ public:
 	}
 
 	void set_retrigger_channel(int value) {
-		retrigger_channel_ = stmlib::clip(-1, 16, value);
+		retrigger_channel_ = SettingsUtils::clip(-1, 16, value);
 	}
 
 	const char *retrigger_channel_text() {

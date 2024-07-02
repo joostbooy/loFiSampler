@@ -8,6 +8,7 @@
 #include "instrument.h"
 #include "envelope.h"
 #include "stringBuilder.h"
+#include "settingsUtils.h"
 
 class Settings {
 
@@ -67,7 +68,7 @@ public:
 	}
 
 	void select_sample_index(int index) {
-		//selected_sample_index_ = stmlib::clip(0, instrument(0).num_samples() - 1, index);
+		//selected_sample_index_ = SettingsUtils::clip(0, instrument(0).num_samples() - 1, index);
 	}
 
 	Sample &selected_sample() {
@@ -84,7 +85,7 @@ public:
 	}
 
 	void select_envelope_index(int index) {
-		selected_envelope_index_ = stmlib::clip(0, kNumEnvelopes - 1, index);
+		selected_envelope_index_ = SettingsUtils::clip(0, kNumEnvelopes - 1, index);
 	}
 
 	Envelope &selected_envelope() {
@@ -101,7 +102,7 @@ public:
 	}
 
 	void select_lfo_index(int index) {
-		selected_lfo_index_ = stmlib::clip(0, kNumLfos - 1, index);
+		selected_lfo_index_ = SettingsUtils::clip(0, kNumLfos - 1, index);
 	}
 
 	Lfo &selected_lfo() {
@@ -118,7 +119,7 @@ public:
 	}
 
 	void select_instrument_index(int index) {
-		selected_instrument_index_ = stmlib::clip(0, selected_instrument_index_ - 1, index);
+		selected_instrument_index_ = SettingsUtils::clip(0, selected_instrument_index_ - 1, index);
 		//set_selected_sample(selected_sample_index_);
 	}
 

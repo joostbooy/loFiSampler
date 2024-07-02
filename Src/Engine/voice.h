@@ -183,9 +183,9 @@ private:
 
 	inline float get_inc(int note, int root_note, int bend_range, float bend, int cents) {
 		int semitone = 128 - (note - root_note);
-		float a = lut_semitone_ratio[stmlib::clip_min(0, semitone - bend_range)];
+		float a = lut_semitone_ratio[SettingsUtils::clip_min(0, semitone - bend_range)];
 		float b = lut_semitone_ratio[semitone];
-		float c = lut_semitone_ratio[stmlib::clip_max(255, semitone + bend_range)];
+		float c = lut_semitone_ratio[SettingsUtils::clip_max(255, semitone + bend_range)];
 		return Dsp::cross_fade(a, b, c, bend) * lut_cent_ratio[cents + 99] * state_;
 	}
 

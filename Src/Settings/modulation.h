@@ -2,6 +2,7 @@
 #define Modulation_h
 
 #include "settingsText.h"
+#include "settingsUtils.h"
 #include "fileWriter.h"
 #include "fileReader.h"
 #include "midiEngine.h"
@@ -32,7 +33,7 @@ public:
 	}
 
 	void set_midi_cc_number(int index, int cc_number) {
-		midi_cc_number_[index] = stmlib::clip(0, 127, cc_number);
+		midi_cc_number_[index] = SettingsUtils::clip(0, 127, cc_number);
 	}
 
 	const char* midi_cc_number_text(int index) {
@@ -50,7 +51,7 @@ public:
 	}
 
 	void set_gate_to_midi_port(uint8_t gate, uint8_t port) {
-		gate_to_midi_[gate].port = stmlib::clip(0, Midi::NUM_PORTS - 1, port);
+		gate_to_midi_[gate].port = SettingsUtils::clip(0, Midi::NUM_PORTS - 1, port);
 	}
 
 	const char *gate_to_midi_port_text(uint8_t gate) {
@@ -64,7 +65,7 @@ public:
 	}
 
 	void set_gate_to_midi_channel(uint8_t gate, uint8_t chn) {
-		gate_to_midi_[gate].message = stmlib::clip(0, 15, chn);
+		gate_to_midi_[gate].message = SettingsUtils::clip(0, 15, chn);
 	}
 
 	const char *gate_to_midi_channel_text(uint8_t gate) {
@@ -77,7 +78,7 @@ public:
 	}
 
 	void set_gate_to_midi_note(uint8_t gate, uint8_t note) {
-		gate_to_midi_[gate].data[0] = stmlib::clip(0, 127, note);
+		gate_to_midi_[gate].data[0] = SettingsUtils::clip(0, 127, note);
 	}
 
 	const char *gate_to_midi_note_text(uint8_t gate) {
@@ -90,7 +91,7 @@ public:
 	}
 
 	void set_gate_to_midi_velocity(uint8_t gate, uint8_t vel) {
-		gate_to_midi_[gate].data[1] = stmlib::clip(0, 127, vel);
+		gate_to_midi_[gate].data[1] = SettingsUtils::clip(0, 127, vel);
 	}
 
 	const char *gate_to_midi_velocity_text(uint8_t gate) {

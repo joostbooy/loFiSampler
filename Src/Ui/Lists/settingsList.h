@@ -12,7 +12,7 @@ public:
 	}
 
 	void set_top_item(int item) {
-		top_item_ = stmlib::clip(0, num_items() - 1, item);
+		top_item_ = SettingsUtils::clip(0, num_items() - 1, item);
 	}
 
 	void on_up_button() {

@@ -1,7 +1,7 @@
 #ifndef Sdio_h
 #define Sdio_h
 
-#include "stmf4lib.h"
+#include "stm32f4xx.h"
 #include "micros.h"
 
 // Based on:
