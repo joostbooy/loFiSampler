@@ -31,49 +31,51 @@ public:
 		BOTTOM,
 	};
 
-	//Frame buffer
-	static const int width_ = 256;
-	static const int height_ = 64;
-	const int width() { return Canvas::width_; }
-	const int height() { return Canvas::height_; }
+	//Frame frameBuffer_
+	static constexpr size_t width() { return kWidth; }
+	static constexpr size_t height() { return kHeight; }
+	const size_t size() { return frameBuffer_.size(); }
+	uint8_t *data() { return frameBuffer_.data(); }
 
-	FrameBuffer <width_, height_> buffer;
 
 	void init() {
-		buffer.clear();
 		set_font(Font::SMALL);
 	}
 
+	void clear() {
+		frameBuffer_.clear();
+	}
+
 	void draw_pixel(int x, int y, Color color) {
-		if (buffer.inside(x, y) == false) {
+		if (frameBuffer_.inside(x, y) == false) {
 			return;
 		}
 
 		switch (color)
 		{
 		case WHITE:
-			buffer.write(x, y, 0x00);
+			frameBuffer_.write(x, y, 0x00);
 			break;
 		case LIGHT_GRAY:
-			buffer.write(x, y, 0x04);
+			frameBuffer_.write(x, y, 0x04);
 			break;
 		case GRAY:
-			buffer.write(x, y, 0x07);
+			frameBuffer_.write(x, y, 0x07);
 			break;
 		case DARK_GRAY:
-			buffer.write(x, y, 0x0C);
+			frameBuffer_.write(x, y, 0x0C);
 			break;
 		case BLACK:
-			buffer.write(x, y, 0x0F);
+			frameBuffer_.write(x, y, 0x0F);
 			break;
 		case INVERTED:
-			buffer.write(x, y, buffer.read(x, y) ^ 0xFF);
+			frameBuffer_.write(x, y, frameBuffer_.read(x, y) ^ 0xFF);
 			break;
 		case SUBTRACTED:
-			buffer.write(x, y, buffer.read(x, y) / 3);
+			frameBuffer_.write(x, y, frameBuffer_.read(x, y) / 3);
 			break;
 		case MULTIPLIED:
-			buffer.write(x, y, stmlib::clip_max(0xF, buffer.read(x, y) * 3));
+			frameBuffer_.write(x, y, stmlib::clip_max(0xF, frameBuffer_.read(x, y) * 3));
 			break;
 		default:
 			break;
@@ -204,6 +206,10 @@ private:
 	int text_cursor_ = 0;
 	Color font_color = BLACK;
 	Color bitmap_color = BLACK;
+
+	static const size_t kWidth = 256;
+	static const size_t kHeight = 64;
+	FrameBuffer <kWidth, kHeight> frameBuffer_;
 };
 
 extern Canvas canvas;

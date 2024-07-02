@@ -104,9 +104,9 @@ void Ui::process() {
 void Ui::send_display() {
 	while (display.dma_busy());
 	display_interval = 0;
-	canvas.buffer.clear();
+	canvas.clear();
 	pages.drawDisplay();
-	display.sendBuffer(canvas.buffer.data(), canvas.buffer.size());
+	display.sendBuffer(canvas.data(), canvas.size());
 }
 
 void Ui::clear_que() {
