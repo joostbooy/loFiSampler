@@ -1,7 +1,7 @@
 #ifndef SettingsList_h
 #define SettingsList_h
 
-#include "uiText.h"
+#include "settingsText.h"
 
 class SettingsList {
 

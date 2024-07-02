@@ -1,7 +1,7 @@
 #ifndef Lfo_h
 #define Lfo_h
 
-#include "uiText.h"
+#include "settingsText.h"
 #include "fileWriter.h"
 #include "fileReader.h"
 #include "midi.h"
@@ -58,7 +58,7 @@ public:
 	}
 
 	const char *shape_text() {
-		return UiText::float_to_text(shape(), -100, 100);
+		return SettingsText::float_to_text(shape(), -100, 100);
 	}
 
 	// Skew
@@ -71,7 +71,7 @@ public:
 	}
 
 	const char *skew_text() {
-		return UiText::float_to_text(skew(), -100, 100);
+		return SettingsText::float_to_text(skew(), -100, 100);
 	}
 
 	// Min
@@ -84,7 +84,7 @@ public:
 	}
 
 	const char *min_text() {
-		return UiText::float_to_text(min(), 0, 100);
+		return SettingsText::float_to_text(min(), 0, 100);
 	}
 
 	// Max
@@ -97,7 +97,7 @@ public:
 	}
 
 	const char *max_text() {
-		return UiText::float_to_text(max(), 0, 100);
+		return SettingsText::float_to_text(max(), 0, 100);
 	}
 
 	// clock sync
@@ -110,7 +110,7 @@ public:
 	}
 
 	const char *clock_sync_text() {
-		return UiText::bool_to_on_off(clock_sync());
+		return SettingsText::bool_to_on_off(clock_sync());
 	}
 
 	// Randomise
@@ -123,7 +123,7 @@ public:
 	}
 
 	const char *randomise_text() {
-		return UiText::bool_to_on_off(clock_sync());
+		return SettingsText::bool_to_on_off(clock_sync());
 	}
 
 	// Retrigger port
@@ -154,7 +154,7 @@ public:
 	}
 
 	const char *retrigger_channel_text() {
-		return UiText::midi_channel_text(retrigger_channel());
+		return SettingsText::midi_channel_text(retrigger_channel());
 	}
 
 	bool retrigger_channel_accepted(int channel) {

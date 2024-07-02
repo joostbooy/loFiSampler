@@ -1,8 +1,8 @@
 #ifndef EnvelopeList_h
 #define EnvelopeList_h
 
-#include "uiText.h"
 #include "settings.h"
+#include "settingsText.h"
 
 class EnvelopeList : public SettingsList {
 
@@ -54,7 +54,7 @@ public:
 
 		switch (item)
 		{
-		case INDEX:			return UiText::int_to_text(settings.selected_envelope_index() + 1);
+		case INDEX:			return SettingsText::int_to_text(settings.selected_envelope_index() + 1);
 		case MODE:			return envelope.mode_text();
 		case CLOCK_SYNC:	return envelope.clock_sync_text();
 		case ATTACK_TIME:	return envelope.attack_time_text();

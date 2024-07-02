@@ -1,7 +1,7 @@
 #ifndef Envelope_h
 #define Envelope_h
 
-#include "uiText.h"
+#include "settingsText.h"
 #include "fileWriter.h"
 #include "fileReader.h"
 #include "midiSync.h"
@@ -51,7 +51,7 @@ public:
 	}
 
 	const char *clock_sync_text() {
-		return UiText::bool_to_on_off(clock_sync());
+		return SettingsText::bool_to_on_off(clock_sync());
 	}
 
 	// Mode
@@ -102,7 +102,7 @@ public:
 	}
 
 	const char *attack_shape_text() {
-		return UiText::float_to_text(attack_shape(), -100, 100);
+		return SettingsText::float_to_text(attack_shape(), -100, 100);
 	}
 
 	// Decay time
@@ -140,7 +140,7 @@ public:
 	}
 
 	const char *decay_shape_text() {
-		return UiText::float_to_text(decay_shape(), -100, 100);
+		return SettingsText::float_to_text(decay_shape(), -100, 100);
 	}
 
 	// Hold time
@@ -183,7 +183,7 @@ public:
 	}
 
 	const char *sustain_level_text() {
-		return UiText::float_to_text(sustain_level(), 0, 100);
+		return SettingsText::float_to_text(sustain_level(), 0, 100);
 	}
 
 	// Release time
@@ -221,7 +221,7 @@ public:
 	}
 
 	const char *release_shape_text() {
-		return UiText::float_to_text(release_shape(), -100, 100);
+		return SettingsText::float_to_text(release_shape(), -100, 100);
 	}
 
 	// Storage

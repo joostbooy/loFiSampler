@@ -1,7 +1,7 @@
 #ifndef Modulation_h
 #define Modulation_h
 
-#include "uiText.h"
+#include "settingsText.h"
 #include "fileWriter.h"
 #include "fileReader.h"
 #include "midiEngine.h"
@@ -36,7 +36,7 @@ public:
 	}
 
 	const char* midi_cc_number_text(int index) {
-		return UiText::str.write("CC ", midi_cc_number(index));
+		return SettingsText::str.write("CC ", midi_cc_number(index));
 	}
 
 	// Gate to midi
@@ -68,7 +68,7 @@ public:
 	}
 
 	const char *gate_to_midi_channel_text(uint8_t gate) {
-		return UiText::str.write("CHN ", gate_to_midi_channel(gate) + 1);
+		return SettingsText::str.write("CHN ", gate_to_midi_channel(gate) + 1);
 	}
 
 	// note
@@ -81,7 +81,7 @@ public:
 	}
 
 	const char *gate_to_midi_note_text(uint8_t gate) {
-		return UiText::note_to_text(gate_to_midi_note(gate));
+		return SettingsText::note_to_text(gate_to_midi_note(gate));
 	}
 
 	// velocity
@@ -94,7 +94,7 @@ public:
 	}
 
 	const char *gate_to_midi_velocity_text(uint8_t gate) {
-		return UiText::str.write("VEL ", gate_to_midi_velocity(gate));
+		return SettingsText::str.write("VEL ", gate_to_midi_velocity(gate));
 	}
 
 

@@ -6,6 +6,7 @@
 #include "controller.h"
 #include "engine.h"
 #include "messagePainter.h"
+#include "chapterPage.h"
 
 namespace TopPage {
 	//Declarations
@@ -40,6 +41,7 @@ namespace TopPage {
 
 	void onButton(uint8_t id, uint8_t state) {
 		Controller::on_button(id, state);
+		ChapterPage::onButton(id, state);
 	}
 
 	void drawLeds() {

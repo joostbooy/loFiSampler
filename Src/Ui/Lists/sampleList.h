@@ -1,8 +1,8 @@
 #ifndef SampleList_h
 #define SampleList_h
 
-#include "uiText.h"
 #include "settings.h"
+#include "settingsText.h"
 
 class SampleList : public SettingsList {
 

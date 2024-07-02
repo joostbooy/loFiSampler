@@ -1,8 +1,8 @@
 #ifndef ModulationList_h
 #define ModulationList_h
 
-#include "uiText.h"
 #include "settings.h"
+#include "settingsText.h"
 
 class ModulationList : public SettingsList {
 
@@ -53,7 +53,7 @@ public:
 		case MIDI_CC_B:		return modulation.midi_cc_number_text(1);
 		case MIDI_CC_C:		return modulation.midi_cc_number_text(2);
 		case MIDI_CC_D:		return modulation.midi_cc_number_text(3);
-		case GATE_INDEX:	return UiText::int_to_text(selected_gate_ + 1);
+		case GATE_INDEX:	return SettingsText::int_to_text(selected_gate_ + 1);
 		case GATE_PORT:		return modulation.gate_to_midi_port_text(selected_gate_);
 		case GATE_CHANNEL:	return modulation.gate_to_midi_channel_text(selected_gate_);
 		case GATE_NOTE:		return modulation.gate_to_midi_note_text(selected_gate_);

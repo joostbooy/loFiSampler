@@ -1,7 +1,7 @@
 #ifndef Sample_h
 #define Sample_h
 
-#include "uiText.h"
+#include "settingsText.h"
 #include "sampleData.h"
 #include "stringUtils.h"
 #include "fileWriter.h"
@@ -76,7 +76,7 @@ public:
 	}
 
 	const char *size_text() {
-		return UiText::str.write(size());
+		return SettingsText::str.write(size());
 	}
 
 	bool is_stereo() {
@@ -97,7 +97,7 @@ public:
 	}
 
 	const char *start_text() {
-		return UiText::str.write(start());
+		return SettingsText::str.write(start());
 	}
 
 	// end
@@ -110,7 +110,7 @@ public:
 	}
 
 	const char *end_text() {
-		return UiText::str.write(end());
+		return SettingsText::str.write(end());
 	}
 
 	// loop start
@@ -123,7 +123,7 @@ public:
 	}
 
 	const char *loop_start_text() {
-		return UiText::str.write(loop_start());
+		return SettingsText::str.write(loop_start());
 	}
 
 	// loop end
@@ -136,7 +136,7 @@ public:
 	}
 
 	const char *loop_end_text() {
-		return UiText::str.write(loop_end());
+		return SettingsText::str.write(loop_end());
 	}
 
 	// loop
@@ -149,7 +149,7 @@ public:
 	}
 
 	const char *loop_text() {
-		return UiText::bool_to_on_off(loop());
+		return SettingsText::bool_to_on_off(loop());
 	}
 
 	// Cents
@@ -162,7 +162,7 @@ public:
 	}
 
 	const char *cents_text() {
-		return UiText::str.write(cents());
+		return SettingsText::str.write(cents());
 	}
 
 	// Root note
@@ -175,7 +175,7 @@ public:
 	}
 
 	const char *root_note_text() {
-		return UiText::note_to_text(root_note());
+		return SettingsText::note_to_text(root_note());
 	}
 
 	// Key range low
@@ -188,7 +188,7 @@ public:
 	}
 
 	const char *key_range_low_text() {
-		return UiText::note_to_text(key_range_low());
+		return SettingsText::note_to_text(key_range_low());
 	}
 
 	// Key range high
@@ -201,7 +201,7 @@ public:
 	}
 
 	const char *key_range_high_text() {
-		return UiText::note_to_text(key_range_high());
+		return SettingsText::note_to_text(key_range_high());
 	}
 
 	bool within_key_range(uint8_t key) {
@@ -231,7 +231,7 @@ public:
 	}
 
 	const char *u_turn_text() {
-		return UiText::bool_to_on_off(u_turn());
+		return SettingsText::bool_to_on_off(u_turn());
 	}
 
 	// Gain
@@ -244,7 +244,7 @@ public:
 	}
 
 	const char *gain_text() {
-		return UiText::float_to_text(0, 100, gain());
+		return SettingsText::float_to_text(0, 100, gain());
 	}
 
 	// pan
@@ -257,7 +257,7 @@ public:
 	}
 
 	const char* pan_text() {
-		return UiText::float_to_text(-100, 100, pan());
+		return SettingsText::float_to_text(-100, 100, pan());
 	}
 
 

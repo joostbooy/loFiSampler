@@ -1,7 +1,7 @@
 #ifndef Instrument_h
 #define Instrument_h
 
-#include "uiText.h"
+#include "settingsText.h"
 #include "dac.h"
 #include "fileWriter.h"
 #include "fileReader.h"
@@ -126,7 +126,7 @@ public:
 	}
 
 	const char* pan_text() {
-		return UiText::float_to_text(-100, 100, pan());
+		return SettingsText::float_to_text(-100, 100, pan());
 	}
 
 	// Midi channel
@@ -139,7 +139,7 @@ public:
 	}
 
 	const char* midi_channel_text() {
-		return UiText::midi_channel_text(midi_channel());
+		return SettingsText::midi_channel_text(midi_channel());
 	}
 
 	bool midi_channel_accepted(int channel) {
@@ -177,7 +177,7 @@ public:
 	}
 
 	const char *bit_depth_text() {
-		return UiText::str.write(bit_depth(), " BIT");
+		return SettingsText::str.write(bit_depth(), " BIT");
 	}
 
 	uint8_t bit_shifts() {
@@ -221,7 +221,7 @@ public:
 
 	const char* audio_channel_text() {
 		int chn = (audio_channel() * 2) + 1;
-		return UiText::str.write(chn, " & ", chn + 1);
+		return SettingsText::str.write(chn, " & ", chn + 1);
 	}
 
 	// Bend range
@@ -234,7 +234,7 @@ public:
 	}
 
 	const char* bend_range_text() {
-		return UiText::str.write(bend_range(), " SEMITONES");
+		return SettingsText::str.write(bend_range(), " SEMITONES");
 	}
 
 	// Bend
@@ -247,7 +247,7 @@ public:
 	}
 
 	const char* bend_text() {
-		return UiText::str.write(Dsp::cross_fade(-1, 1, bend()));
+		return SettingsText::str.write(Dsp::cross_fade(-1, 1, bend()));
 	}
 
 	// name
@@ -273,7 +273,7 @@ public:
 	}
 
 	const char *gain_text() {
-		return UiText::percentage_to_text(gain() * 100, 100);
+		return SettingsText::percentage_to_text(gain() * 100, 100);
 	}
 
 

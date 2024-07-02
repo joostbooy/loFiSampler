@@ -1,7 +1,7 @@
 #ifndef MidiSync_h
 #define MidiSync_h
 
-#include "uiText.h"
+#include "settingsText.h"
 #include "midiClockEngine.h"
 
 class MidiSync {
@@ -34,7 +34,7 @@ public:
 	static const char *tempo_text(int value) {
 		int type = value % 3;
 		int divisor = (value / 3) + 1;
-		return UiText::str.write("1/", divisor, tempo_type_text(type));
+		return SettingsText::str.write("1/", divisor, tempo_type_text(type));
 	}
 
 	static float read_inc(int value) {

@@ -74,6 +74,10 @@ namespace SamplePage {
 	// Bottom to top
 	void drawDisplay() {
 		ListPage::drawDisplay();
+
+		// Todo
+		// draw waveform
+		// draw start, end & loop points
 	}
 
 	const uint16_t targetFps() {

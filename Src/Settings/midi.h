@@ -4,7 +4,7 @@
 #include "fileWriter.h"
 #include "fileReader.h"
 #include "lookupTables.h"
-#include "uiText.h"
+#include "settingsText.h"
 
 class Midi {
 
@@ -63,7 +63,7 @@ public:
 	}
 
 	const char *bpm_text() {
-		return UiText::str.write(bpm(), " BPM");
+		return SettingsText::str.write(bpm(), " BPM");
 	}
 
 	// clock source
@@ -89,7 +89,7 @@ public:
 	}
 
 	const char* send_clock_text(int port) {
-		return UiText::bool_to_on_off(send_clock(port));
+		return SettingsText::bool_to_on_off(send_clock(port));
 	}
 
 	// Storage

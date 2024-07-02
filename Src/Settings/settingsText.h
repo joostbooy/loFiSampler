@@ -1,11 +1,11 @@
-#ifndef UiText_h
-#define UiText_h
+#ifndef SettingsText_h
+#define SettingsText_h
 
 #include "stringBuilder.h"
 #include "font.h"
 #include "dsp.h"
 
-class UiText {
+class SettingsText {
 
 public:
 
@@ -47,6 +47,7 @@ public:
 
 		return str.read();
 	}
+
 	static const char* midi_channel_text(int channel) {
 		if (channel < 0) {
 			return "NONE";

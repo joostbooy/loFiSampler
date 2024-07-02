@@ -1,8 +1,8 @@
 #ifndef InstrumentList_h
 #define InstrumentList_h
 
-#include "uiText.h"
 #include "settings.h"
+#include "settingsText.h"
 
 class InstrumentList : public SettingsList {
 
@@ -51,7 +51,7 @@ public:
 
 		switch (item)
 		{
-		case INDEX:			return UiText::str.write(settings.selected_instrument_index() + 1);
+		case INDEX:			return SettingsText::int_to_text(settings.selected_instrument_index() + 1);
 		case PAN:			return instrument.pan_text();
 		case GAIN:			return instrument.gain_text();
 		case BEND:			return instrument.bend_text();

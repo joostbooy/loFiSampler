@@ -1,8 +1,8 @@
 #ifndef MidiList_h
 #define MidiList_h
 
-#include "uiText.h"
 #include "settings.h"
+#include "settingsText.h"
 
 class MidiList : public SettingsList {
 
