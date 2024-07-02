@@ -1,13 +1,10 @@
 #ifndef Canvas_h
 #define Canvas_h
 
-#include "stm32f4xx.h"
-#include "frameBuffer.h"
 #include "font.h"
 #include "bitmap.h"
-#include "stringUtils.h"
+#include "frameBuffer.h"
 #include "settingsUtils.h"
-#include "dsp.h"
 
 class Canvas {
 
