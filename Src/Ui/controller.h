@@ -1,7 +1,7 @@
 #ifndef Controller_h
 #define Controller_h
 
-#include "stm32f4xx.h"
+#include <stdint.h>
 
 #define SERIAL_ID(collumn, row) ((collumn * 8) + row)
 

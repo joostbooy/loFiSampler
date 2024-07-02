@@ -1,8 +1,8 @@
 #ifndef Ui_h
 #define Ui_h
 
-#include "stm32f4xx.h"
 #include "que.h"
+#include <stdint.h>
 
 class Ui {
 

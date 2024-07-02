@@ -1,7 +1,7 @@
 #ifndef Pages_h
 #define Pages_h
 
-#include "stm32f4xx.h"
+#include <stdint.h>
 #include "stringBuilder.h"
 
 class Pages {
