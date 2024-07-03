@@ -1,84 +1,52 @@
 #ifndef EnvelopePage_h
 #define EnvelopePage_h
 
-#include "listPage.h"
+#include "page.h"
+#include "envelope.h"
 #include "envelopeList.h"
 
-namespace EnvelopePage {
-	//Declarations
-	void init();
-	void enter();
-	void exit();
-	void msTick(uint16_t ticks);
-	void drawDisplay();
-	void updateLeds();
-	void onButton(uint8_t id, uint8_t value);
-	void onEncoder(uint8_t id, int inc);
-	const uint16_t targetFps();
+class EnvelopePage : public Page {
 
-	// Variables
-	bool pasteable_;
-	Envelope envelope_;
-	EnvelopeList envelopeList;
+public:
 
-	void clear() {
-		settings.selected_envelope().init();
-	}
-
-	void copy() {
-		envelope_.paste(&settings.selected_envelope());
-		pasteable_ = true;
-	}
-
-	bool paste() {
-		if (pasteable_) {
-			settings.selected_envelope().paste(&envelope_);
-			return true;
-		}
-		return false;
-	}
-
-	void init() {
+	void init() override {
 		pasteable_ = false;
 		envelope_.init();
+		envelopeList_.init(engine_, settings_);
 	}
 
-	void enter() {
-		ListPage::set_list(&envelopeList);
-		ListPage::set_clear_callback(&clear);
-		ListPage::set_copy_callback(&copy);
-		ListPage::set_paste_callback(&paste);
-		ListPage::enter();
+	void enter() override {
+	//	pageManager_->pages(PageManager::LIST_PAGE)->set_list(&envelopeList_);
+		//ListPage::set_list(&envelopeList);
+		//ListPage::set_clear_callback(&clear);
+		//ListPage::set_copy_callback(&copy);
+		//ListPage::set_paste_callback(&paste);
+		//ListPage::enter();
 	}
 
-	void exit() {
-		ListPage::exit();
+	void exit() override {
+		pageManager_->pages(PageManager::LIST_PAGE)->exit();
 	}
 
-	void onEncoder(uint8_t id, int inc) {
-		ListPage::onEncoder(id, inc);
+	void on_button(int id, int state) override {
+		pageManager_->pages(PageManager::LIST_PAGE)->on_button(id, state);
 	}
 
-	void onButton(uint8_t id, uint8_t value) {
-		ListPage::onButton(id, value);
+	void on_encoder(int id, int state) override {
+		pageManager_->pages(PageManager::LIST_PAGE)->on_encoder(id, state);
 	}
 
-	void drawLeds() {
-		ListPage::drawLeds();
+	void draw_leds() override {
+		pageManager_->pages(PageManager::LIST_PAGE)->draw_leds();
 	}
 
-	void msTick(uint16_t ticks) {
-		ListPage::msTick(ticks);
-	}
-
-	// Bottom to top
-	void drawDisplay() {
-		ListPage::drawDisplay();
+	void draw_display() override {
+		pageManager_->pages(PageManager::LIST_PAGE)->draw_display();
 
 		Envelope envelope;
 		EnvelopeEngine envelopeEngine;
 
-		envelope.paste(&settings.selected_envelope());
+		envelope.paste(&settings_->selected_envelope());
 		envelope.set_clock_sync(false);
 		envelopeEngine.init(&envelope);
 
@@ -87,35 +55,42 @@ namespace EnvelopePage {
 		const int w = 32;
 		const int h = 32;
 
-		// Todo! figure out how many times we need to loop
 		for (int x2 = 0; x2 < 255; ++x2) {
-			//int x2 = w * envelopeEngine.phase();
 			int y2 = h * (1.f - envelopeEngine.next());
-			canvas.draw_pixel(x + x2, y + y2, Canvas::BLACK);
+			canvas_->draw_pixel(x + x2, y + y2, Canvas::BLACK);
 		}
 
-		int index = settings.selected_envelope_index();
-		float phase = engine.voiceEngine().most_recent_voice().envelopeEngine(index).phase();
+		int index = settings_->selected_envelope_index();
+		float phase = engine_->voiceEngine().most_recent_voice().envelopeEngine(index).phase();
 
-		canvas.vertical_line(x + (phase * w), y, h, Canvas::BLACK);
+		canvas_->vertical_line(x + (phase * w), y, h, Canvas::BLACK);
 	}
 
-	const uint16_t targetFps() {
-		return ListPage::targetFps();
+	const size_t target_fps() override {
+		return 1000 / 16;
 	}
 
-	const Pages::EventHandlers eventHandlers = {
-		&init,
-		&enter,
-		&exit,
-		&msTick,
-		&drawLeds,
-		&drawDisplay,
-		&onEncoder,
-		&onButton,
-		&targetFps,
-	};
+private:
+	bool pasteable_;
+	Envelope envelope_;
+	EnvelopeList envelopeList_;
 
+	void clear() {
+		settings_->selected_envelope().init();
+	}
+
+	void copy() {
+		envelope_.paste(&settings_->selected_envelope());
+		pasteable_ = true;
+	}
+
+	bool paste() {
+		if (pasteable_) {
+			settings_->selected_envelope().paste(&envelope_);
+			return true;
+		}
+		return false;
+	}
 
 };
 

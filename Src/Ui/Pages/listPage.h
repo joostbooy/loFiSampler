@@ -1,45 +1,19 @@
 #ifndef ListPage_h
 #define ListPage_h
 
-#include "pages.h"
-#include "canvas.h"
+#include "page.h"
 #include "settingsList.h"
-#include "confirmationPage.h"
 
-namespace ListPage {
-	//Declarations
-	void init();
-	void enter();
-	void exit();
-	void msTick(uint16_t ticks);
-	void drawDisplay();
-	void updateLeds();
-	void onButton(uint8_t id, uint8_t value);
-	void onEncoder(uint8_t id, int inc);
-	const uint16_t targetFps();
+class ListPage : public Page {
 
-	// Variables
-	void(*clear_callback_)() = nullptr;
-	void(*copy_callback_)() = nullptr;
-	bool(*paste_callback_)() = nullptr;
-
-	SettingsList *list_;
-
-	Window window = {
-		.x = 0,
-		.y = 12,
-		.width = canvas.width() - 1,
-		.height = 40,
-		.collumns = 4,
-		.rows = 2,
-	};
+public:
 
 	void set_list(SettingsList *list) {
 		list_ = list;
 		list_->set_top_item(0);
 
-		window.set_row_items_total(list_->num_items());
-		window.scroll_to_row(list_->top_item());
+	//	window.set_row_items_total(list_->num_items());
+	//	window.scroll_to_row(list_->top_item());
 	}
 
 	void set_clear_callback(void(*callback)()) {
@@ -54,30 +28,23 @@ namespace ListPage {
 		copy_callback_ = callback;
 	}
 
-	void init() {
+
+	void init() override {
 
 	}
 
-	void enter() {
+	void enter() override {
 
 	}
 
-	void exit() {
+	void exit() override {
 		clear_callback_ = nullptr;
 		paste_callback_ = nullptr;
 		copy_callback_ = nullptr;
 	}
 
-	void onEncoder(uint8_t id, int inc) {
-		int index = Controller::encoder_to_function(id);
-		if (index >= 0) {
-			bool pressed = Controller::encoder_is_pressed(index);
-			bool shifted = Controller::is_pressed(Controller::SHIFT_BUTTON);
-			list_->on_encoder(index, inc, pressed || shifted);
-		}
-	}
-
-	void onButton(uint8_t id, uint8_t value) {
+	void on_button(int id, int state) override {
+		/*
 		if (id == Controller::UP_BUTTON && value > 0) {
 			list_->on_up_button();
 			return;
@@ -94,7 +61,7 @@ namespace ListPage {
 					clear_callback_();
 				}
 			});
-			pages.open(Pages::CONFIRMATION_PAGE);
+			TopPage::ui_->pages().open(Pages::CONFIRMATION_PAGE);
 			return;
 		}
 
@@ -114,13 +81,24 @@ namespace ListPage {
 					}
 				}
 			});
-			pages.open(Pages::CONFIRMATION_PAGE);
+			TopPage::ui_->pages().open(Pages::CONFIRMATION_PAGE);
 			return;
 		}
-
+*/
 	}
 
-	void drawLeds() {
+	void on_encoder(int id, int state) override {
+		/*
+		int index = Controller::encoder_to_function(id);
+		if (index >= 0) {
+			bool pressed = Controller::encoder_is_pressed(index);
+			bool shifted = Controller::is_pressed(Controller::SHIFT_BUTTON);
+			list_->on_encoder(index, inc, pressed || shifted);
+		}
+		*/
+	}
+
+	void draw_leds() override {
 		if (clear_callback_) {
 			LedPainter::set_clear(Matrix::GREEN);
 		}
@@ -134,16 +112,12 @@ namespace ListPage {
 		}
 	}
 
-	void msTick(uint16_t ticks) {
-
-	}
-
-	// Bottom to top
-	void drawDisplay() {
+	void draw_display() override {
+		/*
 		WindowPainter::draw_header();
 
 		Canvas::Color color;
-		canvas.set_font(Font::SMALL);
+		TopPage::canvas_->set_font(Font::SMALL);
 		int item = list_->top_item();
 
 		for (int i = window.row().first; i <= window.row().last; ++i) {
@@ -153,26 +127,19 @@ namespace ListPage {
 		}
 
 		WindowPainter::vertical_scrollbar(window);
-
+		*/
 	}
 
-	const uint16_t targetFps() {
+	const size_t target_fps() override {
 		return 1000 / 16;
 	}
 
-	const Pages::EventHandlers eventHandlers = {
-		&init,
-		&enter,
-		&exit,
-		&msTick,
-		&drawLeds,
-		&drawDisplay,
-		&onEncoder,
-		&onButton,
-		&targetFps,
-	};
+private:
+	void(*clear_callback_)() = nullptr;
+	void(*copy_callback_)() = nullptr;
+	bool(*paste_callback_)() = nullptr;
 
-
+	SettingsList *list_;
 };
 
 #endif
