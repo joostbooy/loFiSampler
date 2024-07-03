@@ -48,11 +48,11 @@ public:
 	}
 
 	const char* value_text(int item) override {
-		Lfo &lfo = settings.selected_lfo();
+		Lfo &lfo = settings_->selected_lfo();
 
 		switch (item)
 		{
-		case INDEX:				return SettingsText::int_to_text(settings.selected_lfo_index() + 1);
+		case INDEX:				return SettingsText::int_to_text(settings_->selected_lfo_index() + 1);
 		case SPEED:				return lfo.speed_text();
 		case SHAPE:				return lfo.shape_text();
 		case SKEW:				return lfo.skew_text();
@@ -69,12 +69,12 @@ public:
 	}
 
 	void edit(int item, int inc, bool shifted) override {
-		Lfo &lfo = settings.selected_lfo();
+		Lfo &lfo = settings_->selected_lfo();
 
 		switch (item)
 		{
 		case INDEX:
-			settings.select_lfo_index(settings.selected_lfo_index() + inc);
+			settings_->select_lfo_index(settings_->selected_lfo_index() + inc);
 			break;
 		case SPEED:
 			lfo.set_speed(lfo.speed() + f_inc(inc, shifted));

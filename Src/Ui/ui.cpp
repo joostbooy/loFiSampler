@@ -1,12 +1,6 @@
 #include "ui.h"
 #include "que.h"
-#include "display.h"
 #include "controller.h"
-#include "matrix.h"
-#include "canvas.h"
-#include "pages.h"
-
-Ui ui;
 
 Que<Ui::Event, 16> ui_que;
 
@@ -24,17 +18,23 @@ void addEvent(Ui::ControlType type, uint8_t id, int8_t value)  {
 	ui_que.write(e);
 }
 
-void Ui::init() {
+void Ui::init(Settings *settings, Engine *engine, Matrix *matrix, Display *display) {
+	settings_ = settings;
+	engine_ = engine;
+	matrix_ = matrix;
+	display_ = display;
+
 	last_interval = 0;
 	display_interval = 0;
-	canvas.init();
-	pages.init();
+	canvas_.init();
 	ui_que.clear();
+
+	pageManager_.init(settings, engine, &canvas_);
 }
 
 void Ui::poll() {
 	uint8_t reading[16];
-	matrix.refresh(&reading[0]);
+	matrix_->refresh(&reading[0]);
 
 	for (int x = 0; x < 16; ++x) {
 		for (int y = 0; y < 8; ++y) {
@@ -74,39 +74,38 @@ void Ui::process() {
 		switch (e.type)
 		{
 		case Ui::BUTTON:
-			pages.onButton(e.id, e.value);
+			pageManager_.on_button(e.id, e.value);
 			break;
 		case Ui::ENCODER:
-			pages.onEncoder(e.id, e.value);
+			pageManager_.on_encoder(e.id, e.value);
 			break;
 		default:
 			break;
 		}
 	}
 
-	uint32_t interval = (micros.read() / 1000) - last_interval;
+	uint32_t interval = (Micros::read() / 1000) - last_interval;
 
 	if (interval >= 1) {
 		last_interval += interval;
-		pages.msTick(interval);
-		matrix.lock_leds();
-		matrix.clear_leds();
-		pages.drawLeds();
-		matrix.unlock_leds();
+		matrix_->lock_leds();
+		matrix_->clear_leds();
+		pageManager_.draw_leds();
+		matrix_->unlock_leds();
 	}
 
 	display_interval += interval;
-	if (display_interval >= pages.targetFps()) {
+	if (display_interval >= pageManager_.target_fps()) {
 		send_display();
 	}
 }
 
 void Ui::send_display() {
-	while (display.dma_busy());
+	while (display_->dma_busy());
 	display_interval = 0;
-	canvas.clear();
-	pages.drawDisplay();
-	display.sendBuffer(canvas.data(), canvas.size());
+	canvas_.clear();
+	pageManager_.draw_display();
+	display_->sendBuffer(canvas_.data(), canvas_.size());
 }
 
 void Ui::clear_que() {

@@ -20,7 +20,7 @@ public:
 		KILL_MIDI_CHANNEL	= (1 << 1),
 	};
 
-	void init(Uart*, Usb*);
+	void init(Settings*, Uart*, Usb*, Gate*);
 	void tick();
 	void suspend();
 	void resume();
@@ -54,6 +54,8 @@ private:
 	uint8_t port_to_kill_;
 	uint8_t channel_to_kill_;
 
+	Gate *gate_;
+	Settings *settings_;
 	SampleQue sampleQue_;
 	MidiEngine midiEngine_;
 	VoiceEngine voiceEngine_;
@@ -86,7 +88,5 @@ private:
 		requests_ = flags & ~type;
 	}
 };
-
-extern Engine engine;
 
 #endif

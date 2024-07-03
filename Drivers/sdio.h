@@ -130,7 +130,6 @@ private:
 	bool detected_ = false;
 	volatile bool dma_busy_ = false;
 
-
 	void init_dma(uint32_t buffer, DmaType type);
 
 	void powerOff() {
@@ -190,9 +189,9 @@ private:
 		bool acmd41_success = false;
 
 
-		uint32_t start = micros.read();
+		uint32_t start = Micros::read();
 
-		while ((micros.read() - start) < 2000000UL) {
+		while ((Micros::read() - start) < 2000000UL) {
 			result = sendAppCommand(41, 0x100000 | (hcs ? OCR_HCS : 0));
 			uint32_t response = SDIO->RESP1;
 			if (result == CRCFail && (response & OCR_BUSY) != 0) {
@@ -269,9 +268,9 @@ private:
 	}
 
 	bool waitDataReady() {
-		uint32_t start = micros.read();
+		uint32_t start = Micros::read();
 
-		while ((micros.read() - start) < 1000000UL) {
+		while ((Micros::read() - start) < 1000000UL) {
 			if (sendCommandWait(13, cardInfo.rca << 16) == Success && (SDIO->RESP1 & 0x100) != 0) {
 				return true;
 			}

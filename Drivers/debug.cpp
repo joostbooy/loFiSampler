@@ -1,6 +1,6 @@
 #include "debug.h"
 
-Debug debug;
+uint8_t Debug::toggle_state = 0;
 
 void Debug::init() {
 	GPIO_InitTypeDef GPIO_InitStruct = {0};

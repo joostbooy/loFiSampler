@@ -1,7 +1,5 @@
 #include "canvas.h"
 
-Canvas canvas;
-
 void Canvas::draw_bitmap(int x, int y, Bitmap::Id id, int frame) {
 	set_bitmap(id);
 

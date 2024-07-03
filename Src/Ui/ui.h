@@ -2,7 +2,14 @@
 #define Ui_h
 
 #include "que.h"
+#include "canvas.h"
+#include "settings.h"
+#include "pageManager.h"
+#include "engine.h"
+#include "matrix.h"
+#include "display.h"
 #include <stdint.h>
+
 
 class Ui {
 
@@ -18,18 +25,28 @@ public:
 		int8_t value;
 	};
 
-	void init();
+	void init(Settings*, Engine*, Matrix*, Display*);
 	void poll();
 	void process();
 	void clear_que();
 	void send_display();
 
+	Canvas &canvas() {
+		return canvas_;
+	}
+
 private:
+	Canvas canvas_;
+	PageManager pageManager_;
+
+	Engine *engine_;
+	Settings *settings_;
+	Matrix *matrix_;
+	Display *display_;
+
 	uint32_t last_interval = 0;
 	uint32_t display_interval = 0;
 	uint8_t sw_raw[8 * 16];
 };
-
-extern Ui ui;
 
 #endif

@@ -15,7 +15,12 @@ public:
 		MidiEngine::Event midi_event_;
 	};
 
-	void init() {
+	void init(Settings *settings) {
+		settings_ = settings;
+		clear();
+	}
+
+	void clear() {
 		event_que_.init();
 	}
 
@@ -31,13 +36,14 @@ public:
 		size_t last_size = event_que_.size();
 
 		for (size_t i = 0; i < Settings::kNumInstruments; ++i) {
-			write(&settings.instrument(i), e);
+			write(&settings_->instrument(i), e);
 		}
 
 		return event_que_.size() - last_size;
 	}
 
 private:
+	Settings *settings_;
 	Que<Event, 8>event_que_;
 
 	void write(Instrument *instrument, MidiEngine::Event &e) {

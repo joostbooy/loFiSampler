@@ -1,7 +1,5 @@
 #include "uart.h"
 
-Uart uart;
-
 void Uart::init() {
 	UART_HandleTypeDef huart;
 	GPIO_InitTypeDef GPIO_InitStruct = {0};

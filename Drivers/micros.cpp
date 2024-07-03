@@ -1,7 +1,5 @@
 #include "micros.h"
 
-Micros micros;
-
 void Micros::init() {
 	TIM_HandleTypeDef TimHandle;
 

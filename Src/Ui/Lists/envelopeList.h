@@ -2,7 +2,7 @@
 #define EnvelopeList_h
 
 #include "settings.h"
-#include "settingsText.h"
+#include "settingsList.h"
 
 class EnvelopeList : public SettingsList {
 
@@ -50,11 +50,11 @@ public:
 	}
 
 	const char* value_text(int item) override {
-		Envelope &envelope = settings.selected_envelope();
+		Envelope &envelope = settings_->selected_envelope();
 
 		switch (item)
 		{
-		case INDEX:			return SettingsText::int_to_text(settings.selected_envelope_index() + 1);
+		case INDEX:			return SettingsText::int_to_text(settings_->selected_envelope_index() + 1);
 		case MODE:			return envelope.mode_text();
 		case CLOCK_SYNC:	return envelope.clock_sync_text();
 		case ATTACK_TIME:	return envelope.attack_time_text();
@@ -72,12 +72,12 @@ public:
 	}
 
 	void edit(int item, int inc, bool shifted) override {
-		Envelope &envelope = settings.selected_envelope();
+		Envelope &envelope = settings_->selected_envelope();
 
 		switch (item)
 		{
 		case INDEX:
-			settings.select_envelope_index(settings.selected_envelope_index() + inc);
+			settings_->select_envelope_index(settings_->selected_envelope_index() + inc);
 			break;
 		case MODE:
 			envelope.set_mode(envelope.mode() + inc);

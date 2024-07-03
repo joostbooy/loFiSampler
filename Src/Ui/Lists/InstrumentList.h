@@ -47,11 +47,11 @@ public:
 	}
 
 	const char* value_text(int item) override {
-		Instrument &instrument = settings.selected_instrument();
+		Instrument &instrument = settings_->selected_instrument();
 
 		switch (item)
 		{
-		case INDEX:			return SettingsText::int_to_text(settings.selected_instrument_index() + 1);
+		case INDEX:			return SettingsText::int_to_text(settings_->selected_instrument_index() + 1);
 		case PAN:			return instrument.pan_text();
 		case GAIN:			return instrument.gain_text();
 		case BEND:			return instrument.bend_text();
@@ -68,12 +68,12 @@ public:
 	}
 
 	void edit(int item, int inc, bool shifted) override {
-		Instrument &instrument = settings.selected_instrument();
+		Instrument &instrument = settings_->selected_instrument();
 
 		switch (item)
 		{
 		case INDEX:
-			settings.select_instrument_index(settings.selected_instrument_index() + inc);
+			settings_->select_instrument_index(settings_->selected_instrument_index() + inc);
 			break;
 		case PAN:
 			instrument.set_pan(instrument.pan() + f_inc(inc, shifted));
@@ -112,8 +112,8 @@ public:
 private:
 
 	void kill_midi(Instrument &instrument) {
-		engine.set_midi_channel_to_kill(instrument.midi_port(), instrument.midi_channel());
-		engine.add_request_blocking(Engine::KILL_MIDI_CHANNEL);
+		engine_->set_midi_channel_to_kill(instrument.midi_port(), instrument.midi_channel());
+		engine_->add_request_blocking(Engine::KILL_MIDI_CHANNEL);
 	}
 
 	inline float f_inc(int inc, bool shift) {

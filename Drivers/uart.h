@@ -27,6 +27,4 @@ public:
 
 };
 
-extern Uart uart;
-
 #endif

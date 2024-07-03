@@ -33,6 +33,4 @@ private:
 	uint8_t data_[4] { 0x0F, 0x00, 0x00, 0x00 };
 };
 
-extern Usb usb;
-
 #endif

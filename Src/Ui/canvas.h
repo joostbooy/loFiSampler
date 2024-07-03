@@ -210,6 +210,4 @@ private:
 	FrameBuffer <kWidth, kHeight> frameBuffer_;
 };
 
-extern Canvas canvas;
-
 #endif

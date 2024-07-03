@@ -9,85 +9,89 @@ class LedPainter {
 
 public:
 
+	static void init(Matrix *matrix) {
+		matrix_ = matrix;
+	}
+
 	static void clear() {
-		matrix.clear_leds();
+		matrix_->clear_leds();
 	}
 
 	static void set_shift(Matrix::LedColor color) {
-		matrix.set_led(0, 0, color);
+		matrix_->set_led(0, 0, color);
 	}
 
 	static void set_group(Matrix::LedColor color) {
-		matrix.set_led(0, 1, color);
+		matrix_->set_led(0, 1, color);
 	}
 
 	static void set_solo(Matrix::LedColor color) {
-		matrix.set_led(1, 0, color);
+		matrix_->set_led(1, 0, color);
 	}
 
 	static void set_mute(Matrix::LedColor color) {
-		matrix.set_led(1, 1, color);
+		matrix_->set_led(1, 1, color);
 	}
 
 
 	static void set_play(Matrix::LedColor color) {
-		matrix.set_led(3, 0, color);
+		matrix_->set_led(3, 0, color);
 	}
 
 	static void set_stop(Matrix::LedColor color) {
-		matrix.set_led(4, 1, color);
+		matrix_->set_led(4, 1, color);
 	}
 
 	static void set_record(Matrix::LedColor color) {
-		matrix.set_led(5, 1, color);
+		matrix_->set_led(5, 1, color);
 	}
 
 
 	static void set_edit(Matrix::LedColor color) {
-		matrix.set_led(2, 5, color);
+		matrix_->set_led(2, 5, color);
 	}
 
 	static void set_menu(Matrix::LedColor color) {
-		matrix.set_led(3, 5, color);
+		matrix_->set_led(3, 5, color);
 	}
 
 	static void set_save(Matrix::LedColor color) {
-		matrix.set_led(4, 4, color);
+		matrix_->set_led(4, 4, color);
 	}
 
 
 	static void set_x(Matrix::LedColor color) {
-		matrix.set_led(2, 1, color);
+		matrix_->set_led(2, 1, color);
 	}
 
 	static void set_y(Matrix::LedColor color) {
-		matrix.set_led(5, 5, color);
+		matrix_->set_led(5, 5, color);
 	}
 
 
 	static void set_paste(Matrix::LedColor color) {
-		matrix.set_led(6, 4, color);
+		matrix_->set_led(6, 4, color);
 	}
 
 	static void set_copy(Matrix::LedColor color) {
-		matrix.set_led(6, 5, color);
+		matrix_->set_led(6, 5, color);
 	}
 
 	static void set_delete(Matrix::LedColor color) {
-		matrix.set_led(7, 4, color);
+		matrix_->set_led(7, 4, color);
 	}
 
 	static void set_clear(Matrix::LedColor color) {
-		matrix.set_led(7, 5, color);
+		matrix_->set_led(7, 5, color);
 	}
 
 
 	static void set_step_button(int step, Matrix::LedColor color) {
-		matrix.set_led(step_button_leds[step].x, step_button_leds[step].y, color);
+		matrix_->set_led(step_button_leds[step].x, step_button_leds[step].y, color);
 	}
 
 	static void set_step_encoder(int step, Matrix::LedColor color) {
-		matrix.set_led(step_encoder_leds[step].x, step_encoder_leds[step].y, color);
+		matrix_->set_led(step_encoder_leds[step].x, step_encoder_leds[step].y, color);
 	}
 
 	static void set_clock_position(int position) {
@@ -142,6 +146,8 @@ public:
 	}
 
 private:
+	static Matrix *matrix_;
+
 	struct Map {
 		const uint8_t x;
 		const uint8_t y;

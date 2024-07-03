@@ -1,78 +1,51 @@
 #ifndef TopPage_h
 #define TopPage_h
 
-#include "pages.h"
-#include "canvas.h"
-#include "controller.h"
-#include "engine.h"
-#include "messagePainter.h"
-#include "chapterPage.h"
+#include "page.h"
 
-namespace TopPage {
-	//Declarations
-	void init();
-	void enter();
-	void exit();
-	void msTick(uint16_t ticks);
-	void drawDisplay();
-	void updateLeds();
-	void onButton(uint8_t id, uint8_t value);
-	void onEncoder(uint8_t id, int inc);
-	const uint16_t targetFps();
+class TopPage : public Page {
 
-	//variables
-	StringBuilderBase<64>str;
+public:
 
-	void init() {
+	void init() override {
 		Controller::init();
+		//	MessagePainter::init(ui_);
+		//	TextBufferPainter::init(ui_);
+		//	WindowPainter::init(ui_);
 	}
 
-	void enter() {
+	void enter() override {
 
 	}
 
-	void exit() {
-
+	void exit() override {
+		pageManager_->pages(PageManager::LIST_PAGE)->exit();
 	}
 
-	void onEncoder(uint8_t id, int inc) {
+	void on_button(int id, int state) override {
+		Controller::on_button(id, state);
+		//ChapterPage::onButton(id, state);
+	}
+
+	void on_encoder(int id, int state) override {
 		Controller::on_encoder(id);
 	}
 
-	void onButton(uint8_t id, uint8_t state) {
-		Controller::on_button(id, state);
-		ChapterPage::onButton(id, state);
-	}
-
-	void drawLeds() {
+	void draw_leds() override {
 
 	}
 
-	void msTick(uint16_t ticks) {
-
-	}
-
-	// Bottom to top
-	void drawDisplay() {
-		MessagePainter::tick(pages.targetFps());
+	void draw_display() override {
+		//MessagePainter::tick(ui_->pages().targetFps());
 		MessagePainter::draw();
 	}
 
-	const uint16_t targetFps() {
+	const size_t target_fps() override {
 		return 1000 / 16;
 	}
 
-	const Pages::EventHandlers eventHandlers = {
-		&init,
-		&enter,
-		&exit,
-		&msTick,
-		&drawLeds,
-		&drawDisplay,
-		&onEncoder,
-		&onButton,
-		&targetFps,
-	};
+private:
+
 
 };
 

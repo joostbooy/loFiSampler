@@ -2,7 +2,7 @@
 #define adc_h
 
 #include "stm32f4xx.h"
-
+#include "micros.h"
 
 class Adc {
 
@@ -42,7 +42,5 @@ public:
 private:
 	uint8_t channel = 0;
 };
-
-extern Adc adc;
 
 #endif

@@ -1,7 +1,5 @@
 #include "system.h"
 
-Sys sys;
-
 void Sys::init() {
 	//GPIO Ports Clock Enable
 	__HAL_RCC_GPIOH_CLK_ENABLE();

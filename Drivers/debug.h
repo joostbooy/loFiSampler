@@ -1,18 +1,18 @@
-#ifndef debug_h
-#define debug_h
+#ifndef Debug_h
+#define Debug_h
 
 #include "stm32f4xx.h"
 
 class Debug {
 
 public:
-    void init();
+    static void init();
 
-	inline bool read() {
+	static inline bool read() {
 		return GPIOE->IDR & GPIO_PIN_0;
 	}
 
-	inline void write(bool state) {
+	static inline void write(bool state) {
         GPIOE->BSRR = state ? GPIO_PIN_1 : GPIO_PIN_1 << 16;
     }
 
@@ -21,9 +21,7 @@ public:
     }
 
 private:
-	uint8_t toggle_state = 0;
+	static uint8_t toggle_state;
 };
-
-extern Debug debug;
 
 #endif

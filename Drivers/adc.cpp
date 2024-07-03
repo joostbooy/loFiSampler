@@ -1,9 +1,7 @@
 #include "adc.h"
 #include "micros.h"
 
-Adc adc;
-
-void Adc::init(){
+void Adc::init() {
 	ADC_HandleTypeDef hadc1;
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
 	ADC_ChannelConfTypeDef sConfig = {0};
@@ -69,6 +67,6 @@ void Adc::init(){
 
 	// Wait for stabilisation & begin
 	__HAL_ADC_ENABLE(&hadc1);
-	micros.delay(5);
+	Micros::delay(5);
 	HAL_ADC_Start(&hadc1);
 }

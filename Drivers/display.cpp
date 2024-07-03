@@ -1,9 +1,11 @@
 #include "display.h"
 #include "micros.h"
 
-Display display;
+Display* Display::display_;
 
 void Display::init() {
+	display_ = this;
+
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
 
 	/**GPIO Configuration
@@ -72,9 +74,9 @@ void Display::init() {
 	select();
 
 	GPIOB->BSRR = GPIO_PIN_7 << 16;
-	micros.delay(150 * 1000);
+	Micros::delay(150 * 1000);
 	GPIOB->BSRR = GPIO_PIN_7;
-	micros.delay(150 * 1000);
+	Micros::delay(150 * 1000);
 
 	// Start lcd configuration
 	sendCommand(0xfd, 0x12);		// Set Command Lock (MCU protection status) | 0x12 = reset
@@ -84,8 +86,8 @@ void Display::init() {
 	sendCommand(0xa2, 0x00);		// Set Display Offset | 0x00 = reset
 	sendCommand(0xa1, 0x00);		// Set Display Start Line, 0x00 = register
 	sendCommand(0xa0, 0x14, 0x11);	// Set Re-map and Dual COM Line mode
-									// 0x14 = Reset except Enable Nibble Re-map, Scan from COM[N-1] to COM0, where N is the Multiplex ratio
-									// 0x11 = Reset except Enable Dual COM mode (MUX = 63)
+	// 0x14 = Reset except Enable Nibble Re-map, Scan from COM[N-1] to COM0, where N is the Multiplex ratio
+	// 0x11 = Reset except Enable Dual COM mode (MUX = 63)
 	sendCommand(0xb5, 0x00);		// Set GPIO
 	sendCommand(0xab, 0x00);		// Function Selection | 0x01 = reset = Enable internal VDD regulator
 	sendCommand(0xb4, 0xa0, 0xb5);	// Display Enhancement A | 0xa0 = Enable external VSL |  0xb5 = Normal (reset)
@@ -99,9 +101,9 @@ void Display::init() {
 	sendCommand(0xbe, 0x07);		// Set VCOMH | 0x07 = = 0.86 x VCC
 	sendCommand(0xa6);				// Set Display Mode = Normal Display
 	sendCommand(0xa9);				// Exit Partial Display
-	micros.delay(10 * 1000);
+	Micros::delay(10 * 1000);
 	sendCommand(0xaf);				// Set Sleep mode OFF (Display ON),
-	micros.delay(50 * 1000);
+	Micros::delay(50 * 1000);
 
 	// Start dma interrupt
 	HAL_NVIC_EnableIRQ(DMA1_Stream4_IRQn);
@@ -113,7 +115,7 @@ extern "C" {
 		DMA1->HIFCR |= DMA_HIFCR_CTCIF4 | DMA_HIFCR_CHTIF4;
 
 		if (flags & DMA_HISR_TCIF4) {
-			display.unlock_dma();
+			Display::display_->unlock_dma();
 		}
 	}
 }

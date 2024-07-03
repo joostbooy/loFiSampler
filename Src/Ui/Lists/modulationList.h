@@ -45,7 +45,7 @@ public:
 	}
 
 	const char* value_text(int item) override {
-		Modulation &modulation = settings.modulation();
+		Modulation &modulation = settings_->modulation();
 
 		switch (item)
 		{
@@ -64,7 +64,7 @@ public:
 	}
 
 	void edit(int item, int inc, bool shifted) override {
-		Modulation &modulation = settings.modulation();
+		Modulation &modulation = settings_->modulation();
 
 		switch (item)
 		{
@@ -106,9 +106,9 @@ public:
 private:
 
 	void kill_midi(Modulation &modulation, int gate) {
-		if (engine.last_gate(gate) > 0) {
-			engine.set_midi_channel_to_kill(modulation.gate_to_midi_port(gate), modulation.gate_to_midi_channel(gate));
-			engine.add_request_blocking(Engine::KILL_MIDI_CHANNEL);
+		if (engine_->last_gate(gate) > 0) {
+			engine_->set_midi_channel_to_kill(modulation.gate_to_midi_port(gate), modulation.gate_to_midi_channel(gate));
+			engine_->add_request_blocking(Engine::KILL_MIDI_CHANNEL);
 		}
 	}
 

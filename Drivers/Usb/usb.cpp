@@ -1,7 +1,5 @@
 #include "usb.h"
 
-Usb usb;
-
 void Usb::init() {
 	GPIO_InitTypeDef GPIO_InitStruct;
 

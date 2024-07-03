@@ -1,11 +1,12 @@
 #include "engine.h"
 
-Engine engine;
-
-void Engine::init(Uart *uart, Usb* usb) {
+void Engine::init(Settings *settings, Uart *uart, Usb* usb, Gate *gate) {
+	settings_ = settings;
+	gate_ = gate;
 	midiEngine_.init(uart, usb);
-	modulationEngine_.init(&settings);
-	voiceEngine_.init(&settings);
+	modulationEngine_.init(settings);
+	voiceEngine_.init(settings);
+	sampleQue_.init(settings);
 
 	for (size_t i = 0; i < Modulation::kNumGatesToNote; ++i) {
 		last_gate_[i] = 0;
@@ -18,7 +19,7 @@ void Engine::start() {
 	modulationEngine_.reset_lfos();
 
 	for (int i = 0; i < Midi::NUM_PORTS; ++i) {
-		if (settings.midi().send_clock(i)) {
+		if (settings_->midi().send_clock(i)) {
 			midiEngine_.write(i, MidiEngine::CLOCK_START);
 		}
 	}
@@ -26,7 +27,7 @@ void Engine::start() {
 
 void Engine::stop() {
 	for (int i = 0; i < Midi::NUM_PORTS; ++i) {
-		if (settings.midi().send_clock(i)) {
+		if (settings_->midi().send_clock(i)) {
 			midiEngine_.write(i, MidiEngine::CLOCK_STOP);
 		}
 	}
@@ -43,7 +44,7 @@ void Engine::resume() {
 void Engine::tick() {
 	if (midiClockEngine_.tick()) {
 		for (int i = 0; i < Midi::NUM_PORTS; ++i) {
-			if (settings.midi().send_clock(i)) {
+			if (settings_->midi().send_clock(i)) {
 				midiEngine_.write(i, MidiEngine::CLOCK_PULSE);
 			}
 		}
@@ -77,11 +78,11 @@ void Engine::process_gates() {
 	MidiEngine::Event e;
 
 	for (size_t i = 0; i < Modulation::kNumGatesToNote; ++i) {
-		bool current = gate.read(i);
+		bool current = gate_->read(i);
 
 		if (current != last_gate_[i]) {
 			last_gate_[i] = current;
-			e = settings.modulation().gate_to_midi(i);
+			e = settings_->modulation().gate_to_midi(i);
 			current ? note_on(e) : note_off(e);
 		}
 	}
@@ -119,7 +120,7 @@ void Engine::process_requests() {
 
 	if (requests_ & STOP) {
 		// just keeps clearing the que & voices till idle
-		sampleQue_.init();
+		sampleQue_.clear();
 		for (size_t i = 0; i < Settings::kMaxVoices; ++i) {
 			voiceEngine_.voice(i).request_stop();
 		}

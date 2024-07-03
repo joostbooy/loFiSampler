@@ -3,12 +3,15 @@
 
 #include "stm32f4xx.h"
 #include "debug.h"
-
+#include "micros.h"
 
 class Display {
 
 public:
+
 	void init();
+
+	static Display *display_;
 
 	inline void select(){
 		GPIOB->BSRR = GPIO_PIN_5 << 16;
@@ -89,11 +92,9 @@ public:
 		dma_busy_ = true;
 	}
 
-
 private:
 	volatile uint8_t dummy;
 	volatile bool dma_busy_;
-
 
 	void spi_write(uint8_t data) {
 		while (!(SPI2->SR & SPI_FLAG_TXE));
@@ -103,7 +104,5 @@ private:
 		dummy = SPI2->DR;
 	}
 };
-
-extern Display display;
 
 #endif

@@ -3,7 +3,7 @@
 #include "fileWriter.h"
 #include "fileReader.h"
 
-Settings settings;
+//Settings settings;
 
 bool Settings::save(const char* new_path) {
 	path.write(new_path);

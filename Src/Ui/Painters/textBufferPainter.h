@@ -1,13 +1,17 @@
 #ifndef TextBufferPainter_h
 #define TextBufferPainter_h
 
-#include "canvas.h"
+#include "ui.h"
 #include "window.h"
 #include "StringBuilder.h"
 
 class TextBufferPainter {
 
 public:
+
+	static void init(Ui *ui) {
+		ui_ = ui;
+	}
 
 	static void clear() {
 		entries = 0;
@@ -27,16 +31,17 @@ public:
 	}
 
 	static void draw() {
-		canvas.set_font(Font::SMALL);
+		ui_->canvas().set_font(Font::SMALL);
 
 		for (int i = 0; i < kMaxRows; ++i) {
 			int text_row = (top_row + i) % kMaxRows;
 			cell = window.cell(0, i);
-			canvas.draw_text(cell.x, cell.y, cell.w, cell.h, text[text_row].read(), Canvas::LEFT, Canvas::CENTER);
+			ui_->canvas().draw_text(cell.x, cell.y, cell.w, cell.h, text[text_row].read(), Canvas::LEFT, Canvas::CENTER);
 		}
 	}
 
 private:
+	static Ui *ui_;
 
 	static int entries;
 	static int top_row;

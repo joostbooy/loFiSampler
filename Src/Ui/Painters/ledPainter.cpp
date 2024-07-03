@@ -1,5 +1,7 @@
 #include "ledPainter.h"
 
+Matrix* LedPainter::matrix_;
+
 LedPainter::Map LedPainter::step_encoder_leds[16] = {
 	{ .x = 0, .y = 2 },
 	{ .x = 1, .y = 2 },

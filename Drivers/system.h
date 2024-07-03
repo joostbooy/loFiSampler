@@ -9,6 +9,4 @@ public:
     void init();
 };
 
-extern Sys sys;
-
 #endif

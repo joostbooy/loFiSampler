@@ -6,13 +6,13 @@
 class Micros {
 
 public:
-	void init();
+	static void init();
 
-	inline volatile uint32_t read() {
+	static inline volatile uint32_t read() {
 		return TIM5->CNT;
 	}
 
-	void delay(uint32_t us) {
+	static void delay(uint32_t us) {
 		uint32_t start = read();
 		while (static_cast<uint32_t>(read() - start) < us);
 	}
@@ -20,7 +20,5 @@ public:
 private:
 
 };
-
-extern Micros micros;
 
 #endif

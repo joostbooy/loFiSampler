@@ -76,14 +76,13 @@ private:
 	uint16_t led_row[kNumOfLedCollumns];
 	uint16_t led_row_copy[kNumOfLedCollumns];
 
-
 	void set_collumn(uint8_t coll) {
 		uint32_t reg = 0;
 		coll & 0x01 ? reg |= GPIO_PIN_2 : reg |= GPIO_PIN_2 << 16;
 		coll & 0x02 ? reg |= GPIO_PIN_3 : reg |= GPIO_PIN_3 << 16;
 		coll & 0x04 ? reg |= GPIO_PIN_4 : reg |= GPIO_PIN_4 << 16;
 		GPIOE->BSRR = reg;
-		micros.delay(1);
+		Micros::delay(1);
 	}
 
 	uint8_t spi_transfer(uint8_t send = 0xff) {
@@ -99,7 +98,5 @@ private:
 	}
 
 };
-
-extern Matrix matrix;
 
 #endif

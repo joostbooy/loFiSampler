@@ -56,7 +56,7 @@ public:
 	}
 
 	const char* value_text(int item) override {
-		Sample &sample = settings.selected_sample();
+		Sample &sample = settings_->selected_sample();
 
 		switch (item)
 		{
@@ -81,12 +81,12 @@ public:
 	}
 
 	void edit(int item, int inc, bool shifted) override {
-		Sample &sample = settings.selected_sample();
+		Sample &sample = settings_->selected_sample();
 
 		switch (item)
 		{
 		case INDEX:
-			settings.select_sample_index(settings.selected_sample_index() + inc);
+			settings_->select_sample_index(settings_->selected_sample_index() + inc);
 			break;
 		case GAIN:
 			sample.set_gain(sample.gain() + f_inc(inc, shifted));

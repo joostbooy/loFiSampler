@@ -36,7 +36,7 @@ public:
 	}
 
 	const char* value_text(int item) override {
-		Midi &midi = settings.midi();
+		Midi &midi = settings_->midi();
 
 		switch (item)
 		{
@@ -51,7 +51,7 @@ public:
 	}
 
 	void edit(int item, int inc, bool shifted) override {
-		Midi &midi = settings.midi();
+		Midi &midi = settings_->midi();
 
 		switch (item)
 		{

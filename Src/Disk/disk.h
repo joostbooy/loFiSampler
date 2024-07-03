@@ -21,7 +21,8 @@ public:
 		entry.init(&fdir, &fil_info, dir.path_ptr());
 		file.init(&fil, dir.path_ptr(), &result);
 
-		sdio.init();
+		//sdio.init();
+		mount();
 	}
 
 	bool mount() {

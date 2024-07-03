@@ -1,8 +1,6 @@
 #include "matrix.h"
 
-Matrix matrix;
-
-void Matrix::init() {
+void Matrix::init() {	
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
 
 	/**GPIO Configuration

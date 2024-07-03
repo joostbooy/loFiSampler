@@ -7,6 +7,11 @@ class SettingsList {
 
 public:
 
+	void init(Engine *engine, Settings *settings) {
+		engine_ = engine;
+		settings_ = settings;
+	}
+
 	int top_item() {
 		return top_item_;
 	}
@@ -37,6 +42,10 @@ public:
 	virtual const char* item_text(int item);
 	virtual const char* value_text(int item);
 	virtual void edit(int item, int inc, bool shifted);
+
+protected:
+	Engine *engine_;
+	Settings *settings_;
 
 private:
 	int top_item_ = 0;

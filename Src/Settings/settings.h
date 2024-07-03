@@ -167,6 +167,6 @@ private:
 	int selected_envelope_index_;
 };
 
-extern Settings settings;
+//extern Settings settings;
 
 #endif

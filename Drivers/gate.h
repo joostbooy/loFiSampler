@@ -26,6 +26,4 @@ private:
 
 };
 
-extern Gate gate;
-
 #endif
