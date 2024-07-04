@@ -30,10 +30,6 @@ public:
 	void clear_que();
 	void send_display();
 
-//	Canvas &canvas() {
-//		return canvas_;
-//	}
-
 private:
 	Canvas canvas_;
 	Pages pages_;
