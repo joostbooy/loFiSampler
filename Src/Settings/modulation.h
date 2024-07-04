@@ -120,6 +120,16 @@ public:
 		}
 	}
 
+	void paste(Modulation *modulation) {
+		for (size_t i = 0; i < kNumUserCc; ++i) {
+			midi_cc_number_[i] = modulation->midi_cc_number(i);
+		}
+
+		for (size_t i = 0; i < kNumGatesToNote; ++i) {
+			gate_to_midi_[i] = modulation->gate_to_midi(i);
+		}
+	}
+
 private:
 	uint8_t midi_cc_number_[kNumUserCc];
 	MidiEngine::Event gate_to_midi_[kNumGatesToNote];
