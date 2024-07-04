@@ -9,8 +9,8 @@ class TextBufferPainter {
 
 public:
 
-	static void init(Ui *ui) {
-		ui_ = ui;
+	static void init(Canvas *canvas) {
+		canvas_ = canvas;
 	}
 
 	static void clear() {
@@ -31,17 +31,17 @@ public:
 	}
 
 	static void draw() {
-		ui_->canvas().set_font(Font::SMALL);
+		canvas_->set_font(Font::SMALL);
 
 		for (int i = 0; i < kMaxRows; ++i) {
 			int text_row = (top_row + i) % kMaxRows;
 			cell = window.cell(0, i);
-			ui_->canvas().draw_text(cell.x, cell.y, cell.w, cell.h, text[text_row].read(), Canvas::LEFT, Canvas::CENTER);
+			canvas_->draw_text(cell.x, cell.y, cell.w, cell.h, text[text_row].read(), Canvas::LEFT, Canvas::CENTER);
 		}
 	}
 
 private:
-	static Ui *ui_;
+	static Canvas *canvas_;
 
 	static int entries;
 	static int top_row;

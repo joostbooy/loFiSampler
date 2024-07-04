@@ -5,7 +5,7 @@ uint16_t MessagePainter::y = 16;
 uint16_t MessagePainter::w = 0;
 uint16_t MessagePainter::h = 32;
 
-Ui* MessagePainter::ui_;
+Canvas* MessagePainter::canvas_;
 
 bool MessagePainter::is_error;
 bool MessagePainter::is_visible;
