@@ -9,26 +9,26 @@ namespace ConfirmationPage {
 		NUM_OPTIONS
 	};
 
-	typedef void(*Callback)(uint8_t);
-	Callback callback_;
-	StringBuilderBase<32>message_;
-
-	uint16_t x = 0;
-	uint16_t y = 16;
-	uint16_t w = 0;
-	uint16_t h = 32;
-
 	const char* const option_text[NUM_OPTIONS] = {
 		"CONFIRM",
 		"CANCEL"
 	};
 
-	void set(const char* message, Callback callback) {
-		message_.write(message);
-		callback_ = callback;
 
-		//	w = font.string_width(message_.read()) + 20;
-		//x = (canvas_->width() - w) / 2;
+	typedef void(*Callback)(int);
+	Callback callback_;
+	StringBuilderBase<32>str;
+
+	int x = 0;
+	int y = 16;
+	int w = 0;
+	int h = 32;
+
+	void set(const char* message, Callback callback) {
+		str.write(message);
+		callback_ = callback;
+		w = font.string_width(str.read()) + 20;
+		x = (TopPage::canvas_->width() - w) / 2;
 	}
 
 	void init() {
@@ -47,7 +47,7 @@ namespace ConfirmationPage {
 		int selected_option = Controller::button_to_function(id);
 		if (state >= 1 && selected_option >= 0 && selected_option < NUM_OPTIONS) {
 			callback_(selected_option);
-			//pages_->close(Pages::CONFIRMATION_PAGE);
+			TopPage::pages_->close(Pages::CONFIRMATION_PAGE);
 		}
 	}
 
@@ -61,11 +61,11 @@ namespace ConfirmationPage {
 	}
 
 	void draw() {
-	//	canvas_->set_font(Font::SMALL);
-	//	canvas_->fill(x + 4, y + 4, w, h, Canvas::SUBTRACTED);
-	//	canvas_->box(x, y, w, h, Canvas::WHITE, Canvas::BLACK);
-	//	canvas_->frame(x + 4, y + 4, w - 8, h - 8, Canvas::WHITE);
-	//	canvas_->draw_text(x, y, w, h, message_.read(), Canvas::CENTER, Canvas::CENTER, Canvas::WHITE);
+		TopPage::canvas_->set_font(Font::SMALL);
+		TopPage::canvas_->fill(x + 4, y + 4, w, h, Canvas::SUBTRACTED);
+		TopPage::canvas_->box(x, y, w, h, Canvas::WHITE, Canvas::BLACK);
+		TopPage::canvas_->frame(x + 4, y + 4, w - 8, h - 8, Canvas::WHITE);
+		TopPage::canvas_->draw_text(x, y, w, h, str.read(), Canvas::CENTER, Canvas::CENTER, Canvas::WHITE);
 
 		//	WindowPainter::draw_footer(option_text, NUM_OPTIONS);
 	}

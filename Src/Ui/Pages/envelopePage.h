@@ -12,17 +12,17 @@ namespace EnvelopePage {
 	EnvelopeList envelopeList_;
 
 	void clear() {
-		//settings_->selected_envelope().init();
+		TopPage::settings_->selected_envelope().init();
 	}
 
 	void copy() {
-		//envelope_.paste(&settings_->selected_envelope());
+		envelope_.paste(&TopPage::settings_->selected_envelope());
 		pasteable_ = true;
 	}
 
 	bool paste() {
 		if (pasteable_) {
-		//	settings_->selected_envelope().paste(&envelope_);
+			TopPage::settings_->selected_envelope().paste(&envelope_);
 			return true;
 		}
 		return false;
@@ -31,7 +31,7 @@ namespace EnvelopePage {
 	void init() {
 		pasteable_ = false;
 		envelope_.init();
-	//	envelopeList_.init(engine_, settings_);
+		envelopeList_.init(TopPage::engine_, TopPage::settings_);
 	}
 
 	void enter() {
@@ -39,10 +39,11 @@ namespace EnvelopePage {
 		ListPage::set_clear_callback(&clear);
 		ListPage::set_copy_callback(&copy);
 		ListPage::set_paste_callback(&paste);
+		ListPage::enter();
 	}
 
 	void exit()  {
-
+		ListPage::exit();
 	}
 
 	void on_button(int id, int state) {
@@ -63,7 +64,7 @@ namespace EnvelopePage {
 		Envelope envelope;
 		EnvelopeEngine envelopeEngine;
 
-//		envelope.paste(&settings_->selected_envelope());
+		envelope.paste(&TopPage::settings_->selected_envelope());
 		envelope.set_clock_sync(false);
 		envelopeEngine.init(&envelope);
 
@@ -74,13 +75,13 @@ namespace EnvelopePage {
 
 		for (int x2 = 0; x2 < 255; ++x2) {
 			int y2 = h * (1.f - envelopeEngine.next());
-		//	canvas_->draw_pixel(x + x2, y + y2, Canvas::BLACK);
+			TopPage::canvas_->draw_pixel(x + x2, y + y2, Canvas::BLACK);
 		}
 
-		// int index = settings_->selected_envelope_index();
-		// float phase = engine_->voiceEngine().most_recent_voice().envelopeEngine(index).phase();
+		int index = TopPage::settings_->selected_envelope_index();
+		float phase = TopPage::engine_->voiceEngine().most_recent_voice().envelopeEngine(index).phase();
 
-	//	canvas_->vertical_line(x + (phase * w), y, h, Canvas::BLACK);
+		TopPage::canvas_->vertical_line(x + (phase * w), y, h, Canvas::BLACK);
 	}
 
 	const size_t target_fps() {
