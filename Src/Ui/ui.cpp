@@ -2,6 +2,7 @@
 #include "que.h"
 #include "controller.h"
 
+
 Que<Ui::Event, 16> ui_que;
 
 static const int num_enc_rows = 2;
@@ -29,7 +30,7 @@ void Ui::init(Settings *settings, Engine *engine, Matrix *matrix, Display *displ
 	canvas_.init();
 	ui_que.clear();
 
-	pageManager_.init(settings, engine, &canvas_);
+	pages_.init(settings, engine, &canvas_);
 }
 
 void Ui::poll() {
@@ -74,10 +75,10 @@ void Ui::process() {
 		switch (e.type)
 		{
 		case Ui::BUTTON:
-			pageManager_.on_button(e.id, e.value);
+			pages_.on_button(e.id, e.value);
 			break;
 		case Ui::ENCODER:
-			pageManager_.on_encoder(e.id, e.value);
+			pages_.on_encoder(e.id, e.value);
 			break;
 		default:
 			break;
@@ -90,12 +91,12 @@ void Ui::process() {
 		last_interval += interval;
 		matrix_->lock_leds();
 		matrix_->clear_leds();
-		pageManager_.draw_leds();
+		pages_.draw_leds();
 		matrix_->unlock_leds();
 	}
 
 	display_interval += interval;
-	if (display_interval >= pageManager_.target_fps()) {
+	if (display_interval >= pages_.target_fps()) {
 		send_display();
 	}
 }
@@ -104,7 +105,7 @@ void Ui::send_display() {
 	while (display_->dma_busy());
 	display_interval = 0;
 	canvas_.clear();
-	pageManager_.draw_display();
+	pages_.draw_display();
 	display_->sendBuffer(canvas_.data(), canvas_.size());
 }
 

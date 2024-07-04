@@ -1,13 +1,11 @@
-#ifndef PageManager_h
-#define PageManager_h
+#ifndef Pages_h
+#define Pages_h
 
 #include "settings.h"
 #include "engine.h"
 #include "canvas.h"
 
-class Page;
-
-class PageManager {
+class Pages {
 
 public:
 
@@ -29,14 +27,21 @@ public:
 	void draw_display();
 	const size_t target_fps();
 
-	Page* pages(PageId id) {
-		return pages_[id];
-	}
+	struct Page {
+		void(*init)();
+		void(*enter)();
+		void(*exit)();
+		void(*draw_display)();
+		void(*draw_leds)();
+		void(*on_button)(int id, int state);
+		void(*on_encoder)(int id, int state);
+		const size_t (*target_fps)();
+	};
 
 private:
-	static Page *pages_[NUM_PAGES];
-	Stack<int, 8>page_stack_;
 	int curr_page_;
+	Stack<int, 8>page_stack_;
+	Page *page_[NUM_PAGES];
 };
 
 #endif

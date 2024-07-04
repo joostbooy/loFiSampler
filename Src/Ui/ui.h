@@ -4,12 +4,11 @@
 #include "que.h"
 #include "canvas.h"
 #include "settings.h"
-#include "pageManager.h"
+#include "pages.h"
 #include "engine.h"
 #include "matrix.h"
 #include "display.h"
 #include <stdint.h>
-
 
 class Ui {
 
@@ -37,7 +36,7 @@ public:
 
 private:
 	Canvas canvas_;
-	PageManager pageManager_;
+	Pages pages_;
 
 	Engine *engine_;
 	Settings *settings_;
