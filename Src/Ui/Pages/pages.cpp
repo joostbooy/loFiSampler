@@ -5,6 +5,7 @@
 #include "instrumentPage.h"
 #include "listPage.h"
 #include "confirmationPage.h"
+#include "midiPage.h"
 
 
 Pages::Page* page_[Pages::NUM_PAGES] = {
@@ -13,6 +14,7 @@ Pages::Page* page_[Pages::NUM_PAGES] = {
 	[Pages::LFO_PAGE]			= &LfoPage::page,
 	[Pages::ENVELOPE_PAGE]		= &EnvelopePage::page,
 	[Pages::INSTRUMENT_PAGE]	= &InstrumentPage::page,
+	[Pages::MIDI_PAGE]			= &MidiPage::page,
 	[Pages::CONFIRMATION_PAGE]	= &ConfirmationPage::page
 };
 
