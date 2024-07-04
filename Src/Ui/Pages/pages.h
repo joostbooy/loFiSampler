@@ -23,16 +23,16 @@ public:
 	void close_all();
 	void on_button(int id, int state);
 	void on_encoder(int id, int state);
-	void draw_leds();
-	void draw_display();
+	void draw();
+	void refresh_leds();
 	const size_t target_fps();
 
 	struct Page {
 		void(*init)();
 		void(*enter)();
 		void(*exit)();
-		void(*draw_display)();
-		void(*draw_leds)();
+		void(*draw)();
+		void(*refresh_leds)();
 		void(*on_button)(int id, int state);
 		void(*on_encoder)(int id, int state);
 		const size_t (*target_fps)();

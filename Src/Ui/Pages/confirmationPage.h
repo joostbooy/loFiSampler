@@ -55,12 +55,12 @@ namespace ConfirmationPage {
 
 	}
 
-	void draw_leds() {
+	void refresh_leds() {
 		LedPainter::footer_buttons(Matrix::GREEN, Matrix::RED, Matrix::BLACK, Matrix::BLACK);
 
 	}
 
-	void draw_display() {
+	void draw() {
 	//	canvas_->set_font(Font::SMALL);
 	//	canvas_->fill(x + 4, y + 4, w, h, Canvas::SUBTRACTED);
 	//	canvas_->box(x, y, w, h, Canvas::WHITE, Canvas::BLACK);
@@ -78,8 +78,8 @@ namespace ConfirmationPage {
 		&init,
 		&enter,
 		&exit,
-		&draw_display,
-		&draw_leds,
+		&draw,
+		&refresh_leds,
 		&on_button,
 		&on_encoder,
 		&target_fps

@@ -91,7 +91,7 @@ void Ui::process() {
 		last_interval += interval;
 		matrix_->lock_leds();
 		matrix_->clear_leds();
-		pages_.draw_leds();
+		pages_.refresh_leds();
 		matrix_->unlock_leds();
 	}
 
@@ -105,7 +105,7 @@ void Ui::send_display() {
 	while (display_->dma_busy());
 	display_interval = 0;
 	canvas_.clear();
-	pages_.draw_display();
+	pages_.draw();
 	display_->sendBuffer(canvas_.data(), canvas_.size());
 }
 

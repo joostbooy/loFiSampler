@@ -58,20 +58,20 @@ void Pages::on_encoder(int id, int state) {
 	page_[TOP_PAGE]->on_encoder(id, state);
 }
 
-void Pages::draw_leds() {
+void Pages::refresh_leds() {
 	for (int i = 0; i < page_stack_.size(); ++i) {
 		int id = page_stack_.read(i);
-		page_[id]->draw_leds();
+		page_[id]->refresh_leds();
 	}
-	page_[TOP_PAGE]->draw_leds();
+	page_[TOP_PAGE]->refresh_leds();
 }
 
-void Pages::draw_display() {
+void Pages::draw() {
 	for (int i = 0; i < page_stack_.size(); ++i) {
 		int id = page_stack_.read(i);
-		page_[id]->draw_display();
+		page_[id]->draw();
 	}
-	page_[TOP_PAGE]->draw_display();
+	page_[TOP_PAGE]->draw();
 }
 
 const size_t Pages::target_fps() {

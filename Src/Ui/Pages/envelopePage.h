@@ -53,12 +53,12 @@ namespace EnvelopePage {
 		ListPage::on_button(id, state);
 	}
 
-	void draw_leds() {
-		ListPage::draw_leds();
+	void refresh_leds() {
+		ListPage::refresh_leds();
 	}
 
-	void draw_display() {
-		ListPage::draw_display();
+	void draw() {
+		ListPage::draw();
 
 		Envelope envelope;
 		EnvelopeEngine envelopeEngine;
@@ -91,8 +91,8 @@ namespace EnvelopePage {
 		&init,
 		&enter,
 		&exit,
-		&draw_display,
-		&draw_leds,
+		&draw,
+		&refresh_leds,
 		&on_button,
 		&on_encoder,
 		&target_fps

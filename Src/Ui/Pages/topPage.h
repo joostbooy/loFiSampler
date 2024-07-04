@@ -47,11 +47,11 @@ namespace TopPage {
 		Controller::on_encoder(id);
 	}
 
-	void draw_leds() {
+	void refresh_leds() {
 
 	}
 
-	void draw_display() {
+	void draw() {
 		MessagePainter::tick(pages_->target_fps());
 		MessagePainter::draw();
 	}
@@ -64,8 +64,8 @@ namespace TopPage {
 		&init,
 		&enter,
 		&exit,
-		&draw_display,
-		&draw_leds,
+		&draw,
+		&refresh_leds,
 		&on_button,
 		&on_encoder,
 		&target_fps

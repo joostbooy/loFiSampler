@@ -99,7 +99,7 @@ void on_encoder(int id, int state) {
 */
 }
 
-void draw_leds() {
+void refresh_leds() {
 	if (clear_callback_) {
 		LedPainter::set_clear(Matrix::GREEN);
 	}
@@ -113,7 +113,7 @@ void draw_leds() {
 	}
 }
 
-void draw_display() {
+void draw() {
 	/*
 	WindowPainter::draw_header();
 
@@ -139,8 +139,8 @@ Pages::Page page = {
 	&init,
 	&enter,
 	&exit,
-	&draw_display,
-	&draw_leds,
+	&draw,
+	&refresh_leds,
 	&on_button,
 	&on_encoder,
 	&target_fps
