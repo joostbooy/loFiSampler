@@ -41,6 +41,7 @@ public:
 
 		float skew_phase;
 		float skew_amount = lfo_->skew();
+		float curve_shape = lfo_->shape();
 
 		if (phase_ < skew_amount) {
 			set_stage(RISING);
@@ -48,9 +49,9 @@ public:
 		} else {
 			set_stage(FALLING);
 			skew_phase = (phase_ - skew_amount) * (1.0f / (1.0f - skew_amount));
+			curve_shape = 1.f - curve_shape;
 		}
 
-		float curve_shape = (stage_ == RISING) ? lfo_->shape() : 1.f - lfo_->shape();
 		float curve_phase = Curve::read(skew_phase, curve_shape);
 		value_ = Dsp::cross_fade(last_value_, target_value_, curve_phase);
 
