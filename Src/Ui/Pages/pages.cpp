@@ -1,5 +1,6 @@
 #include "pages.h"
 #include "topPage.h"
+#include "lfoPage.h"
 #include "envelopePage.h"
 #include "instrumentPage.h"
 #include "listPage.h"
@@ -9,6 +10,7 @@
 Pages::Page* page_[Pages::NUM_PAGES] = {
 	[Pages::TOP_PAGE]			= &TopPage::page,
 	[Pages::LIST_PAGE]			= &ListPage::page,
+	[Pages::LFO_PAGE]			= &LfoPage::page,
 	[Pages::ENVELOPE_PAGE]		= &EnvelopePage::page,
 	[Pages::INSTRUMENT_PAGE]	= &InstrumentPage::page,
 	[Pages::CONFIRMATION_PAGE]	= &ConfirmationPage::page
