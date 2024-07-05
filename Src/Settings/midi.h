@@ -31,7 +31,7 @@ public:
 
 
 	enum ClockSource {
-		EXTERNAL = NUM_PORTS,
+		EXTERNAL = NUM_PORTS - 1,
 		INTERNAL,
 
 		NUM_CLOCK_SOURCES
