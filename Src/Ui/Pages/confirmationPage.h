@@ -36,11 +36,13 @@ namespace ConfirmationPage {
 	}
 
 	void enter() {
-
+		if (callback_ == nullptr) {
+			TopPage::pages_->close(Pages::CONFIRMATION_PAGE);
+		}
 	}
 
 	void exit() {
-
+		callback_ = nullptr;
 	}
 
 	void on_button(int id, int state) {
