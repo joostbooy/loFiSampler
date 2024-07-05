@@ -51,7 +51,7 @@ void Pages::close(PageId id) {
 
 void Pages::close_all() {
 	while (page_stack_.readable()) {
-		int id = page_stack_.pull();
+		int id = page_stack_.pop();
 		page_[id]->exit();
 	}
 	curr_page_ = TOP_PAGE;
