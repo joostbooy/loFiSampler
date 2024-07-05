@@ -82,6 +82,20 @@ public:
 		return &frame_;
 	}
 
+	//	Frame* process(ModulationMatrix *matrix) {
+	//		std::fill(&frame_.data[0], &frame_.data[ModulationMatrix::NUM_DESTINATIONS], 1.0f);
+
+	//		for (int x = 0; x < ModulationMatrix::NUM_SOURCES; ++x) {
+	//			for (int y = 0; y < ModulationMatrix::NUM_DESTINATIONS; ++y) {
+	//				if (matrix->read(x, y)) {
+	//					frame_.data[y] *= source_[x];
+	//				}
+	//			}
+	//		}
+
+	//		return &frame_;
+	//	}
+
 private:
 	Frame frame_;
 	Modulation *modulation_;
