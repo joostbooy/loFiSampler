@@ -68,7 +68,12 @@ public:
 	}
 
 	void select_sample_index(int index) {
-		//selected_sample_index_ = SettingsUtils::clip(0, instrument(0).num_samples() - 1, index);
+		int num_samples = selected_instrument().num_samples();
+		if (num_samples > 0) {
+			selected_sample_index_ = SettingsUtils::clip(0, num_samples - 1, index);
+		} else {
+			selected_sample_index_ = 0;
+		}
 	}
 
 	Sample &selected_sample() {
@@ -120,7 +125,7 @@ public:
 
 	void select_instrument_index(int index) {
 		selected_instrument_index_ = SettingsUtils::clip(0, selected_instrument_index_ - 1, index);
-		//set_selected_sample(selected_sample_index_);
+		select_sample_index(selected_sample_index_);
 	}
 
 	Instrument &selected_instrument() {
