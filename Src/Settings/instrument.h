@@ -51,14 +51,14 @@ public:
 		set_bend_range(2);
 		set_bend(0.5);
 
-		matrix().init();
+		modulationMatrix().init();
 
 		clear_samples();
 	}
 
-	// matrix
-	ModulationMatrix& matrix() {
-		return matrix_;
+	// modulationMatrix
+	ModulationMatrix& modulationMatrix() {
+		return modulationMatrix_;
 	}
 
 	// Sample
@@ -291,7 +291,7 @@ public:
 		fileWriter.write(bend_range_);
 		fileWriter.write(num_samples_);
 
-		matrix().save(fileWriter);
+		modulationMatrix().save(fileWriter);
 	}
 
 	void load(FileReader &fileReader) {
@@ -306,7 +306,7 @@ public:
 		fileReader.read(bend_range_);
 		fileReader.read(num_samples_);
 
-		matrix().load(fileReader);
+		modulationMatrix().load(fileReader);
 	}
 
 	void paste(Instrument *instrument) {
@@ -322,7 +322,7 @@ public:
 		bit_depth_ = instrument->bit_depth();
 		num_samples_ = instrument->num_samples();
 
-		matrix().paste(&instrument->matrix());
+		modulationMatrix().paste(&instrument->modulationMatrix());
 	}
 
 private:
@@ -340,7 +340,7 @@ private:
 	char name_[kMaxNameLength];
 	Sample *sample_[kMaxNumSamples];
 
-	ModulationMatrix matrix_;
+	ModulationMatrix modulationMatrix_;
 
 	void swap_samples(int a, int b) {
 		Sample *data = sample_[a];

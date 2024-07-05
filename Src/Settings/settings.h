@@ -124,7 +124,7 @@ public:
 	}
 
 	void select_instrument_index(int index) {
-		selected_instrument_index_ = SettingsUtils::clip(0, selected_instrument_index_ - 1, index);
+		selected_instrument_index_ = SettingsUtils::clip(0, kNumInstruments - 1, index);
 		select_sample_index(selected_sample_index_);
 	}
 
@@ -133,7 +133,7 @@ public:
 	}
 
 	ModulationMatrix &selected_modulation_matrix() {
-		return instrument_[selected_instrument_index_].matrix();
+		return instrument_[selected_instrument_index_].modulationMatrix();
 	}
 
 	// save & load
