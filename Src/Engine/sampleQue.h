@@ -36,7 +36,7 @@ public:
 		size_t last_size = event_que_.size();
 
 		for (size_t i = 0; i < Settings::kNumInstruments; ++i) {
-			write(&settings_->instrument(i), e);
+			poll(&settings_->instrument(i), e);
 		}
 
 		return event_que_.size() - last_size;
@@ -46,7 +46,7 @@ private:
 	Settings *settings_;
 	Que<Event, 8>event_que_;
 
-	void write(Instrument *instrument, MidiEngine::Event &e) {
+	void poll(Instrument *instrument, MidiEngine::Event &e) {
 		if (instrument->midi_accepted(e)) {
 			int i = instrument->num_samples();
 			while (event_que_.writeable() && (i--)) {
