@@ -13,8 +13,6 @@ void Engine::init(Settings *settings, Uart *uart, Usb* usb, Gate *gate) {
 	}
 }
 
-/*	Engine commands */
-
 void Engine::start() {
 	modulationEngine_.reset_lfos();
 
@@ -31,14 +29,6 @@ void Engine::stop() {
 			midiEngine_.write(i, MidiEngine::CLOCK_STOP);
 		}
 	}
-}
-
-void Engine::suspend() {
-
-}
-
-void Engine::resume() {
-
 }
 
 void Engine::tick() {
