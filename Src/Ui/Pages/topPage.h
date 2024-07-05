@@ -6,8 +6,8 @@
 #include "canvas.h"
 #include "pages.h"
 #include "controller.h"
-#include "messagePainter.h"
 #include "LedPainter.h"
+#include "messagePainter.h"
 
 namespace TopPage {
 
@@ -34,9 +34,8 @@ namespace TopPage {
 
 	void init() {
 		Controller::init();
-		//	MessagePainter::init(ui_);
-		//	TextBufferPainter::init(ui_);
-		//	WindowPainter::init(ui_);
+		MessagePainter::init(canvas_);
+	//	WindowPainter::init(canvas_);
 	}
 
 	void on_button(int id, int state) {
@@ -48,7 +47,7 @@ namespace TopPage {
 	}
 
 	void refresh_leds() {
-
+		LedPainter::set_chapter(0);
 	}
 
 	void draw() {
