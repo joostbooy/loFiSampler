@@ -9,7 +9,7 @@ class SampleList : public SettingsList {
 public:
 
 	enum Item {
-		INDEX,
+		SAMPLE,
 		GAIN,
 		PAN,
 		START,
@@ -35,7 +35,7 @@ public:
 	const char* item_text(int item) override {
 		switch (item)
 		{
-		case INDEX:				return "SAMPLE";
+		case SAMPLE:			return "SAMPLE";
 		case GAIN:				return "GAIN";
 		case PAN:				return "PAN";
 		case START:				return "START";
@@ -60,7 +60,7 @@ public:
 
 		switch (item)
 		{
-		case INDEX:				return nullptr; //sample.name();
+		case SAMPLE:			return nullptr; //sample.name();
 		case GAIN:				return sample.gain_text();
 		case PAN:				return sample.pan_text();
 		case START:				return sample.start_text();
@@ -85,7 +85,7 @@ public:
 
 		switch (item)
 		{
-		case INDEX:
+		case SAMPLE:
 			settings_->select_sample_index(settings_->selected_sample_index() + inc);
 			break;
 		case GAIN:

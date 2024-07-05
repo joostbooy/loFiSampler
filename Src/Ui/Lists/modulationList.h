@@ -13,7 +13,7 @@ public:
 		MIDI_CC_B,
 		MIDI_CC_C,
 		MIDI_CC_D,
-		GATE_INDEX,
+		GATE,
 		GATE_PORT,
 		GATE_CHANNEL,
 		GATE_NOTE,
@@ -33,7 +33,7 @@ public:
 		case MIDI_CC_B:		return "";
 		case MIDI_CC_C:		return "";
 		case MIDI_CC_D:		return "";
-		case GATE_INDEX:	return "GATE INDEX";
+		case GATE:			return "GATE";
 		case GATE_PORT:		return "GATE PORT";
 		case GATE_CHANNEL:	return "GATE CHANNEL";
 		case GATE_NOTE:		return "GATE NOTE";
@@ -53,7 +53,7 @@ public:
 		case MIDI_CC_B:		return modulation.midi_cc_number_text(1);
 		case MIDI_CC_C:		return modulation.midi_cc_number_text(2);
 		case MIDI_CC_D:		return modulation.midi_cc_number_text(3);
-		case GATE_INDEX:	return SettingsText::int_to_text(selected_gate_ + 1);
+		case GATE:			return SettingsText::int_to_text(selected_gate_ + 1);
 		case GATE_PORT:		return modulation.gate_to_midi_port_text(selected_gate_);
 		case GATE_CHANNEL:	return modulation.gate_to_midi_channel_text(selected_gate_);
 		case GATE_NOTE:		return modulation.gate_to_midi_note_text(selected_gate_);
@@ -80,7 +80,7 @@ public:
 		case MIDI_CC_D:
 			modulation.set_midi_cc_number(3, modulation.midi_cc_number(3) + (inc * (shifted ? 10 : 1)));
 			break;
-		case GATE_INDEX:
+		case GATE:
 			selected_gate_ = SettingsUtils::clip(0, Modulation::kNumGatesToNote - 1, selected_gate_ + inc);
 			break;
 		case GATE_PORT:

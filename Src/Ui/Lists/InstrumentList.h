@@ -9,7 +9,7 @@ class InstrumentList : public SettingsList {
 public:
 
 	enum Item {
-		INDEX,
+		INSTRUMENT,
 		PAN,
 		GAIN,
 		BEND,
@@ -30,7 +30,7 @@ public:
 	const char* item_text(int item) override {
 		switch (item)
 		{
-		case INDEX:				return "INSTRUMENT";
+		case INSTRUMENT:		return "INSTRUMENT";
 		case PAN:				return "PAN";
 		case GAIN:				return "GAIN";
 		case BEND:				return "BEND";
@@ -51,7 +51,7 @@ public:
 
 		switch (item)
 		{
-		case INDEX:			return SettingsText::int_to_text(settings_->selected_instrument_index() + 1);
+		case INSTRUMENT:	return SettingsText::int_to_text(settings_->selected_instrument_index() + 1);
 		case PAN:			return instrument.pan_text();
 		case GAIN:			return instrument.gain_text();
 		case BEND:			return instrument.bend_text();
@@ -72,7 +72,7 @@ public:
 
 		switch (item)
 		{
-		case INDEX:
+		case INSTRUMENT:
 			settings_->select_instrument_index(settings_->selected_instrument_index() + inc);
 			break;
 		case PAN:

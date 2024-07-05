@@ -9,7 +9,7 @@ class EnvelopeList : public SettingsList {
 public:
 
 	enum Item {
-		INDEX,
+		ENVELOPE,
 		MODE,
 		CLOCK_SYNC,
 		ATTACK_TIME,
@@ -32,7 +32,7 @@ public:
 	const char* item_text(int item) override {
 		switch (item)
 		{
-		case INDEX:			return "ENVELOPE";
+		case ENVELOPE:		return "ENVELOPE";
 		case MODE:			return "MODE";
 		case CLOCK_SYNC:	return "CLOCK SYNC";
 		case ATTACK_TIME:	return "ATTACK TIME";
@@ -54,7 +54,7 @@ public:
 
 		switch (item)
 		{
-		case INDEX:			return SettingsText::int_to_text(settings_->selected_envelope_index() + 1);
+		case ENVELOPE:		return SettingsText::int_to_text(settings_->selected_envelope_index() + 1);
 		case MODE:			return envelope.mode_text();
 		case CLOCK_SYNC:	return envelope.clock_sync_text();
 		case ATTACK_TIME:	return envelope.attack_time_text();
@@ -76,7 +76,7 @@ public:
 
 		switch (item)
 		{
-		case INDEX:
+		case ENVELOPE:
 			settings_->select_envelope_index(settings_->selected_envelope_index() + inc);
 			break;
 		case MODE:
