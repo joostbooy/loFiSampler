@@ -16,10 +16,11 @@ public:
 		FORWARD		= 1
 	};
 
-	void init(Settings *settings) {
+	void init(Settings *settings, ModulationEngine *modulationEngine) {
 		state_ = IDLE;
 		key_pressed_ = false;
 		stop_requested_ = false;
+		modulationEngine_ = modulationEngine;
 		envelopeEngine_[0].init(&settings->envelope(0));
 		envelopeEngine_[1].init(&settings->envelope(1));
 	}
@@ -134,7 +135,7 @@ private:
 	Sample *sample_src_;
 	Instrument instrument_;
 	Instrument *instrument_src_;
-	ModulationEngine *modualationEngine_;
+	ModulationEngine *modulationEngine_;
 	EnvelopeEngine envelopeEngine_[Settings::kNumEnvelopes];
 
 	inline bool is_looping() {
@@ -190,10 +191,10 @@ private:
 	}
 
 	inline void apply_modulation() {
-		modualationEngine_->set_midi_velocity(velocity_);
-		modualationEngine_->set_envelope(0, envelopeEngine_[0].next());
-		modualationEngine_->set_envelope(1, envelopeEngine_[1].next());
-		ModulationEngine::Frame *frame = modualationEngine_->process(&instrument_src_->matrix());
+		modulationEngine_->set_midi_velocity(velocity_);
+		modulationEngine_->set_envelope(0, envelopeEngine_[0].next());
+		modulationEngine_->set_envelope(1, envelopeEngine_[1].next());
+		ModulationEngine::Frame *frame = modulationEngine_->process(&instrument_src_->matrix());
 
 		instrument_.set_bend(instrument_src_->bend() * frame->data[ModulationMatrix::BEND]);
 		instrument_.set_bit_depth(instrument_src_->bit_depth() * frame->data[ModulationMatrix::BIT_DEPTH]);

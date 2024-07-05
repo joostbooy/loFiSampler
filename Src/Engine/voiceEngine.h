@@ -11,12 +11,12 @@ class VoiceEngine {
 
 public:
 
-	void init(Settings *settings) {
+	void init(Settings *settings, ModulationEngine *modulationEngine) {
 		active_voices_.clear();
 		available_voices_.clear();
 
 		for (size_t i = 0; i < Settings::kMaxVoices; ++i) {
-			voice_[i].init(settings);
+			voice_[i].init(settings, modulationEngine);
 			available_voices_.push(i);
 		}
 	}

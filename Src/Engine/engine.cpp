@@ -5,7 +5,7 @@ void Engine::init(Settings *settings, Uart *uart, Usb* usb, Gate *gate) {
 	gate_ = gate;
 	midiEngine_.init(uart, usb);
 	modulationEngine_.init(settings);
-	voiceEngine_.init(settings);
+	voiceEngine_.init(settings, &modulationEngine_);
 	sampleQue_.init(settings);
 
 	for (size_t i = 0; i < Modulation::kNumGatesToNote; ++i) {
