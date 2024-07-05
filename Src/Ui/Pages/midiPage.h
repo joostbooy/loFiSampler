@@ -51,7 +51,7 @@ namespace MidiPage {
 	}
 
 	void on_encoder(int id, int state) {
-		ListPage::on_button(id, state);
+		ListPage::on_encoder(id, state);
 	}
 
 	void refresh_leds() {
