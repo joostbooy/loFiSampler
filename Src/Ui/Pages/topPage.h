@@ -8,6 +8,7 @@
 #include "controller.h"
 #include "LedPainter.h"
 #include "messagePainter.h"
+#include "textBufferPainter.h"
 
 namespace TopPage {
 
@@ -35,6 +36,7 @@ namespace TopPage {
 	void init() {
 		Controller::init();
 		MessagePainter::init(canvas_);
+		TextBufferPainter::init(canvas_);
 	//	WindowPainter::init(canvas_);
 	}
 
