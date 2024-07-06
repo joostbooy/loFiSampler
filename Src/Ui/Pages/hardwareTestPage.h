@@ -2,44 +2,44 @@
 #define HardwareTestPage_h
 
 #include "controller.h"
-
+#include "textBufferPainter.h"
 
 namespace HardwareTestPage {
 
 	const char *id_text(int id) {
-		switch (var)
+		switch (id)
 		{
-		case FUNCTION_BUTTON_A:			return "FUNCTION BUTTON A";
-		case FUNCTION_BUTTON_B:			return "FUNCTION BUTTON B";
-		case FUNCTION_BUTTON_C:			return "FUNCTION BUTTON C";
-		case FUNCTION_BUTTON_D:			return "FUNCTION_ BUTTON D";
-		case FUNCTION_ENC_A:			return "FUNCTION ENC A";
-		case FUNCTION_ENC_B:			return "FUNCTION ENC B";
-		case FUNCTION_ENC_C:			return "FUNCTION ENC C";
-		case FUNCTION_ENC_D:			return "FUNCTION ENC D";
-		case FUNCTION_ENC_PUSH_A:		return "FUNCTION ENC PUSH A";
-		case FUNCTION_ENC_PUSH_B:		return "FUNCTION ENC_PUSH B";
-		case FUNCTION_ENC_PUSH_C:		return "FUNCTION ENC_PUSH C";
-		case FUNCTION_ENC_PUSH_D:		return "FUNCTION ENC PUSH D";
-		case UP_BUTTON:					return "UP BUTTON";
-		case DOWN_BUTTON:				return "DOWN BUTTON";
-		case LEFT_BUTTON:				return "LEFT BUTTON";
-		case RIGHT_BUTTON:				return "RIGHT BUTTON";
-		case SHIFT_BUTTON:				return "SHIFT BUTTON";
-		case COPY_BUTTON:				return "COPY BUTTON";
-		case PASTE_BUTTON:				return "PASTE BUTTON";
-		case CLEAR_BUTTON:				return "CLEAR BUTTON";
-		case MENU_BUTTON:				return "MENU BUTTON";
-		case SAMPLE_CHAPTER_BUTTON:		return "SAMPLE CHAPTER BUTTON";
-		case INSTRUMENT_CHAPTER_BUTTON:	return "INSTRUMENT CHAPTER BUTTON";
-		case MODULATION_CHAPTER_BUTTON:	return "MODULATION CHAPTER BUTTON";
-		case SYSTEM_CHAPTER_BUTTON:		return "SYSTEM CHAPTER BUTTON";
-		case MIDI_CHAPTER_BUTTON:		return "MIDI CHAPTER BUTTON";
-		case STORAGE_CHAPTER_BUTTON:	return "STORAGE CHAPTER BUTTON";
-		default:						return "?";
+		case Controller::FUNCTION_BUTTON_A:			return "FUNCTION BUTTON A";
+		case Controller::FUNCTION_BUTTON_B:			return "FUNCTION BUTTON B";
+		case Controller::FUNCTION_BUTTON_C:			return "FUNCTION BUTTON C";
+		case Controller::FUNCTION_BUTTON_D:			return "FUNCTION_ BUTTON D";
+		case Controller::FUNCTION_ENC_A:			return "FUNCTION ENC A";
+		case Controller::FUNCTION_ENC_B:			return "FUNCTION ENC B";
+		case Controller::FUNCTION_ENC_C:			return "FUNCTION ENC C";
+		case Controller::FUNCTION_ENC_D:			return "FUNCTION ENC D";
+		case Controller::FUNCTION_ENC_PUSH_A:		return "FUNCTION ENC PUSH A";
+		case Controller::FUNCTION_ENC_PUSH_B:		return "FUNCTION ENC_PUSH B";
+		case Controller::FUNCTION_ENC_PUSH_C:		return "FUNCTION ENC_PUSH C";
+		case Controller::FUNCTION_ENC_PUSH_D:		return "FUNCTION ENC PUSH D";
+		case Controller::UP_BUTTON:					return "UP BUTTON";
+		case Controller::DOWN_BUTTON:				return "DOWN BUTTON";
+		case Controller::LEFT_BUTTON:				return "LEFT BUTTON";
+		case Controller::RIGHT_BUTTON:				return "RIGHT BUTTON";
+		case Controller::SHIFT_BUTTON:				return "SHIFT BUTTON";
+		case Controller::COPY_BUTTON:				return "COPY BUTTON";
+		case Controller::PASTE_BUTTON:				return "PASTE BUTTON";
+		case Controller::CLEAR_BUTTON:				return "CLEAR BUTTON";
+		case Controller::MENU_BUTTON:				return "MENU BUTTON";
+		case Controller::SAMPLE_CHAPTER_BUTTON:		return "SAMPLE CHAPTER BUTTON";
+		case Controller::INSTRUMENT_CHAPTER_BUTTON:	return "INSTRUMENT CHAPTER BUTTON";
+		case Controller::MODULATION_CHAPTER_BUTTON:	return "MODULATION CHAPTER BUTTON";
+		case Controller::SYSTEM_CHAPTER_BUTTON:		return "SYSTEM CHAPTER BUTTON";
+		case Controller::MIDI_CHAPTER_BUTTON:		return "MIDI CHAPTER BUTTON";
+		case Controller::STORAGE_CHAPTER_BUTTON:	return "STORAGE CHAPTER BUTTON";
+		default:									return "?";
 			break;
 		}
-		return "";
+		return "?";
 	}
 
 	enum FooterOptions {
@@ -47,7 +47,7 @@ namespace HardwareTestPage {
 		NUM_OPTIONS
 	};
 
-	const char* const* footer_option_text[NUM_OPTIONS] = { "TOGGLE LEDS" };
+	const char* const footer_option_text[NUM_OPTIONS] = { "TOGGLE LEDS" };
 
 	bool led_toggle_state_;
 
@@ -65,7 +65,7 @@ namespace HardwareTestPage {
 
 
 	void on_button(int id, int state) {
-		TextBufferPainter.write(TopPage::str.write(id_text(id), " ", state));
+		TextBufferPainter::write(TopPage::str_.write(id_text(id), " ", state));
 
 		switch (Controller::button_to_function(id))
 		{
