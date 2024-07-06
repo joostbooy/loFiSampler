@@ -8,6 +8,7 @@
 #include "midiPage.h"
 #include "modulationPage.h"
 #include "samplePage.h"
+#include "hardwareTestPage.h"
 
 Pages::Page* page_[Pages::NUM_PAGES] = {
 	[Pages::TOP_PAGE]			= &TopPage::page,
@@ -18,7 +19,8 @@ Pages::Page* page_[Pages::NUM_PAGES] = {
 	[Pages::MIDI_PAGE]			= &MidiPage::page,
 	[Pages::MODULATION_PAGE]	= &ModulationPage::page,
 	[Pages::SAMPLE_PAGE]		= &SamplePage::page,
-	[Pages::CONFIRMATION_PAGE]	= &ConfirmationPage::page
+	[Pages::CONFIRMATION_PAGE]	= &ConfirmationPage::page,
+	[Pages::HARDWARE_TEST_PAGE]	= &HardwareTestPage::page
 };
 
 void Pages::init(Settings *settings, Engine *engine, Canvas *canvas) {
