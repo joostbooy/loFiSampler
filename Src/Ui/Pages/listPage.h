@@ -102,16 +102,7 @@ namespace ListPage {
 	}
 
 	void refresh_leds() {
-		LedPainter::set_shift(Matrix::RED);
 
-		if (clear_callback_) {
-			LedPainter::set_clear(Matrix::RED);
-		}
-
-		if (copy_callback_ && paste_callback_) {
-			LedPainter::set_copy(Matrix::RED);
-			LedPainter::set_paste(Matrix::RED);
-		}
 	}
 
 	void draw() {

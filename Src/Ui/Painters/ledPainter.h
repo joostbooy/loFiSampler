@@ -13,30 +13,21 @@ public:
 		matrix_ = matrix;
 	}
 
-	static void clear() {
-		matrix_->clear_leds();
-	}
-
-	// edit
-	static void set_shift(Matrix::LedColor color) {
-		matrix_->set_led(0, 0, color);
-	}
-
-	static void set_paste(Matrix::LedColor color) {
-		matrix_->set_led(6, 4, color);
-	}
-
-	static void set_copy(Matrix::LedColor color) {
-		matrix_->set_led(6, 5, color);
-	}
-
-	static void set_clear(Matrix::LedColor color) {
-		matrix_->set_led(7, 5, color);
+	static void set_all(Matrix::LedColor color) {
+		if (color == Matrix::BLACK) {
+			matrix_->clear_leds();
+		} else {
+			footer_buttons(Matrix::RED, Matrix::RED, Matrix::RED, Matrix::RED);
+			footer_encoders(Matrix::RED, Matrix::RED, Matrix::RED, Matrix::RED);
+			for (int i = 0; i < 6; ++i) {
+				matrix_->set_led(chapter_leds_[i].x, chapter_leds_[i].y, Matrix::RED);
+			}
+		}
 	}
 
 	// chapter
 	static void set_chapter(int index) {
-		for (int i = 0; i < 4; ++i) {
+		for (int i = 0; i < 6; ++i) {
 			Matrix::LedColor color = i == index ? Matrix::RED : Matrix::BLACK;
 			matrix_->set_led(chapter_leds_[i].x, chapter_leds_[i].y, color);
 		}
@@ -88,7 +79,7 @@ private:
 		const uint8_t y;
 	};
 
-	static Map chapter_leds_[4];
+	static Map chapter_leds_[6];
 	static Map footer_button_leds_[4];
 	static Map footer_encoder_leds_[4];
 };
