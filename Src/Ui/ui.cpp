@@ -34,10 +34,10 @@ void Ui::init(Settings *settings, Engine *engine, Matrix *matrix, Display *displ
 }
 
 void Ui::poll() {
-	uint8_t reading[16];
+	uint8_t reading[8];
 	matrix_->refresh(&reading[0]);
 
-	for (int x = 0; x < 16; ++x) {
+	for (int x = 0; x < 8; ++x) {
 		for (int y = 0; y < 8; ++y) {
 			uint8_t sw = y + (x * 8);
 			sw_raw[sw] <<= 1;
@@ -47,7 +47,7 @@ void Ui::poll() {
 		}
 	}
 
-	for (int x = 0; x < 16 * 8; x += 8) {
+	for (int x = 0; x < 8 * 8; x += 8) {
 		for (int y = 0; y < num_buttons_rows; ++y) {
 			uint8_t button = buttons_rows[y] + x;
 			if (sw_raw[button] == 0x80) {

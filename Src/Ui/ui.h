@@ -41,7 +41,7 @@ private:
 
 	uint32_t last_interval = 0;
 	uint32_t display_interval = 0;
-	uint8_t sw_raw[8 * 16];
+	uint8_t sw_raw[8 * 8];
 };
 
 #endif

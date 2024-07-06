@@ -13,8 +13,6 @@ public:
 	enum LedColor {
 		BLACK	= 0x00,
 		RED		= 0x01,
-		GREEN	= 0x02,
-		ORANGE	= 0x03,
 	};
 
 	void init();
@@ -37,8 +35,8 @@ public:
 	}
 
 	void set_led(uint8_t coll, uint8_t row, LedColor color) {
-		uint16_t data = led_row[coll] & ~(0x3 << (row * 2));
-		led_row[coll] = data | (color << (row * 2));
+		uint8_t data = led_row[coll] & ~(1 << row);
+		led_row[coll] = data | (color << row);
 	}
 
 	void refresh(uint8_t *buff) {
@@ -52,9 +50,11 @@ public:
 		}
 
 		// write led row
-		uint16_t led_data = leds_locked ? led_row_copy[led_coll] : led_row[led_coll];
-		spi_transfer(led_data >> 8);
-		spi_transfer(led_data);
+		if (leds_locked) {
+			spi_transfer(led_row_copy[led_coll]);
+		} else {
+			spi_transfer(led_row[led_coll]);
+		}
 
 		// update collumn
 		set_collumn(led_coll);
@@ -73,8 +73,8 @@ private:
 	volatile bool leds_locked = false;
 
 	uint8_t led_coll = 0;
-	uint16_t led_row[kNumOfLedCollumns];
-	uint16_t led_row_copy[kNumOfLedCollumns];
+	uint8_t led_row[kNumOfLedCollumns];
+	uint8_t led_row_copy[kNumOfLedCollumns];
 
 	void set_collumn(uint8_t coll) {
 		uint32_t reg = 0;
