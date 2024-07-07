@@ -30,6 +30,7 @@ public:
 
 		midi().init();
 		modulation().init();
+		ModulationMatrix::init(&modulation_);
 
 		for (size_t i = 0; i < kNumLfos; ++i) {
 			lfo(i).init();
@@ -46,8 +47,6 @@ public:
 		for (size_t i = 0; i < kNumInstruments; ++i) {
 			instrument(i).init();
 		}
-
-		ModulationMatrix::init(&modulation_);
 	}
 
 	Midi &midi() {
