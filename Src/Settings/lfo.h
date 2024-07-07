@@ -18,6 +18,7 @@ public:
 		set_skew(0.5f);
 		set_min(0.0f);
 		set_max(1.0f);
+		set_sync_phase(0.0f);
 		set_clock_sync(false);
 		set_randomise(false);
 		set_retrigger_port(Midi::UART);
@@ -99,6 +100,19 @@ public:
 
 	const char *max_text() {
 		return SettingsText::float_to_text(max(), 0, 100);
+	}
+
+	// Sync phase
+	float sync_phase() {
+		return sync_phase_;
+	}
+
+	void set_sync_phase(float value) {
+		sync_phase_ = SettingsUtils::clip_float(value);
+	}
+
+	const char *sync_phase_text() {
+		return SettingsText::float_to_text(sync_phase(), 0, 100);
 	}
 
 	// clock sync
@@ -205,6 +219,7 @@ private:
 	float speed_;
 	float min_;
 	float max_;
+	float sync_phase_;
 	bool randomise_;
 	bool clock_sync_;
 	uint8_t retrigger_port_;

@@ -20,7 +20,7 @@ public:
 	}
 
 	void reset() {
-		phase_ = 0.f;
+		phase_ = lfo_->sync_phase();
 		set_stage(RISING);
 	}
 
