@@ -39,14 +39,13 @@ public:
 		led_row[coll] = data | (color << row);
 	}
 
-	void refresh(uint8_t *buff) {
+	void refresh(uint8_t *buffer) {
 		for (int i = 0; i < kNumOfSwitchCollumns; ++i) {
 			set_collumn(i);
 			GPIOE->BSRR = GPIO_PIN_6 << 16;				// latch switches
 			asm("NOP");
 			GPIOE->BSRR = GPIO_PIN_6;
-			*buff++ = spi_transfer();
-			*buff++ = spi_transfer();
+			*buffer++ = spi_transfer();
 		}
 
 		// write led row
@@ -58,7 +57,10 @@ public:
 
 		// update collumn
 		set_collumn(led_coll);
-		++led_coll %= kNumOfLedCollumns;
+		++led_coll;
+		if (led_coll >= kNumOfLedCollumns) {
+			led_coll = 0;
+		}
 
 		// enable led row &  collumns
 		GPIOB->BSRR = GPIO_PIN_8 << 16;
@@ -68,8 +70,8 @@ public:
 	}
 
 private:
-	static const uint8_t kNumOfSwitchCollumns = 8;
-	static const uint8_t kNumOfLedCollumns = 8;
+	static const uint8_t kNumOfSwitchCollumns = 7;
+	static const uint8_t kNumOfLedCollumns = 7;
 	volatile bool leds_locked = false;
 
 	uint8_t led_coll = 0;
