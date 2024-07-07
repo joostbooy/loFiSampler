@@ -112,7 +112,7 @@ public:
 	}
 
 	const char *sync_phase_text() {
-		return SettingsText::float_to_text(sync_phase(), 0, 100);
+		return SettingsText::percentage_to_text(sync_phase() * 100, 100);
 	}
 
 	// clock sync
