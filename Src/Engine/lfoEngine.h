@@ -21,7 +21,6 @@ public:
 
 	void reset() {
 		phase_ = lfo_->sync_phase();
-		set_stage(RISING);
 	}
 
 	void retrigger(uint8_t port, uint8_t channel) {
