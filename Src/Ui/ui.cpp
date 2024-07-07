@@ -5,11 +5,10 @@
 
 Que<Ui::Event, 16> ui_que;
 
-static const int num_enc_rows = 2;
-static const int num_buttons_rows = 4;
-static const int enc_a_rows[num_enc_rows] = { 1, 4 };
-static const int enc_b_rows[num_enc_rows] = { 2, 5 };
-static const int buttons_rows[num_buttons_rows] = { 0, 3, 6, 7 };
+static const int enc_a_row = 2;
+static const int enc_b_row = 3;
+static const int num_buttons_rows = 6;
+static const int buttons_rows[num_buttons_rows] = { 0, 1, 4, 5, 6, 7 };
 
 void addEvent(Ui::ControlType type, uint8_t id, int8_t value)  {
 	Ui::Event e;
@@ -57,14 +56,12 @@ void Ui::poll() {
 			}
 		}
 
-		for (int y = 0; y < num_enc_rows; ++y) {
-			uint8_t a = enc_a_rows[y] + x;
-			uint8_t b = enc_b_rows[y] + x;
-			if ((sw_raw[b] & 0x03) == 0x02 && (sw_raw[a] & 0x03) == 0x00) {
-				addEvent(Ui::ENCODER, a, 1);
-			} else if ((sw_raw[a] & 0x03) == 0x02 && (sw_raw[b] & 0x03) == 0x00) {
-				addEvent(Ui::ENCODER, a, -1);
-			}
+		uint8_t a = enc_a_row + x;
+		uint8_t b = enc_b_row + x;
+		if ((sw_raw[b] & 0x03) == 0x02 && (sw_raw[a] & 0x03) == 0x00) {
+			addEvent(Ui::ENCODER, a, 1);
+		} else if ((sw_raw[a] & 0x03) == 0x02 && (sw_raw[b] & 0x03) == 0x00) {
+			addEvent(Ui::ENCODER, a, -1);
 		}
 	}
 }
