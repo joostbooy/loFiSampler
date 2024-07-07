@@ -183,6 +183,7 @@ public:
 		fileWriter.write(speed_);
 		fileWriter.write(min_);
 		fileWriter.write(max_);
+		fileWriter.write(sync_phase_);
 		fileWriter.write(randomise_);
 		fileWriter.write(clock_sync_);
 		fileWriter.write(retrigger_port_);
@@ -195,6 +196,7 @@ public:
 		fileReader.read(speed_);
 		fileReader.read(min_);
 		fileReader.read(max_);
+		fileReader.read(sync_phase_);
 		fileReader.read(randomise_);
 		fileReader.read(clock_sync_);
 		fileReader.read(retrigger_port_);
@@ -207,6 +209,7 @@ public:
 		speed_ = lfo->speed();
 		min_ = lfo->min();
 		max_ = lfo->max();
+		sync_phase_ = lfo->sync_phase();
 		randomise_ = lfo->randomise();
 		clock_sync_ = lfo->clock_sync();
 		retrigger_port_ = lfo->retrigger_port();
