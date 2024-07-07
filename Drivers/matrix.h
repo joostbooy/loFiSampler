@@ -62,7 +62,7 @@ public:
 			led_coll = 0;
 		}
 
-		// enable led row &  collumns
+		// enable led row & collumns
 		GPIOB->BSRR = GPIO_PIN_8 << 16;
 		GPIOB->BSRR = GPIO_PIN_9 << 16;
 		// latch led rows & collumn
@@ -70,7 +70,7 @@ public:
 	}
 
 private:
-	static const uint8_t kNumOfSwitchCollumns = 7;
+	static const uint8_t kNumOfSwitchCollumns = 8;
 	static const uint8_t kNumOfLedCollumns = 7;
 	volatile bool leds_locked = false;
 
