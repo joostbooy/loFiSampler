@@ -12,7 +12,7 @@ namespace HardwareTestPage {
 		case Controller::FUNCTION_BUTTON_A:			return "FUNCTION BUTTON A";
 		case Controller::FUNCTION_BUTTON_B:			return "FUNCTION BUTTON B";
 		case Controller::FUNCTION_BUTTON_C:			return "FUNCTION BUTTON C";
-		case Controller::FUNCTION_BUTTON_D:			return "FUNCTION_ BUTTON D";
+		case Controller::FUNCTION_BUTTON_D:			return "FUNCTION BUTTON D";
 		case Controller::FUNCTION_ENC_A:			return "FUNCTION ENC A";
 		case Controller::FUNCTION_ENC_B:			return "FUNCTION ENC B";
 		case Controller::FUNCTION_ENC_C:			return "FUNCTION ENC C";
@@ -36,10 +36,10 @@ namespace HardwareTestPage {
 		case Controller::SYSTEM_CHAPTER_BUTTON:		return "SYSTEM CHAPTER BUTTON";
 		case Controller::MIDI_CHAPTER_BUTTON:		return "MIDI CHAPTER BUTTON";
 		case Controller::STORAGE_CHAPTER_BUTTON:	return "STORAGE CHAPTER BUTTON";
-		default:									return "?";
+		default:									return "";
 			break;
 		}
-		return "?";
+		return "";
 	}
 
 	enum FooterOptions {
@@ -87,7 +87,7 @@ namespace HardwareTestPage {
 	}
 
 	void on_encoder(int id, int state) {
-
+		TextBufferPainter::write(TopPage::str_.write(id_text(id), " ", state));
 	}
 
 	void refresh_leds() {
@@ -95,7 +95,7 @@ namespace HardwareTestPage {
 	}
 
 	void draw() {
-
+		TextBufferPainter::draw();
 	}
 
 	const size_t target_fps() {
