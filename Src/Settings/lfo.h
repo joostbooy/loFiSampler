@@ -7,6 +7,7 @@
 #include "fileReader.h"
 #include "midi.h"
 #include "midiSync.h"
+#include "midiEngine.h"
 
 class Lfo {
 
@@ -174,6 +175,12 @@ public:
 
 	bool retrigger_channel_accepted(int channel) {
 		return (retrigger_channel() >= 16) || (retrigger_channel() == channel);
+	}
+
+
+	// Retrigger
+	bool retrigger_accepted(MidiEngine::Event &e) {
+		return retrigger_port_accepted(e.port) && retrigger_channel_accepted(e.message & 0x0F);
 	}
 
 	// Storage

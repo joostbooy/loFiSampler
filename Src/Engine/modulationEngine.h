@@ -51,7 +51,7 @@ public:
 
 	void retrigger_lfos(MidiEngine::Event &e) {
 		for (size_t i = 0; i < Settings::kNumLfos; ++i) {
-			lfoEngine_[i].retrigger(e.port, e.message & 0x0F);
+			lfoEngine_[i].retrigger(e);
 		}
 	}
 

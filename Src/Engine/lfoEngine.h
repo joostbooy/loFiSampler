@@ -23,8 +23,8 @@ public:
 		phase_ = lfo_->sync_phase();
 	}
 
-	void retrigger(uint8_t port, uint8_t channel) {
-		if (lfo_->retrigger_port_accepted(port) && lfo_->retrigger_channel_accepted(channel)) {
+	void retrigger(MidiEngine::Event &e) {
+		if (lfo_->retrigger_accepted(e)) {
 			reset();
 		}
 	}
@@ -33,11 +33,6 @@ public:
 	float value() { return value_; }
 
 	float next() {
-		phase_ += lfo_->inc();
-		if (phase_ >= 1.f) {
-			phase_ = 0.f;
-		}
-
 		float shape;
 		float skew_phase;
 		float skew_amount = lfo_->skew();
@@ -53,6 +48,11 @@ public:
 		}
 
 		value_ = Dsp::cross_fade(last_value_, target_value_, Curve::read(skew_phase, shape));
+
+		phase_ += lfo_->inc();
+		if (phase_ >= 1.f) {
+			phase_ = 0.f;
+		}
 
 		return value_;
 	}
