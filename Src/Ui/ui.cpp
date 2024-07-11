@@ -27,9 +27,11 @@ void Ui::init(Settings *settings, Engine *engine, Matrix *matrix, Display *displ
 	last_interval = 0;
 	display_interval = 0;
 	canvas_.init();
+	leds_.init();
 	ui_que.clear();
 
-	pages_.init(settings, engine, &canvas_);
+	pages_.init(settings, engine, &canvas_, &leds_);
+	pages_.open(Pages::HARDWARE_TEST_PAGE);
 }
 
 void Ui::poll() {
@@ -86,10 +88,9 @@ void Ui::process() {
 
 	if (interval >= 1) {
 		last_interval += interval;
-		matrix_->lock_leds();
-		matrix_->clear_leds();
+		leds_.clear();
 		pages_.refresh_leds();
-		matrix_->unlock_leds();
+		matrix_->set_leds(leds_.data());
 	}
 
 	display_interval += interval;

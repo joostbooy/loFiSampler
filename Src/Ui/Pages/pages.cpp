@@ -23,10 +23,10 @@ Pages::Page* page_[Pages::NUM_PAGES] = {
 	[Pages::HARDWARE_TEST_PAGE]	= &HardwareTestPage::page
 };
 
-void Pages::init(Settings *settings, Engine *engine, Canvas *canvas) {
+void Pages::init(Settings *settings, Engine *engine, Canvas *canvas, Leds *leds) {
 	curr_page_ = TOP_PAGE;
 	page_stack_.clear();
-	TopPage::init(settings, engine, canvas, this);
+	TopPage::init(settings, engine, canvas, leds, this);
 	for (int i = 0; i < NUM_PAGES; ++i) {
 		page_[i]->init();
 	}

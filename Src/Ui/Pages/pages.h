@@ -4,6 +4,7 @@
 #include "settings.h"
 #include "engine.h"
 #include "canvas.h"
+#include "leds.h"
 
 class Pages {
 
@@ -23,7 +24,7 @@ public:
 		NUM_PAGES
 	};
 
-	void init(Settings *settings, Engine *engine, Canvas *canvas);
+	void init(Settings *settings, Engine *engine, Canvas *canvas, Leds *leds);
 	void open(PageId id);
 	void close(PageId id);
 	void close_all();

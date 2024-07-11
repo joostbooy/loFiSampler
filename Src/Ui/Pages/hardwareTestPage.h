@@ -73,10 +73,10 @@ namespace HardwareTestPage {
 			if (state) {
 				if (led_toggle_state_) {
 					led_toggle_state_ = 0;
-					LedPainter::set_all(Matrix::BLACK);
+					TopPage::leds_->set_all(Leds::BLACK);
 				} else {
 					led_toggle_state_ = 1;
-					LedPainter::set_all(Matrix::RED);
+					TopPage::leds_->set_all(Leds::RED);
 				}
 			}
 			break;

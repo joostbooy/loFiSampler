@@ -8,6 +8,7 @@
 #include "engine.h"
 #include "matrix.h"
 #include "display.h"
+#include "leds.h"
 #include <stdint.h>
 
 class Ui {
@@ -33,6 +34,7 @@ public:
 private:
 	Canvas canvas_;
 	Pages pages_;
+	Leds leds_;
 
 	Engine *engine_;
 	Settings *settings_;

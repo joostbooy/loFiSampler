@@ -4,9 +4,9 @@
 #include "settings.h"
 #include "engine.h"
 #include "canvas.h"
+#include "leds.h"
 #include "pages.h"
 #include "controller.h"
-#include "LedPainter.h"
 #include "messagePainter.h"
 #include "textBufferPainter.h"
 
@@ -16,12 +16,14 @@ namespace TopPage {
 	Engine *engine_;
 	Canvas *canvas_;
 	Pages *pages_;
+	Leds *leds_;
 	StringBuilderBase<63>str_;
 
-	void init(Settings *settings, Engine *engine, Canvas *canvas, Pages *pages) {
+	void init(Settings *settings, Engine *engine, Canvas *canvas, Leds *leds, Pages *pages) {
 		settings_ = settings;
 		engine_ = engine;
 		canvas_ = canvas;
+		leds_ = leds;
 		pages_ = pages;
 	}
 
@@ -49,7 +51,7 @@ namespace TopPage {
 	}
 
 	void refresh_leds() {
-		LedPainter::set_chapter(0);
+		leds_->set_chapter(0);
 	}
 
 	void draw() {

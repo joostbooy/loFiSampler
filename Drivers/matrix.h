@@ -17,68 +17,47 @@ public:
 
 	void init();
 
-	void lock_leds() {
+	void set_leds(uint8_t *data) {
 		for (int i = 0; i < kNumOfLedCollumns; ++i) {
-			led_row_copy[i] = led_row[i];
-		}
-		leds_locked = true;
-	}
-
-	void unlock_leds() {
-		leds_locked = false;
-	}
-
-	void clear_leds() {
-		for (int i = 0; i < kNumOfLedCollumns; ++i) {
-			led_row[i] = 0;
+			led_row_[i] = *data++;
 		}
 	}
 
-	void set_led(uint8_t coll, uint8_t row, LedColor color) {
-		uint8_t data = led_row[coll] & ~(1 << row);
-		led_row[coll] = data | (color << row);
-	}
-
-	void refresh(uint8_t *buffer) {
+	void refresh(uint8_t *sw_buffer) {
+		// read switches
 		for (int i = 0; i < kNumOfSwitchCollumns; ++i) {
 			set_collumn(i);
-			GPIOE->BSRR = GPIO_PIN_6 << 16;				// latch switches
+
+			// latch switch rows
+			GPIOE->BSRR = GPIO_PIN_6 << 16;
 			asm("NOP");
 			GPIOE->BSRR = GPIO_PIN_6;
-			*buffer++ = spi_transfer();
+
+			*sw_buffer++ = spi_transfer();
 		}
 
-		// write led row
-		if (leds_locked) {
-			spi_transfer(led_row_copy[led_coll]);
-		} else {
-			spi_transfer(led_row[led_coll]);
+		// write leds
+		set_collumn(led_coll_);
+		spi_transfer(led_row_[led_coll_]);
+
+		++led_coll_;
+		if (led_coll_ >= kNumOfLedCollumns) {
+			led_coll_ = 0;
 		}
 
-		// update collumn
-		set_collumn(led_coll);
-		++led_coll;
-		if (led_coll >= kNumOfLedCollumns) {
-			led_coll = 0;
-		}
-
-		// enable led row & collumns
-		GPIOB->BSRR = GPIO_PIN_8 << 16;
-		GPIOB->BSRR = GPIO_PIN_9 << 16;
 		// latch led rows & collumn
+		GPIOB->BSRR = (GPIO_PIN_8 << 16) | (GPIO_PIN_9 << 16);
 		GPIOB->BSRR = GPIO_PIN_8 | GPIO_PIN_9;
 	}
 
 private:
 	static const uint8_t kNumOfSwitchCollumns = 8;
 	static const uint8_t kNumOfLedCollumns = 7;
-	volatile bool leds_locked = false;
 
-	uint8_t led_coll = 0;
-	uint8_t led_row[kNumOfLedCollumns];
-	uint8_t led_row_copy[kNumOfLedCollumns];
+	uint8_t led_coll_ = 0;
+	uint8_t led_row_[kNumOfLedCollumns];
 
-	void set_collumn(uint8_t coll) {
+	void set_collumn(int coll) {
 		uint32_t reg = 0;
 		coll & 0x01 ? reg |= GPIO_PIN_2 : reg |= GPIO_PIN_2 << 16;
 		coll & 0x02 ? reg |= GPIO_PIN_3 : reg |= GPIO_PIN_3 << 16;
