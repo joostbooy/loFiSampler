@@ -69,9 +69,10 @@ namespace HardwareTestPage {
 		size_t size = TopPage::settings_->sdram()->size_bytes() / 2;
 
 		for (size_t i = 0; i < size; ++i) {
-			int16_t data = Rng::u16();
-			*ptr = data;
-			if (*ptr != data) {
+			volatile int16_t w_data = Rng::u16();
+			*ptr = w_data;
+			volatile int16_t r_data = *ptr;
+			if (r_data != w_data) {
 				MessagePainter::show("RAM ERROR AT ADRESS ", i);
 				return;
 			}
