@@ -36,8 +36,6 @@ private:
 	Pages pages_;
 	Leds leds_;
 
-	Engine *engine_;
-	Settings *settings_;
 	Matrix *matrix_;
 	Display *display_;
 

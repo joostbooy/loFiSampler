@@ -19,8 +19,6 @@ void addEvent(Ui::ControlType type, uint8_t id, int8_t value)  {
 }
 
 void Ui::init(Settings *settings, Engine *engine, Matrix *matrix, Display *display) {
-	settings_ = settings;
-	engine_ = engine;
 	matrix_ = matrix;
 	display_ = display;
 
