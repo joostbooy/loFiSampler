@@ -73,7 +73,7 @@ namespace HardwareTestPage {
 			*ptr = w_data;
 			volatile int16_t r_data = *ptr;
 			if (r_data != w_data) {
-				MessagePainter::show("RAM ERROR AT ADRESS ", i);
+				MessagePainter::show(TopPage::str_.write("RAM ERROR AT ADRESS ", size_t(ptr)));
 				return;
 			}
 			++ptr;
