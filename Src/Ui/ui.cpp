@@ -24,12 +24,13 @@ void Ui::init(Settings *settings, Engine *engine, Matrix *matrix, Display *displ
 
 	last_interval = 0;
 	display_interval = 0;
+
 	canvas_.init();
 	leds_.init();
-	ui_que.clear();
-
 	pages_.init(settings, engine, &canvas_, &leds_);
+
 	pages_.open(Pages::HARDWARE_TEST_PAGE);
+	ui_que.clear();
 }
 
 void Ui::poll() {
