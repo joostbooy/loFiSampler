@@ -59,7 +59,6 @@ namespace ConfirmationPage {
 
 	void refresh_leds() {
 		TopPage::leds_->footer_buttons(Leds::RED, Leds::RED, Leds::BLACK, Leds::BLACK);
-
 	}
 
 	void draw() {
