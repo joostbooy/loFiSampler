@@ -50,7 +50,7 @@ bool Settings::save() {
 };
 
 bool Settings::load(const char* new_path) {
-	init();	// also clears the path
+	init(sdram_);	// also clears the path
 
 	fileReader.start(&disk.file, new_path);
 
@@ -75,7 +75,7 @@ bool Settings::load(const char* new_path) {
 
 	if (!fileReader.read_ok()) {
 		fileReader.stop();
-		init();
+		init(sdram_);
 		return false;
 	}
 

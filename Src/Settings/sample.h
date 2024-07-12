@@ -7,6 +7,7 @@
 #include "stringUtils.h"
 #include "fileWriter.h"
 #include "fileReader.h"
+#include "sdram.h"
 
 class Sample {
 
@@ -28,6 +29,10 @@ public:
 			break;
 		}
 		return nullptr;
+	}
+
+	static void init(Sdram *sdram) {
+		sdram_ = sdram;
 	}
 
 	void init() {
@@ -324,6 +329,8 @@ public:
 	}
 
 private:
+	static Sdram *sdram_;
+
 	SampleData::Entry *entry_;
 	size_t start_;
 	size_t end_;

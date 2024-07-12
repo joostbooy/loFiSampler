@@ -20,7 +20,9 @@ public:
 	static const size_t kNumLfos = 4;
 	static const size_t kNumEnvelopes = 2;
 
-	void init() {
+	void init(Sdram *sdram) {
+		sdram_ = sdram;
+
 		selected_sample_index_ = 0;
 		selected_lfo_index_ = 0;
 		selected_instrument_index_ = 0;
@@ -31,6 +33,7 @@ public:
 		midi().init();
 		modulation().init();
 		ModulationMatrix::init(&modulation_);
+		Sample::init(sdram_);
 
 		for (size_t i = 0; i < kNumLfos; ++i) {
 			lfo(i).init();
@@ -152,6 +155,11 @@ public:
 		return 0;
 	}
 
+	// sdram
+	Sdram *sdram() {
+		return sdram_;
+	}
+
 private:
 	StringBuilderBase<63>path;
 
@@ -164,6 +172,8 @@ private:
 
 	FileWriter fileWriter;
 	FileReader fileReader;
+
+	Sdram *sdram_;
 
 	int selected_lfo_index_;
 	int selected_sample_index_;

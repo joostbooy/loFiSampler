@@ -7,6 +7,7 @@
 #include "display.h"
 #include "disk.h"
 #include "gate.h"
+#include "sdram.h"
 
 #include "settings.h"
 #include "engine.h"
@@ -18,6 +19,7 @@ Usb usb;
 Gate gate;
 Uart uart;
 Sys sys;
+Sdram sdram;
 Matrix matrix;
 Display display;
 
@@ -63,10 +65,11 @@ int main(void)
 	adc.init();
 	matrix.init();
 	display.init();
+	sdram.init();
 	sdio.init();
 	disk.init();
 
-	settings.init();
+	settings.init(&sdram);
 	engine.init(&settings, &uart, &usb, &gate);
 	ui.init(&settings, &engine, &matrix, &display);
 

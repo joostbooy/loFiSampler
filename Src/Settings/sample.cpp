@@ -1,5 +1,8 @@
 #include "sample.h"
 
+Sdram* Sample::sdram_;
+
+
  bool Sample::name_to_midi_note(const char *name, uint8_t *note) {
 	int oct_ = -1;
 	int note_ = -1;
