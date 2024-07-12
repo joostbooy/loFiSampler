@@ -44,10 +44,11 @@ namespace HardwareTestPage {
 
 	enum FooterOptions {
 		TOGGLE_LEDS,
+		TEST_RAM,
 		NUM_OPTIONS
 	};
 
-	const char* const footer_option_text[NUM_OPTIONS] = { "TOGGLE LEDS" };
+	const char* const footer_option_text[NUM_OPTIONS] = { "TOGGLE LEDS", "TEST RAM" };
 
 	bool led_toggle_state_;
 
@@ -63,6 +64,22 @@ namespace HardwareTestPage {
 
 	}
 
+	void test_ram() {
+		int16_t *ptr = TopPage::settings_->sdram()->pointer();
+		size_t size = TopPage::settings_->sdram()->size_bytes() / 2;
+
+		for (size_t i = 0; i < size; ++i) {
+			int16_t data = Rng::u16();
+			*ptr = data;
+			if (*ptr != data) {
+				MessagePainter::show("RAM ERROR AT ADRESS ", i);
+				return;
+			}
+			++ptr;
+		}
+
+		MessagePainter::show("RAM TEST PASSED");
+	}
 
 	void on_button(int id, int state) {
 		TextBufferPainter::write(TopPage::str_.write(id_text(id), " ", state));
@@ -71,17 +88,24 @@ namespace HardwareTestPage {
 		{
 		case TOGGLE_LEDS:
 			if (state) {
-				if (led_toggle_state_) {
-					led_toggle_state_ = 0;
+				if (led_toggle_state_ ^= 1) {
 					TopPage::leds_->set_all(Leds::BLACK);
 				} else {
-					led_toggle_state_ = 1;
 					TopPage::leds_->set_all(Leds::RED);
 				}
 			}
 			break;
+		case TEST_RAM:
+			if (state) {
+				ConfirmationPage::set("THIS WILL WIPE ALL RAM", [](int option) {
+					if (option == ConfirmationPage::CONFIRM) {
+						test_ram();
+					}
+				});
+				TopPage::pages_->open(Pages::CONFIRMATION_PAGE);
+			}
+			break;
 		default:
-			/* code */
 			break;
 		}
 	}
