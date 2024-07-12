@@ -17,9 +17,9 @@ public:
 
 	void init();
 
-	void set_leds(uint8_t *data) {
+	void set_leds(uint8_t *led_data) {
 		for (int i = 0; i < kNumOfLedCollumns; ++i) {
-			led_row_[i] = *data++;
+			led_row_[i] = *led_data++;
 		}
 	}
 
