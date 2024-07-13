@@ -9,7 +9,9 @@
 #include "gate.h"
 #include "sdram.h"
 #include "timer.h"
+#include "sdmmc.h"
 
+#include "disk.h"
 #include "settings.h"
 #include "engine.h"
 #include "ui.h"
@@ -22,9 +24,11 @@ Uart uart;
 Sys sys;
 Timer timer;
 Sdram sdram;
+Sdmmc sdmmc;
 Matrix matrix;
 Display display;
 
+Disk disk;
 Ui ui;
 Engine engine;
 Settings settings;
@@ -64,6 +68,7 @@ extern "C" {
 
 int main(void)
 {
+	// Init drivers
 	sys.init();
 
 	Micros::init();
@@ -77,14 +82,15 @@ int main(void)
 	matrix.init();
 	display.init();
 	sdram.init();
-	sdio.init();
-	disk.init();
+	sdmmc.init();
 
-	settings.init(&sdram);
+	// Init engine, settings & ui
+	disk.init(&sdmmc);
+	settings.init(&sdram, &disk);
 	engine.init(&settings, &uart, &usb, &gate);
 	ui.init(&settings, &engine, &matrix, &display);
 
-	// start timers
+	// Start timers
 	engine.fill(&dac.buffer_[0], Dac::kBlockSize);
 	timer.start_3(CLOCK_ISR_FREQ);
 	timer.start_7(1000);

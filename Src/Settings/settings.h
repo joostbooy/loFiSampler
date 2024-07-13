@@ -9,6 +9,7 @@
 #include "envelope.h"
 #include "stringBuilder.h"
 #include "settingsUtils.h"
+#include "disk.h"
 
 class Settings {
 
@@ -20,8 +21,9 @@ public:
 	static const size_t kNumLfos = 4;
 	static const size_t kNumEnvelopes = 2;
 
-	void init(Sdram *sdram) {
+	void init(Sdram *sdram, Disk *disk) {
 		sdram_ = sdram;
+		disk_ = disk;
 
 		selected_sample_index_ = 0;
 		selected_lfo_index_ = 0;
@@ -174,11 +176,16 @@ private:
 	FileReader fileReader;
 
 	Sdram *sdram_;
+	Disk *disk_;
 
 	int selected_lfo_index_;
 	int selected_sample_index_;
 	int selected_instrument_index_;
 	int selected_envelope_index_;
+
+	void init() {
+		init(sdram_, disk_);
+	}
 };
 
 //extern Settings settings;

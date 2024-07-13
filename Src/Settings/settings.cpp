@@ -1,9 +1,4 @@
 #include "settings.h"
-#include "disk.h"
-#include "fileWriter.h"
-#include "fileReader.h"
-
-//Settings settings;
 
 bool Settings::save(const char* new_path) {
 	path.write(new_path);
@@ -19,7 +14,7 @@ bool Settings::save() {
 		return false;
 	}
 
-	fileWriter.start(&disk.file, path.read(), current_version());
+	fileWriter.start(&disk_->file, path.read(), current_version());
 
 	midi().save(fileWriter);
 	modulation().save(fileWriter);
@@ -50,9 +45,9 @@ bool Settings::save() {
 };
 
 bool Settings::load(const char* new_path) {
-	init(sdram_);	// also clears the path
+	init();	// also clears the path
 
-	fileReader.start(&disk.file, new_path);
+	fileReader.start(&disk_->file, new_path);
 
 	midi().load(fileReader);
 	modulation().load(fileReader);
@@ -75,7 +70,7 @@ bool Settings::load(const char* new_path) {
 
 	if (!fileReader.read_ok()) {
 		fileReader.stop();
-		init(sdram_);
+		init();
 		return false;
 	}
 

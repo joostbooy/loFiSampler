@@ -1,5 +1,5 @@
-#ifndef Sdio_h
-#define Sdio_h
+#ifndef Sdmmc_h
+#define Sdmmc_h
 
 #include "stm32f7xx.h"
 #include "micros.h"
@@ -7,7 +7,7 @@
 // Based on:
 // https://github.com/westlicht/performer/blob/master/src/platform/stm32/drivers/SdCard.cpp
 
-class Sdio {
+class Sdmmc {
 
 public:
 
@@ -44,10 +44,6 @@ public:
 	void init();
 
 	bool status() {
-		if (initialised_) {
-			initialised_ = detected();
-		}
-
 		if (initialised_) {
 			initialised_ = waitDataReady();
 		}
@@ -87,10 +83,6 @@ public:
 		return initialised_;
 	}
 
-	bool detected() {
-		return !(GPIOA->IDR & GPIO_PIN_8);
-	}
-
 	uint32_t sector_count() {
 		return cardInfo.size;
 	}
@@ -113,6 +105,8 @@ public:
 		dma_busy_ = true;
 	}
 
+	static Sdmmc *sdmmc_;
+
 private:
 	enum DmaType {
 		MEM_TO_SD,
@@ -127,7 +121,6 @@ private:
 
 	CardInfo cardInfo;
 	bool initialised_ = false;
-	bool detected_ = false;
 	volatile bool dma_busy_ = false;
 
 	void init_dma(uint32_t buffer, DmaType type);
@@ -461,7 +454,5 @@ private:
 		return true;
 	}
 };
-
-extern Sdio sdio;
 
 #endif

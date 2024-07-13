@@ -1,8 +1,9 @@
-#include "sdio.h"
+#include "sdmmc.h"
 
-Sdio sdio;
+Sdmmc* Sdmmc::sdmmc_;
 
-void Sdio::init() {
+void Sdmmc::init() {
+	sdmmc_ = this;
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
 
 	//powerOff();
@@ -54,7 +55,7 @@ const uint32_t kMemoryToPeripheral		= (1 << 6);
 const uint32_t kPeripheralFlowControl	= (1 << 5);
 const uint32_t kEnable_TC_interupt		= (1 << 4);
 
-void Sdio::init_dma(uint32_t buffer, DmaType dmaType) {
+void Sdmmc::init_dma(uint32_t buffer, DmaType dmaType) {
 	DMA2_Stream0->CR &= ~DMA_SxCR_EN;			// disable stream & wait
 	while (DMA2_Stream0->CR & DMA_SxCR_EN) {};
 
@@ -77,7 +78,7 @@ void Sdio::init_dma(uint32_t buffer, DmaType dmaType) {
 	DMA2_Stream0->NDTR = 0;
 	DMA2_Stream0->CR |= DMA_SxCR_EN;		// enable stream
 
-	sdio.lock_dma();
+	sdmmc_->lock_dma();
 }
 
 extern "C" {
@@ -86,7 +87,7 @@ extern "C" {
 		DMA2->LIFCR |= DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0;
 
 		if (flags & DMA_LISR_TCIF0) {
-			sdio.unlock_dma();
+			Sdmmc::sdmmc_->unlock_dma();
 		}
 	}
 }

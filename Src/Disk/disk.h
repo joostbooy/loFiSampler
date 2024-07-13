@@ -1,11 +1,12 @@
 #ifndef Disk_h
 #define Disk_h
 
-#include "sdio.h"
+#include "sdmmc.h"
 #include "ff.h"
 #include "directory.h"
 #include "entry.h"
 #include "file.h"
+#include "diskio.h"
 
 class Disk {
 
@@ -14,14 +15,17 @@ public:
 	Entry entry;
 	File file;
 
-	void init() {
+	static Sdmmc *sdmmc_;
+
+	void init(Sdmmc *sdmmc) {
+		sdmmc_ = sdmmc;
+
 		const int root = 0;
 
 		dir.init(&fdir, root, &result);
 		entry.init(&fdir, &fil_info, dir.path_ptr());
 		file.init(&fil, dir.path_ptr(), &result);
 
-		//sdio.init();
 		mount();
 	}
 
@@ -34,11 +38,7 @@ public:
 	}
 
 	bool mounted() {
-		return sdio.initialised();
-	}
-
-	bool detected() {
-		return sdio.detected();
+		return sdmmc_->initialised();
 	}
 
 	FRESULT last_result() {
@@ -64,14 +64,11 @@ public:
 	}
 
 private:
-
 	FATFS fs;
 	DIR fdir;
 	FIL fil;
 	FILINFO fil_info;
 	FRESULT result;
 };
-
-extern Disk disk;
 
 #endif
