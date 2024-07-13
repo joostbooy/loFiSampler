@@ -7,8 +7,6 @@ uint16_t MessagePainter::h = 32;
 
 Canvas* MessagePainter::canvas_;
 
-bool MessagePainter::is_error;
-bool MessagePainter::is_visible;
-uint16_t MessagePainter::duration_ms = 0;
-uint16_t MessagePainter::interval_;
+bool MessagePainter::is_visible_;
+uint16_t MessagePainter::duration_ms_ = 0;
 StringBuilderBase<32> MessagePainter::str;

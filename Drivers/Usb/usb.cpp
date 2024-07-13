@@ -18,8 +18,8 @@ void Usb::init() {
 	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 	// Enable VBUS sense (B device) via pin PA9
-	USB_OTG_FS->GCCFG |= USB_OTG_GCCFG_NOVBUSSENS;
-	USB_OTG_FS->GCCFG |= USB_OTG_GCCFG_VBUSBSEN;
+	//USB_OTG_FS->GCCFG |= USB_OTG_GCCFG_NOVBUSSENS;
+	USB_OTG_FS->GCCFG |= USB_OTG_GCCFG_VBDEN;
 
 	// init tiny usb
 	tud_init(0);

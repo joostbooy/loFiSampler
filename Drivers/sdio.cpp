@@ -7,43 +7,41 @@ void Sdio::init() {
 
 	//powerOff();
 
-	/**GPIO Configuration
-	PA8     ------> Card detect
+	/**SDMMC2 GPIO Configuration
+	PD6     ------> SDMMC2_CK
+	PD7     ------> SDMMC2_CMD
+	PG9     ------> SDMMC2_D0
+	PG10     ------> SDMMC2_D1
+	PG11     ------> SDMMC2_D2
+	PG12     ------> SDMMC2_D3
 	*/
-	GPIO_InitStruct.Pin = GPIO_PIN_8;
-	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-
-	/**SDIO GPIO Configuration
-	PC8     ------> SDIO_D0
-	PC9     ------> SDIO_D1
-	PC10     ------> SDIO_D2
-	PC11     ------> SDIO_D3
-	PC12     ------> SDIO_CK
-	PD2     ------> SDIO_CMD
-	*/
-	GPIO_InitStruct.Pin = GPIO_PIN_8 | GPIO_PIN_9 | GPIO_PIN_10 | GPIO_PIN_11 | GPIO_PIN_12;
+	GPIO_InitStruct.Pin = GPIO_PIN_6|GPIO_PIN_7;
 	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
-	GPIO_InitStruct.Alternate = GPIO_AF12_SDIO;
-	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-	GPIO_InitStruct.Pin = GPIO_PIN_2;
-	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
-	GPIO_InitStruct.Alternate = GPIO_AF12_SDIO;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+	GPIO_InitStruct.Alternate = GPIO_AF11_SDMMC2;
 	HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+	GPIO_InitStruct.Pin = GPIO_PIN_9|GPIO_PIN_10|GPIO_PIN_12;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+	GPIO_InitStruct.Alternate = GPIO_AF11_SDMMC2;
+	HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
+
+	GPIO_InitStruct.Pin = GPIO_PIN_11;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+	GPIO_InitStruct.Alternate = GPIO_AF10_SDMMC2;
+	HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 
 	// Enable dma interrupt
 	HAL_NVIC_EnableIRQ(DMA2_Stream3_IRQn);
 }
 
 
-// DMA2 steam 3 Channel 4
+// DMA2 steam 0 Channel 4
 const uint32_t kChannel4				= (4 << 25);
 const uint32_t kMemoryBurst_inc4		= (1 << 23);
 const uint32_t kPeripheralBurst_inc4	= (1 << 21);
@@ -57,8 +55,8 @@ const uint32_t kPeripheralFlowControl	= (1 << 5);
 const uint32_t kEnable_TC_interupt		= (1 << 4);
 
 void Sdio::init_dma(uint32_t buffer, DmaType dmaType) {
-	DMA2_Stream3->CR &= ~DMA_SxCR_EN;			// disable stream & wait
-	while (DMA2_Stream3->CR & DMA_SxCR_EN) {};
+	DMA2_Stream0->CR &= ~DMA_SxCR_EN;			// disable stream & wait
+	while (DMA2_Stream0->CR & DMA_SxCR_EN) {};
 
 	uint32_t direction = 0;
 	if (dmaType == MEM_TO_SD) {
@@ -67,17 +65,17 @@ void Sdio::init_dma(uint32_t buffer, DmaType dmaType) {
 		direction =	0;
 	}
 
-	DMA2_Stream3->CR = 0;
-	DMA2_Stream3->CR = (kChannel4 | kMemoryBurst_inc4 | kPeripheralBurst_inc4 | kPriorityVeryHigh | kMemorySize_32bit | kPeripheralSize_32bit | kEnableMemoryIncrement | kPeripheralFlowControl | direction | kEnable_TC_interupt);
+	DMA2_Stream0->CR = 0;
+	DMA2_Stream0->CR = (kChannel4 | kMemoryBurst_inc4 | kPeripheralBurst_inc4 | kPriorityVeryHigh | kMemorySize_32bit | kPeripheralSize_32bit | kEnableMemoryIncrement | kPeripheralFlowControl | direction | kEnable_TC_interupt);
 
-	DMA2_Stream3->FCR |= DMA_SxFCR_DMDIS;	// disable direct mode (enables fifo mode)
-	DMA2_Stream3->FCR |= (3 << 0); 			// fifo treshold full
+	DMA2_Stream0->FCR |= DMA_SxFCR_DMDIS;	// disable direct mode (enables fifo mode)
+	DMA2_Stream0->FCR |= (3 << 0); 			// fifo treshold full
 
-	DMA2->LIFCR |= DMA_LIFCR_CTCIF3 | DMA_LIFCR_CHTIF3 | DMA_LIFCR_CTEIF3 | DMA_LIFCR_CDMEIF3 | DMA_LIFCR_CFEIF3;
-	DMA2_Stream3->PAR = reinterpret_cast<uint32_t>(&SDIO->FIFO);
-	DMA2_Stream3->M0AR = buffer;
-	DMA2_Stream3->NDTR = 0;
-	DMA2_Stream3->CR |= DMA_SxCR_EN;		// enable stream
+	DMA2->LIFCR |= DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0 | DMA_LIFCR_CTEIF0 | DMA_LIFCR_CDMEIF0 | DMA_LIFCR_CFEIF0;
+	DMA2_Stream0->PAR = reinterpret_cast<uint32_t>(&SDMMC2->FIFO);
+	DMA2_Stream0->M0AR = buffer;
+	DMA2_Stream0->NDTR = 0;
+	DMA2_Stream0->CR |= DMA_SxCR_EN;		// enable stream
 
 	sdio.lock_dma();
 }
@@ -85,9 +83,9 @@ void Sdio::init_dma(uint32_t buffer, DmaType dmaType) {
 extern "C" {
 	void DMA2_Stream3_IRQHandler(void) {
 		uint32_t flags = DMA2->LISR;
-		DMA2->LIFCR |= DMA_LIFCR_CTCIF3 | DMA_LIFCR_CHTIF3;
+		DMA2->LIFCR |= DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0;
 
-		if (flags & DMA_LISR_TCIF3) {
+		if (flags & DMA_LISR_TCIF0) {
 			sdio.unlock_dma();
 		}
 	}

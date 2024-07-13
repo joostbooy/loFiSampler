@@ -1,7 +1,7 @@
 #ifndef Usb_h
 #define Usb_h
 
-#include "stm32f4xx.h"
+#include "stm32f7xx.h"
 #include "tusb.h"
 
 class Usb {

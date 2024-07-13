@@ -1,7 +1,7 @@
 #ifndef Timer_h
 #define Timer_h
 
-#include "stm32f4xx.h"
+#include "stm32f7xx.h"
 
 class Timer {
 

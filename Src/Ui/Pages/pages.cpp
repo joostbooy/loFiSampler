@@ -27,9 +27,12 @@ void Pages::init(Settings *settings, Engine *engine, Canvas *canvas, Leds *leds)
 	curr_page_ = TOP_PAGE;
 	page_stack_.clear();
 	TopPage::init(settings, engine, canvas, leds, this);
+
 	for (int i = 0; i < NUM_PAGES; ++i) {
 		page_[i]->init();
 	}
+
+	open(HARDWARE_TEST_PAGE);
 }
 
 void Pages::open(PageId id) {

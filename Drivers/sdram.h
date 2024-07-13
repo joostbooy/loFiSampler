@@ -1,7 +1,7 @@
 #ifndef Sdram_h
 #define Sdram_h
 
-#include "stm32f4xx.h"
+#include "stm32f7xx.h"
 
 class Sdram {
 
@@ -12,7 +12,7 @@ public:
 	constexpr const size_t size_bytes() {
 		return kSize;
 	}
-	
+
 	constexpr int16_t* pointer() {
 		return reinterpret_cast<int16_t*>(kSdram_adress);
 	}

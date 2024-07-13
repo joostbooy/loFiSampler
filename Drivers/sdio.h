@@ -1,7 +1,7 @@
 #ifndef Sdio_h
 #define Sdio_h
 
-#include "stm32f4xx.h"
+#include "stm32f7xx.h"
 #include "micros.h"
 
 // Based on:
@@ -104,7 +104,7 @@ public:
 	}
 
 	void unlock_dma() {
-		SDIO->DCTRL &= ~SDIO_DCTRL_DMAEN;
+		SDMMC2->DCTRL &= ~SDMMC_DCTRL_DMAEN;
 		DMA2_Stream3->CR &= ~DMA_SxCR_EN;
 		dma_busy_ = false;
 	}
@@ -134,35 +134,35 @@ private:
 
 	void powerOff() {
 		//if (initialised_ == false) {
-		SDIO->POWER = 0;
-		//	while (SDIO->POWER);
+		SDMMC2->POWER = 0;
+		//	while (SDMMC2->POWER);
 		//} else {
 		//	clock_resume();
 		//}
 	}
 
 	//	void clock_resume() {
-	//		SDIO->CLKCR = SDIO_CLKCR_CLKEN | (1 << 11) | 0x00;		//24 mHz, 4 bit
-	//0x76 // SDIO clock 400kHz
-	//0x2e // SDIO clock 1MHz
-	//0x16 // SDIO clock 2MHz
-	//0x0a // SDIO clock 4MHz
-	//0x05 // SDIO clock 6.85MHz
-	//0x04 // SDIO clock 8MHz
-	//0x03 // SDIO clock 9.6MHz
-	//0x02 // SDIO clock 12MHz
-	//0x01 // SDIO clock 16MHz
-	//0x00 // SDIO clock 24MHz
+	//		SDMMC2->CLKCR = SDMMC_CLKCR_CLKEN | (1 << 11) | 0x00;		//24 mHz, 4 bit
+	//0x76 // SDMMC2 clock 400kHz
+	//0x2e // SDMMC2 clock 1MHz
+	//0x16 // SDMMC2 clock 2MHz
+	//0x0a // SDMMC2 clock 4MHz
+	//0x05 // SDMMC2 clock 6.85MHz
+	//0x04 // SDMMC2 clock 8MHz
+	//0x03 // SDMMC2 clock 9.6MHz
+	//0x02 // SDMMC2 clock 12MHz
+	//0x01 // SDMMC2 clock 16MHz
+	//0x00 // SDMMC2 clock 24MHz
 	//	}
 
 	bool init_card() {
 		// Power down and start in 400 kHz, 1 bit mode
-		//SDIO->POWER = 0;
-		//while (SDIO->POWER);
+		//SDMMC2->POWER = 0;
+		//while (SDMMC2->POWER);
 
-		SDIO->POWER = SDIO_POWER_PWRCTRL;
-		while (SDIO->POWER != SDIO_POWER_PWRCTRL);
-		SDIO->CLKCR = SDIO_CLKCR_CLKEN | 118;
+		SDMMC2->POWER = SDMMC_POWER_PWRCTRL;
+		while (SDMMC2->POWER != SDMMC_POWER_PWRCTRL);
+		SDMMC2->CLKCR = SDMMC_CLKCR_CLKEN | 118;
 
 		if (sendCommandRetry(0, 0) != Success) {
 			powerOff();
@@ -173,7 +173,7 @@ private:
 
 		bool hcs = false;
 		result = sendCommandRetry(8, 0x1F1);
-		if ((result == Success) && (SDIO->RESP1 == 0x1F1)) {
+		if ((result == Success) && (SDMMC2->RESP1 == 0x1F1)) {
 			hcs = true;
 		} else if (result == Timeout) {
 			hcs = false;
@@ -193,7 +193,7 @@ private:
 
 		while ((Micros::read() - start) < 2000000UL) {
 			result = sendAppCommand(41, 0x100000 | (hcs ? OCR_HCS : 0));
-			uint32_t response = SDIO->RESP1;
+			uint32_t response = SDMMC2->RESP1;
 			if (result == CRCFail && (response & OCR_BUSY) != 0) {
 				cardInfo.ccs = (response & OCR_CCS) != 0;
 				acmd41_success = true;
@@ -213,7 +213,7 @@ private:
 
 		bool cmd3_success = false;
 		if (sendCommandRetry(3, 0) == Success) {
-			uint32_t response = SDIO->RESP1;
+			uint32_t response = SDMMC2->RESP1;
 			cardInfo.rca = response >> 16;
 			if (cardInfo.rca != 0) {
 				cmd3_success = true;
@@ -230,19 +230,19 @@ private:
 			return false;
 		}
 
-		uint32_t csd_version = SDIO->RESP1 >> 30;
+		uint32_t csd_version = SDMMC2->RESP1 >> 30;
 
 		if (csd_version == 0) {
 			// Until I find an old card, this is untested.
-			uint32_t read_bl_len = (SDIO->RESP2 >> 16) & 0xF;
-			uint32_t c_size = ((SDIO->RESP2 & 0x3FF) << 2) | (SDIO->RESP3 >> 30);
-			uint32_t c_size_mult = (SDIO->RESP3 >> 15) & 0x7;
+			uint32_t read_bl_len = (SDMMC2->RESP2 >> 16) & 0xF;
+			uint32_t c_size = ((SDMMC2->RESP2 & 0x3FF) << 2) | (SDMMC2->RESP3 >> 30);
+			uint32_t c_size_mult = (SDMMC2->RESP3 >> 15) & 0x7;
 			uint32_t mult = 1 << (c_size_mult + 2);
 			uint32_t blocknr = (c_size + 1) * mult;
 			uint32_t block_len = 1 << read_bl_len;
 			cardInfo.size = (block_len * blocknr) >> 9;
 		} else if (csd_version == 1) {
-			uint32_t c_size = ((SDIO->RESP2 & 0x3F) << 16) | (SDIO->RESP3 >> 16);
+			uint32_t c_size = ((SDMMC2->RESP2 & 0x3F) << 16) | (SDMMC2->RESP3 >> 16);
 			cardInfo.size = (c_size + 1) << 10;
 		} else {
 			powerOff();
@@ -262,7 +262,7 @@ private:
 		}
 
 		//start clock 24 mHz, 4 bit
-		SDIO->CLKCR = SDIO_CLKCR_CLKEN | (1 << 11) | 0x00;
+		SDMMC2->CLKCR = SDMMC_CLKCR_CLKEN | (1 << 11) | 0x00;
 
 		return true;
 	}
@@ -271,7 +271,7 @@ private:
 		uint32_t start = Micros::read();
 
 		while ((Micros::read() - start) < 1000000UL) {
-			if (sendCommandWait(13, cardInfo.rca << 16) == Success && (SDIO->RESP1 & 0x100) != 0) {
+			if (sendCommandWait(13, cardInfo.rca << 16) == Success && (SDMMC2->RESP1 & 0x100) != 0) {
 				return true;
 			}
 		}
@@ -279,18 +279,18 @@ private:
 	}
 
 	void sendCommand(uint32_t cmd, uint32_t arg) {
-		cmd &= 0x3F;	// SDIO_CMD_CMDINDEX_MASK
+		cmd &= 0x3F;	// SDMMC_CMD_CMDINDEX_MASK
 
-		uint32_t waitresp = SDIO_RESPONSE_SHORT;
+		uint32_t waitresp = SDMMC_RESPONSE_SHORT;
 		if (cmd == 0) {
-			waitresp = SDIO_RESPONSE_NO;
+			waitresp = SDMMC_RESPONSE_NO;
 		} else if (cmd == 2 || cmd == 9 || cmd == 10) {
-			waitresp = SDIO_RESPONSE_LONG;
+			waitresp = SDMMC_RESPONSE_LONG;
 		}
 
-		SDIO->ICR = 0x7FF; 								// Reset all signals we use (and some we don't).
-		SDIO->ARG = arg; 								// The arg must be set before the command.
-		SDIO->CMD = (cmd | SDIO_CMD_CPSMEN | waitresp);	// Set the command and associated bits.
+		SDMMC2->ICR = 0x7FF; 								// Reset all signals we use (and some we don't).
+		SDMMC2->ARG = arg; 								// The arg must be set before the command.
+		SDMMC2->CMD = (cmd | SDMMC_CMD_CPSMEN | waitresp);	// Set the command and associated bits.
 	}
 
 	Error sendAppCommand(uint32_t cmd, uint32_t arg, int maxRetries = 5) {
@@ -329,29 +329,29 @@ private:
 	}
 
 	Error commandResult() {
-		uint32_t status = SDIO->STA & 0xFFF;
+		uint32_t status = SDMMC2->STA & 0xFFF;
 
-		if (status & SDIO_STA_CMDACT) {
+		if (status & SDMMC_STA_CMDACT) {
 			return InProgress;
 		}
 
-		if (status & SDIO_STA_CMDREND) {
-			SDIO->ICR = SDIO_STA_CMDREND;
+		if (status & SDMMC_STA_CMDREND) {
+			SDMMC2->ICR = SDMMC_STA_CMDREND;
 			return Success;
 		}
 
-		if (status & SDIO_STA_CMDSENT) {
-			SDIO->ICR = SDIO_STA_CMDSENT;
+		if (status & SDMMC_STA_CMDSENT) {
+			SDMMC2->ICR = SDMMC_STA_CMDSENT;
 			return Success;
 		}
 
-		if (status & SDIO_STA_CTIMEOUT) {
-			SDIO->ICR = SDIO_STA_CTIMEOUT;
+		if (status & SDMMC_STA_CTIMEOUT) {
+			SDMMC2->ICR = SDMMC_STA_CTIMEOUT;
 			return Timeout;
 		}
 
-		if (status & SDIO_STA_CCRCFAIL) {
-			SDIO->ICR = SDIO_STA_CCRCFAIL;
+		if (status & SDMMC_STA_CCRCFAIL) {
+			SDMMC2->ICR = SDMMC_STA_CCRCFAIL;
 			return CRCFail;
 		}
 
@@ -370,13 +370,13 @@ private:
 			}
 		}
 
-		SDIO->DCTRL = 0;
+		SDMMC2->DCTRL = 0;
 
 		init_dma((uint32_t)buffer, SD_TO_MEM);
 
-		SDIO->DTIMER = 2400000;		//100ms (on 24Mhz bus clock)
-		SDIO->DLEN = 512 * count;
-		SDIO->DCTRL = (9 << 4) | SDIO_DCTRL_DTDIR | SDIO_DCTRL_DTEN | SDIO_DCTRL_DMAEN;
+		SDMMC2->DTIMER = 2400000;		//100ms (on 24Mhz bus clock)
+		SDMMC2->DLEN = 512 * count;
+		SDMMC2->DCTRL = (9 << 4) | SDMMC_DCTRL_DTDIR | SDMMC_DCTRL_DTEN | SDMMC_DCTRL_DMAEN;
 
 		uint32_t cmd = count > 1 ? 18 : 17;
 		if (sendCommandWait(cmd, address) != Success) {
@@ -393,11 +393,11 @@ private:
 		}
 
 		// check errors
-		const uint32_t succes_flags = SDIO_STA_DBCKEND | SDIO_STA_DATAEND;
-		const uint32_t error_flags = SDIO_STA_DCRCFAIL | SDIO_STA_RXOVERR | SDIO_STA_DTIMEOUT | SDIO_STA_STBITERR;
+		const uint32_t succes_flags = SDMMC_STA_DBCKEND | SDMMC_STA_DATAEND;
+		const uint32_t error_flags = SDMMC_STA_DCRCFAIL | SDMMC_STA_RXOVERR | SDMMC_STA_DTIMEOUT | SDMMC_STA_RXOVERR; //SDMMC_STA_STBITERR
 
 		while (true) {
-			volatile uint32_t flags = SDIO->STA;
+			volatile uint32_t flags = SDMMC2->STA;
 			if (flags & (succes_flags | error_flags)) {
 				if (flags & error_flags) {
 					return false;
@@ -427,13 +427,13 @@ private:
 			return false;
 		}
 
-		SDIO->DCTRL = 0;
+		SDMMC2->DCTRL = 0;
 
 		init_dma((uint32_t)buffer, MEM_TO_SD);
 
-		SDIO->DTIMER = 12000000;	// 500ms (on 24Mhz bus clock)
-		SDIO->DLEN = 512 * count;
-		SDIO->DCTRL = (9 << 4) | SDIO_DCTRL_DTEN | SDIO_DCTRL_DMAEN;
+		SDMMC2->DTIMER = 12000000;	// 500ms (on 24Mhz bus clock)
+		SDMMC2->DLEN = 512 * count;
+		SDMMC2->DCTRL = (9 << 4) | SDMMC_DCTRL_DTEN | SDMMC_DCTRL_DMAEN;
 
 		while (dma_busy_) {};
 
@@ -445,11 +445,11 @@ private:
 		}
 
 		// check errors
-		const uint32_t succes_flags = SDIO_STA_DBCKEND | SDIO_STA_DATAEND;
-		const uint32_t error_flags = SDIO_STA_DCRCFAIL | SDIO_STA_TXUNDERR | SDIO_STA_DTIMEOUT | SDIO_STA_STBITERR;
+		const uint32_t succes_flags = SDMMC_STA_DBCKEND | SDMMC_STA_DATAEND;
+		const uint32_t error_flags = SDMMC_STA_DCRCFAIL | SDMMC_STA_TXUNDERR | SDMMC_STA_DTIMEOUT | SDMMC_STA_RXOVERR; //SDMMC_STA_STBITERR
 
 		while (true) {
-			volatile uint32_t flags = SDIO->STA;
+			volatile uint32_t flags = SDMMC2->STA;
 			if (flags & (succes_flags | error_flags)) {
 				if (flags & error_flags) {
 					return false;

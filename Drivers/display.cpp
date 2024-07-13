@@ -9,73 +9,63 @@ void Display::init() {
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
 
 	/**GPIO Configuration
-	PD7     ------> DC
-	PB5     ------> CS
-	PB7     ------> RESET
+	PC13     ------> RESET
+	PC14     ------> CS
+	PC15     ------> CD
 	*/
-	GPIO_InitStruct.Pin = GPIO_PIN_7;
+	GPIO_InitStruct.Pin = GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-	HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
-
-	GPIO_InitStruct.Pin = GPIO_PIN_5 | GPIO_PIN_7;
-	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-	/**SPI2 GPIO Configuration
-	PC2     ------> SPI2_MISO
-	PC3     ------> SPI2_MOSI
-	PD3     ------> SPI2_SCK
-	*/
-	GPIO_InitStruct.Pin = GPIO_PIN_2|GPIO_PIN_3;
-	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-	GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
 	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-	GPIO_InitStruct.Pin = GPIO_PIN_3;
-	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-	GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
-	HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
-	// SPI 2
-	SPI_HandleTypeDef hspi2;
-	hspi2.Instance = SPI2;
-	hspi2.Init.Mode = SPI_MODE_MASTER;
-	hspi2.Init.Direction = SPI_DIRECTION_2LINES;
-	hspi2.Init.DataSize = SPI_DATASIZE_8BIT;
-	hspi2.Init.CLKPolarity = SPI_POLARITY_HIGH;
-	hspi2.Init.CLKPhase = SPI_PHASE_2EDGE;
-	hspi2.Init.NSS = SPI_NSS_SOFT;
-	hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
-	hspi2.Init.FirstBit = SPI_FIRSTBIT_MSB;
-	hspi2.Init.TIMode = SPI_TIMODE_DISABLE;
-	hspi2.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
-	hspi2.Init.CRCPolynomial = 10;
-	HAL_SPI_Init(&hspi2);
-	__HAL_SPI_ENABLE(&hspi2);
+	/**SPI2 GPIO Configuration
+    PF7     ------> SPI5_SCK
+    PF8     ------> SPI5_MISO
+    PF9     ------> SPI5_MOSI
+    */
+    GPIO_InitStruct.Pin = GPIO_PIN_7|GPIO_PIN_8|GPIO_PIN_9;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    GPIO_InitStruct.Alternate = GPIO_AF5_SPI5;
+    HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+
+	// SPI 5
+	SPI_HandleTypeDef hspi5;
+	hspi5.Instance = SPI5;
+    hspi5.Init.Mode = SPI_MODE_MASTER;
+    hspi5.Init.Direction = SPI_DIRECTION_2LINES;
+    hspi5.Init.DataSize = SPI_DATASIZE_4BIT;
+    hspi5.Init.CLKPolarity = SPI_POLARITY_LOW;
+    hspi5.Init.CLKPhase = SPI_PHASE_1EDGE;
+    hspi5.Init.NSS = SPI_NSS_SOFT;
+    hspi5.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
+    hspi5.Init.FirstBit = SPI_FIRSTBIT_MSB;
+    hspi5.Init.TIMode = SPI_TIMODE_DISABLE;
+    hspi5.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+    hspi5.Init.CRCPolynomial = 7;
+    hspi5.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
+    hspi5.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
+    HAL_SPI_Init(&hspi5);
+	__HAL_SPI_ENABLE(&hspi5);
 
 	//DMA
-	DMA1_Stream4->CR &= ~DMA_SxCR_EN;	// disable stream & wait
-	while ((DMA1_Stream4->CR) & DMA_SxCR_EN);
+	DMA2_Stream4->CR &= ~DMA_SxCR_EN;	// disable stream & wait
+	while ((DMA2_Stream4->CR) & DMA_SxCR_EN);
 
-	DMA1_Stream4->CR = (0 << 25) | DMA_SxCR_MINC | DMA_SxCR_DIR_0 | DMA_SxCR_TCIE | DMA_SxCR_DMEIE;
-	DMA1_Stream4->FCR &= ~DMA_SxFCR_DMDIS;
+	DMA2_Stream4->CR = (0 << 25) | DMA_SxCR_MINC | DMA_SxCR_DIR_0 | DMA_SxCR_TCIE | DMA_SxCR_DMEIE;
+	DMA2_Stream4->FCR &= ~DMA_SxFCR_DMDIS;
 
 	dma_busy_ = false;
 
 	// Select, Reset & wait
 	select();
 
-	GPIOB->BSRR = GPIO_PIN_7 << 16;
+	GPIOC->BSRR = GPIO_PIN_13 << 16;
 	Micros::delay(150 * 1000);
-	GPIOB->BSRR = GPIO_PIN_7;
+	GPIOC->BSRR = GPIO_PIN_13;
 	Micros::delay(150 * 1000);
 
 	// Start lcd configuration
@@ -106,13 +96,13 @@ void Display::init() {
 	Micros::delay(50 * 1000);
 
 	// Start dma interrupt
-	HAL_NVIC_EnableIRQ(DMA1_Stream4_IRQn);
+	HAL_NVIC_EnableIRQ(DMA2_Stream4_IRQn);
 }
 
 extern "C" {
-	void DMA1_Stream4_IRQHandler(void) {
-		uint32_t flags = DMA1->HISR;
-		DMA1->HIFCR |= DMA_HIFCR_CTCIF4 | DMA_HIFCR_CHTIF4;
+	void DMA2_Stream4_IRQHandler(void) {
+		uint32_t flags = DMA2->HISR;
+		DMA2->HIFCR |= DMA_HIFCR_CTCIF4 | DMA_HIFCR_CHTIF4;
 
 		if (flags & DMA_HISR_TCIF4) {
 			Display::display_->unlock_dma();

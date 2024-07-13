@@ -1,7 +1,7 @@
 #ifndef Gate_h
 #define Gate_h
 
-#include "stm32f4xx.h"
+#include "stm32f7xx.h"
 
 class Gate {
 
@@ -11,16 +11,15 @@ public:
 	bool read(uint8_t channel) {
 		switch (channel)
 		{
-		case 0: return !(GPIOB->IDR & GPIO_PIN_14);
-		case 1: return !(GPIOB->IDR & GPIO_PIN_11);
-		case 2: return !(GPIOB->IDR & GPIO_PIN_10);
-		case 3: return !(GPIOE->IDR & GPIO_PIN_15);
+		case 0: return !(GPIOG->IDR & GPIO_PIN_14);
+		case 1: return !(GPIOB->IDR & GPIO_PIN_9);
+		case 2: return !(GPIOE->IDR & GPIO_PIN_3);
+		case 3: return !(GPIOE->IDR & GPIO_PIN_4);
 		default:
 			break;
 		}
 		return 0;
 	}
-
 
 private:
 

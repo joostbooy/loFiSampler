@@ -50,7 +50,7 @@
 
 // defined by compiler flags for flexibility
 #ifndef CFG_TUSB_MCU
-#define CFG_TUSB_MCU           OPT_MCU_STM32F4
+#define CFG_TUSB_MCU           OPT_MCU_STM32F7
 #endif
 
 #ifndef CFG_TUSB_OS

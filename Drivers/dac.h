@@ -1,7 +1,7 @@
 #ifndef Dac_h
 #define Dac_h
 
-#include "stm32f4xx.h"
+#include "stm32f7xx.h"
 #include "debug.h"
 
 class Dac {

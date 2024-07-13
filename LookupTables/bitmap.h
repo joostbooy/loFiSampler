@@ -1,7 +1,7 @@
 #ifndef Bitmap_h
 #define Bitmap_h
 
-#include "stm32f4xx.h"
+#include "stm32f7xx.h"
 #include <cmath>
 
 class Bitmap {

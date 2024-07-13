@@ -1,7 +1,7 @@
 #ifndef Matrix_h
 #define Matrix_h
 
-#include "stm32f4xx.h"
+#include "stm32f7xx.h"
 #include "micros.h"
 
 // Button led matrix 8x16
@@ -29,9 +29,9 @@ public:
 			set_collumn(i);
 
 			// latch switch rows
-			GPIOE->BSRR = GPIO_PIN_6 << 16;
+			GPIOB->BSRR = GPIO_PIN_3 << 16;
 			asm("NOP");
-			GPIOE->BSRR = GPIO_PIN_6;
+			GPIOB->BSRR = GPIO_PIN_3;
 
 			*sw_buffer++ = spi_transfer();
 		}
@@ -46,8 +46,8 @@ public:
 		}
 
 		// latch led rows & collumn
-		GPIOB->BSRR = (GPIO_PIN_8 << 16) | (GPIO_PIN_9 << 16);
-		GPIOB->BSRR = GPIO_PIN_8 | GPIO_PIN_9;
+		GPIOB->BSRR = (GPIO_PIN_4 << 16) | (GPIO_PIN_5 << 16);
+		GPIOB->BSRR = GPIO_PIN_4 | GPIO_PIN_5;
 	}
 
 private:
@@ -59,21 +59,21 @@ private:
 
 	void set_collumn(int coll) {
 		uint32_t reg = 0;
-		coll & 0x01 ? reg |= GPIO_PIN_2 : reg |= GPIO_PIN_2 << 16;
-		coll & 0x02 ? reg |= GPIO_PIN_3 : reg |= GPIO_PIN_3 << 16;
-		coll & 0x04 ? reg |= GPIO_PIN_4 : reg |= GPIO_PIN_4 << 16;
-		GPIOE->BSRR = reg;
+		coll & 0x01 ? reg |= GPIO_PIN_6 : reg |= GPIO_PIN_6 << 16;
+		coll & 0x02 ? reg |= GPIO_PIN_7 : reg |= GPIO_PIN_7 << 16;
+		coll & 0x04 ? reg |= GPIO_PIN_8 : reg |= GPIO_PIN_8 << 16;
+		GPIOB->BSRR = reg;
 		Micros::delay(1);
 	}
 
 	uint8_t spi_transfer(uint8_t send = 0xff) {
 		volatile uint8_t recv;
 
-		while (!(SPI3->SR & SPI_FLAG_TXE));
-		SPI3->DR = send;
+		while (!(SPI4->SR & SPI_FLAG_TXE));
+		SPI4->DR = send;
 
-		while (!(SPI3->SR & SPI_FLAG_RXNE));
-		recv = SPI3->DR;
+		while (!(SPI4->SR & SPI_FLAG_RXNE));
+		recv = SPI4->DR;
 
 		return recv;
 	}

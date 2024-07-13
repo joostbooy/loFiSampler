@@ -7,6 +7,9 @@
 
 namespace InstrumentPage {
 
+	//	using TopPage::settings_;
+	//	using TopPage::engine_;
+
 	bool pasteable_;
 	Instrument instrument_;
 	EnvelopeList instrumentList_;

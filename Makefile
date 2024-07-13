@@ -17,7 +17,7 @@ OPT = -O2
 BUILD_DIR = Build
 
 LIB_DIR = /Users/joostbooy/Desktop/Code/stm32/lib
-STM_REPO = /Users/joostbooy/STM32Cube/Repository/STM32Cube_FW_F4_V1.26.1
+STM_REPO = /Users/joostbooy/STM32Cube/Repository/STM32Cube_FW_F7_V1.16.2
 UTILS_DIR = $(LIB_DIR)/utils
 FATFS_LIB = $(LIB_DIR)/ff14b/source
 USB_DIR = $(LIB_DIR)/tinyusb
@@ -32,19 +32,19 @@ FILESYSTEM_DIR = Src/Disk
 # model specifics
 #######################################
 
-MODEL_DEF = -DSTM32F429xx
-F_CPU = 168000000UL
+MODEL_DEF = -DSTM32F767xx
+F_CPU = 216000000UL
 
 CMSIS_DIR = $(STM_REPO)/Drivers/CMSIS
-HAL_DIR = $(STM_REPO)/Drivers/STM32F4xx_HAL_Driver
-DEVICE_DIR = $(CMSIS_DIR)/Device/ST/STM32F4xx
+HAL_DIR = $(STM_REPO)/Drivers/STM32F7xx_HAL_Driver
+DEVICE_DIR = $(CMSIS_DIR)/Device/ST/STM32F7xx
 
-CPU = -mcpu=cortex-m4
-LDSCRIPT = stm32/STM32F429VGTx_FLASH.ld
-STARTUP = stm32/startup_stm32f429xx.s
-SYSTEM = $(DEVICE_DIR)/Source/Templates/system_stm32f4xx.c
+CPU = -mcpu=cortex-m7
+LDSCRIPT = stm32/STM32F767ZGTx_FLASH.ld
+STARTUP = stm32/startup_stm32f767xx.s
+SYSTEM = $(DEVICE_DIR)/Source/Templates/system_stm32f7xx.c
 
-FPU = -mfpu=fpv4-sp-d16
+FPU = -mfpu=fpv5-d16
 FLOAT_ABI = -mfloat-abi=hard
 
 

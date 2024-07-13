@@ -39,7 +39,6 @@ namespace TopPage {
 		Controller::init();
 		MessagePainter::init(canvas_);
 		TextBufferPainter::init(canvas_);
-	//	WindowPainter::init(canvas_);
 	}
 
 	void on_button(int id, int state) {

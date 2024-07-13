@@ -1,19 +1,15 @@
 #ifndef Debug_h
 #define Debug_h
 
-#include "stm32f4xx.h"
+#include "stm32f7xx.h"
 
 class Debug {
 
 public:
     static void init();
 
-	static inline bool read() {
-		return GPIOE->IDR & GPIO_PIN_0;
-	}
-
 	static inline void write(bool state) {
-        GPIOE->BSRR = state ? GPIO_PIN_1 : GPIO_PIN_1 << 16;
+        GPIOG->BSRR = state ? GPIO_PIN_13 : GPIO_PIN_13 << 16;
     }
 
     inline void toggle() {

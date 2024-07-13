@@ -1,7 +1,7 @@
 #ifndef Display_h
 #define Display_h
 
-#include "stm32f4xx.h"
+#include "stm32f7xx.h"
 #include "debug.h"
 #include "micros.h"
 
@@ -14,19 +14,19 @@ public:
 	static Display *display_;
 
 	inline void select(){
-		GPIOB->BSRR = GPIO_PIN_5 << 16;
+		GPIOC->BSRR = GPIO_PIN_14 << 16;
 	}
 
 	inline void deselect(){
-		GPIOB->BSRR = GPIO_PIN_5;
+		GPIOC->BSRR = GPIO_PIN_14;
 	}
 
 	inline void cd_high(){
-		GPIOD->BSRR = GPIO_PIN_7;
+		GPIOC->BSRR = GPIO_PIN_15;
 	}
 
 	inline void cd_low(){
-		GPIOD->BSRR = GPIO_PIN_7 << 16;
+		GPIOC->BSRR = GPIO_PIN_15 << 16;
 	}
 
 	void sendCommand(uint8_t cmd) {
@@ -63,8 +63,8 @@ public:
 	}
 
 	void unlock_dma() {
-		SPI2->CR2 &= ~SPI_CR2_TXDMAEN;
-		DMA1_Stream4->CR &= ~DMA_SxCR_EN;
+		SPI5->CR2 &= ~SPI_CR2_TXDMAEN;
+		DMA2_Stream4->CR &= ~DMA_SxCR_EN;
 		dma_busy_ = false;
 	}
 
@@ -74,7 +74,7 @@ public:
 
 	void sendBuffer(uint8_t* data, uint32_t size) {
 		while (dma_busy_) {};
-		dummy = SPI2->DR;
+		dummy = SPI5->DR;
 
 		set_col_address(0x1C, 0x5B);
 		set_row_address(0x00, 0x3F);
@@ -82,12 +82,12 @@ public:
 
 		cd_high();
 
-		DMA1->HIFCR |= DMA_HIFCR_CTCIF4 | DMA_HIFCR_CHTIF4 | DMA_HIFCR_CTEIF4 | DMA_HIFCR_CDMEIF4 | DMA_HIFCR_CFEIF4;
-		DMA1_Stream4->PAR = reinterpret_cast<uint32_t>(&SPI2->DR);
-		DMA1_Stream4->M0AR = reinterpret_cast<uint32_t>(&data[0]);
-		DMA1_Stream4->NDTR = size;
-		DMA1_Stream4->CR |= DMA_SxCR_EN;
-		SPI2->CR2 |= SPI_CR2_TXDMAEN;
+		DMA2->HIFCR |= DMA_HIFCR_CTCIF4 | DMA_HIFCR_CHTIF4 | DMA_HIFCR_CTEIF4 | DMA_HIFCR_CDMEIF4 | DMA_HIFCR_CFEIF4;
+		DMA2_Stream4->PAR = reinterpret_cast<uint32_t>(&SPI5->DR);
+		DMA2_Stream4->M0AR = reinterpret_cast<uint32_t>(&data[0]);
+		DMA2_Stream4->NDTR = size;
+		DMA2_Stream4->CR |= DMA_SxCR_EN;
+		SPI5->CR2 |= SPI_CR2_TXDMAEN;
 
 		dma_busy_ = true;
 	}
@@ -97,11 +97,11 @@ private:
 	volatile bool dma_busy_;
 
 	void spi_write(uint8_t data) {
-		while (!(SPI2->SR & SPI_FLAG_TXE));
-		SPI2->DR = data;
+		while (!(SPI5->SR & SPI_FLAG_TXE));
+		SPI5->DR = data;
 
-		while (!(SPI2->SR & SPI_FLAG_RXNE));
-		dummy = SPI2->DR;
+		while (!(SPI5->SR & SPI_FLAG_RXNE));
+		dummy = SPI5->DR;
 	}
 };
 

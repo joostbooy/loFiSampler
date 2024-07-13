@@ -1,7 +1,7 @@
 #ifndef Micros_h
 #define Micros_h
 
-#include "stm32f4xx.h"
+#include "stm32f7xx.h"
 
 class Micros {
 
