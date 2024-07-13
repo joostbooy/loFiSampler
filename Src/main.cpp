@@ -65,6 +65,9 @@ extern "C" {
 
 } //extern "C"
 
+void fill(Dac::Buffer *buffer, const size_t size) {
+	engine.fill(buffer, size);
+}
 
 int main(void)
 {
@@ -91,7 +94,7 @@ int main(void)
 	ui.init(&settings, &engine, &matrix, &display);
 
 	// Start timers
-	engine.fill(&dac.buffer_[0], Dac::kBlockSize);
+	dac.start(fill);
 	timer.start_3(CLOCK_ISR_FREQ);
 	timer.start_7(1000);
 

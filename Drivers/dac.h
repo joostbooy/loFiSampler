@@ -19,7 +19,7 @@ public:
 	}buffer_[kBlockSize];
 
 	void init();
-	void start(void(*callback)(Buffer*, size_t));
+	void start(void(*callback)(Buffer*, const size_t));
 
 	void fill(const size_t offset) {
 		callback_(buffer_, kBlockSize);
@@ -39,7 +39,7 @@ private:
 	static const uint32_t kDmaBufferSize = kBlockSize * kNumChannels * 2;
 	uint32_t dma_buffer_[kDmaBufferSize];
 
-	typedef void(*Callback)(Buffer*, size_t);
+	typedef void(*Callback)(Buffer*, const size_t);
 	Callback callback_;
 };
 
