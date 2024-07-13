@@ -65,7 +65,7 @@ void Dac::start(void (*callback)(Buffer*, size_t)) {
 }
 
 extern "C" {
-	void DMA1_Channel5_IRQHandler(void) {
+	void DMA1_Stream5_IRQHandler(void) {
 		uint32_t flags = DMA1->LISR;
 		DMA1->LIFCR |= DMA_HIFCR_CTCIF5 | DMA_HIFCR_CHTIF5;
 
