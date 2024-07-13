@@ -41,7 +41,7 @@ extern "C" {
 	void PendSV_Handler() { }
 	void SysTick_Handler(void) { }
 
-	// 1Khz
+	// Clock update freq (4kHz)
 	void TIM3_IRQHandler(void) {
 		if (!(TIM3->SR & TIM_IT_UPDATE)) {
 			return;

@@ -76,8 +76,8 @@ void Sys::init() {
 	// Interupt priorities
 		HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
 		HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 0, 0);	// DAC
-	//	HAL_NVIC_SetPriority(TIM3_IRQn, 1, 0);			// Engine poll
-	//	HAL_NVIC_SetPriority(TIM4_IRQn, 2, 0);			// Ui Poll
+		HAL_NVIC_SetPriority(TIM3_IRQn, 1, 0);			// Engine tick
+		HAL_NVIC_SetPriority(TIM7_IRQn, 2, 0);			// Ui Poll
 		HAL_NVIC_SetPriority(DMA2_Stream3_IRQn, 3, 0);	// SDIO
 		HAL_NVIC_SetPriority(DMA2_Stream4_IRQn, 4, 0);	// LCD
 }
