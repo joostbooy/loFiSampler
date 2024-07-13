@@ -19,7 +19,7 @@ public:
 
 private:
 	static const size_t kSize = 64000000;
-	static const uint32_t kSdram_adress = 0xD0000000;
+	static const uint32_t kSdram_adress = 0xC0000000;
 };
 
 #endif
