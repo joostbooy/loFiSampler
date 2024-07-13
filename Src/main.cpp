@@ -8,6 +8,7 @@
 #include "disk.h"
 #include "gate.h"
 #include "sdram.h"
+#include "timer.h"
 
 #include "settings.h"
 #include "engine.h"
@@ -19,6 +20,7 @@ Usb usb;
 Gate gate;
 Uart uart;
 Sys sys;
+Timer timer;
 Sdram sdram;
 Matrix matrix;
 Display display;
@@ -73,8 +75,10 @@ int main(void)
 	engine.init(&settings, &uart, &usb, &gate);
 	ui.init(&settings, &engine, &matrix, &display);
 
-	// start
+	// start timers
 	engine.fill(&dac.buffer_[0], Dac::kBlockSize);
+	timer.start_3(1000);
+	timer.start_7(4000);
 
 	while (1) {
 		ui.process();
