@@ -8,6 +8,7 @@ namespace ListPage {
 
 	using TopPage::canvas_;
 	using TopPage::pages_;
+	using TopPage::leds_;
 
 	SettingsList *list_;
 	void(*clear_callback_)() = nullptr;
@@ -16,9 +17,6 @@ namespace ListPage {
 
 	void set_list(SettingsList *list) {
 		list_ = list;
-		list_->set_top_item(0);
-		//	window.set_row_items_total(list_->num_items());
-		//	window.scroll_to_row(list_->top_item());
 	}
 
 	void set_clear_callback(void(*callback)()) {
@@ -105,41 +103,59 @@ namespace ListPage {
 	}
 
 	void refresh_leds() {
+		for (int i = 0; i < list_->collumns(); ++i) {
+			if ((i + list_->top_item()) < list_->num_items()) {
+				leds_->set_footer_encoder(i, Leds::RED);
+			} else {
+				leds_->set_footer_encoder(i, Leds::BLACK);
+			}
+		}
+	}
 
+	void draw_scollbar() {
+		const int y = 44;
+		const int h = 20;
+		const int w = 8;
+		const int x = canvas_->width() - w;
+		int bar_y = (list_->top_item() * h) / list_->num_items();
+		int bar_h = (list_->collumns() * h) / list_->num_items();
+
+		canvas_->fill(x, y, w, h, Canvas::BLACK);
+		canvas_->fill(x + 2, y + bar_y, w - 4, bar_h, Canvas::WHITE);
 	}
 
 	void draw() {
-		/*
-		WindowPainter::draw_header();
+		const int h = 20;
+		const int w = canvas_->width() / list_->collumns();
 
-		Canvas::Color color;
 		canvas_->set_font(Font::SMALL);
-		int item = list_->top_item();
 
-		for (int i = window.row().first; i <= window.row().last; ++i) {
-		color = (item == i) ? Canvas::BLACK : Canvas::LIGHT_GRAY;
-		WindowPainter::text(window.cell(0, i), list_->item_text(i), Canvas::LEFT, Canvas::CENTER, color);
-		WindowPainter::text(window.cell(1, i), list_->value_text(i), Canvas::LEFT, Canvas::CENTER, color);
+		for (int i = 0; i < list_->collumns(); ++i) {
+			int item = i + list_->top_item();
+			if (item < list_->num_items()) {
+				int x = i * w;
+				canvas_->draw_text(x, 44, w, h, list_->item_text(item), Canvas::CENTER, Canvas::CENTER);
+				canvas_->draw_text(x, 54, w, h, list_->value_text(item), Canvas::CENTER, Canvas::CENTER);
+			}
+		}
+
+		draw_scollbar();
 	}
 
-	WindowPainter::vertical_scrollbar(window);
-	*/
-}
+	const size_t target_fps() {
+		return 1000 / 16;
+	}
 
-const size_t target_fps() {
-	return 1000 / 16;
-}
-
-Pages::Page page = {
-	&init,
-	&enter,
-	&exit,
-	&draw,
-	&refresh_leds,
-	&on_button,
-	&on_encoder,
-	&target_fps
-};
+	Pages::Page page = {
+		&init,
+		&enter,
+		&exit,
+		&draw,
+		&refresh_leds,
+		&on_button,
+		&on_encoder,
+		&target_fps
+	};
 
 
 };

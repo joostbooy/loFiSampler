@@ -12,6 +12,10 @@ public:
 		settings_ = settings;
 	}
 
+	constexpr const int collumns() {
+		return 4;
+	}
+
 	int top_item() {
 		return top_item_;
 	}
@@ -21,14 +25,14 @@ public:
 	}
 
 	void on_up_button() {
-		int item = top_item() - 4;
+		int item = top_item() - collumns();
 		if (item >= 0)  {
 			set_top_item(item);
 		}
 	}
 
 	void on_down_button() {
-		int item = top_item() + 4;
+		int item = top_item() + collumns();
 		if (item < num_items())  {
 			set_top_item(item);
 		}
