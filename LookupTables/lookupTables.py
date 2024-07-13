@@ -9,7 +9,7 @@ import lutCompiler
 tables = []
 ppqn = 24
 max_bpm = 300
-clock_isr_freq = 8000
+clock_isr_freq = 4000
 sample_rate = 16000
 
 '''____________________

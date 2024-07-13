@@ -42,11 +42,20 @@ extern "C" {
 	void SysTick_Handler(void) { }
 
 	// 1Khz
-	void TIM4_IRQHandler(void) {
-		if (!(TIM4->SR & TIM_IT_UPDATE)) {
+	void TIM3_IRQHandler(void) {
+		if (!(TIM3->SR & TIM_IT_UPDATE)) {
 			return;
 		}
-		TIM4->SR = ~TIM_IT_UPDATE;
+		TIM3->SR = ~TIM_IT_UPDATE;
+		engine.tick();
+	}
+
+	// 1Khz
+	void TIM7_IRQHandler(void) {
+		if (!(TIM7->SR & TIM_IT_UPDATE)) {
+			return;
+		}
+		TIM7->SR = ~TIM_IT_UPDATE;
 		ui.poll();
 	}
 
@@ -77,8 +86,8 @@ int main(void)
 
 	// start timers
 	engine.fill(&dac.buffer_[0], Dac::kBlockSize);
-	timer.start_3(1000);
-	timer.start_7(4000);
+	timer.start_3(CLOCK_ISR_FREQ);
+	timer.start_7(1000);
 
 	while (1) {
 		ui.process();
