@@ -86,28 +86,28 @@ public:
 			envelope.set_clock_sync(inc > 0);
 			break;
 		case ATTACK_TIME:
-			envelope.set_attack_time(envelope.attack_time() + f_inc(inc, shifted));
+			envelope.set_attack_time(envelope.attack_time() + SettingsUtils::f_inc(inc, shifted));
 			break;
 		case ATTACK_SHAPE:
-			envelope.set_attack_shape(envelope.attack_shape() + f_inc(inc, shifted));
+			envelope.set_attack_shape(envelope.attack_shape() + SettingsUtils::f_inc(inc, shifted));
 			break;
 		case DECAY_TIME:
-			envelope.set_decay_time(envelope.decay_time() + f_inc(inc, shifted));
+			envelope.set_decay_time(envelope.decay_time() + SettingsUtils::f_inc(inc, shifted));
 			break;
 		case DECAY_SHAPE:
-			envelope.set_decay_shape(envelope.decay_shape() + f_inc(inc, shifted));
+			envelope.set_decay_shape(envelope.decay_shape() + SettingsUtils::f_inc(inc, shifted));
 			break;
 		case SUSTAIN_LEVEL:
-			envelope.set_sustain_level(envelope.sustain_level() + f_inc(inc, shifted));
+			envelope.set_sustain_level(envelope.sustain_level() + SettingsUtils::f_inc(inc, shifted));
 			break;
 		case HOLD_TIME:
-			envelope.set_hold_time(envelope.hold_time() + f_inc(inc, shifted));
+			envelope.set_hold_time(envelope.hold_time() + SettingsUtils::f_inc(inc, shifted));
 			break;
 		case RELEASE_TIME:
-			envelope.set_release_time(envelope.release_time() + f_inc(inc, shifted));
+			envelope.set_release_time(envelope.release_time() + SettingsUtils::f_inc(inc, shifted));
 			break;
 		case RELEASE_SHAPE:
-			envelope.set_release_shape(envelope.release_shape() + f_inc(inc, shifted));
+			envelope.set_release_shape(envelope.release_shape() + SettingsUtils::f_inc(inc, shifted));
 			break;
 		default:
 			break;
@@ -116,9 +116,6 @@ public:
 
 private:
 
-	inline float f_inc(int inc, bool shift) {
-		return inc * (1.f / 100.f) * (shift ? 10.f : 1.f);
-	}
 };
 
 #endif

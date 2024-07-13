@@ -76,13 +76,13 @@ public:
 			settings_->select_instrument_index(settings_->selected_instrument_index() + inc);
 			break;
 		case PAN:
-			instrument.set_pan(instrument.pan() + f_inc(inc, shifted));
+			instrument.set_pan(instrument.pan() + SettingsUtils::f_inc(inc, shifted));
 			break;
 		case GAIN:
-			instrument.set_gain(instrument.gain() + f_inc(inc, shifted));
+			instrument.set_gain(instrument.gain() + SettingsUtils::f_inc(inc, shifted));
 			break;
 		case BEND:
-			instrument.set_bend(instrument.bend() + f_inc(inc, shifted));
+			instrument.set_bend(instrument.bend() + SettingsUtils::f_inc(inc, shifted));
 			break;
 		case AUDIO_CHANNEL:
 			instrument.set_audio_channel(instrument.audio_channel() + inc);
@@ -114,10 +114,6 @@ private:
 	void kill_midi(Instrument &instrument) {
 		engine_->set_midi_channel_to_kill(instrument.midi_port(), instrument.midi_channel());
 		engine_->add_request_blocking(Engine::KILL_MIDI_CHANNEL);
-	}
-
-	inline float f_inc(int inc, bool shift) {
-		return inc * (1.f / 100.f) * (shift ? 10.f : 1.f);
 	}
 };
 

@@ -32,6 +32,10 @@ public:
 		a = b;
 		b = temp;
 	}
+
+	static inline float f_inc(int inc, bool shift) {
+		return inc * (1.f / 100.f) * (shift ? 10.f : 1.f);
+	}
 };
 
 #endif

@@ -80,22 +80,22 @@ public:
 			settings_->select_lfo_index(settings_->selected_lfo_index() + inc);
 			break;
 		case SPEED:
-			lfo.set_speed(lfo.speed() + f_inc(inc, shifted));
+			lfo.set_speed(lfo.speed() + SettingsUtils::f_inc(inc, shifted));
 			break;
 		case SHAPE:
-			lfo.set_shape(lfo.shape() + f_inc(inc, shifted));
+			lfo.set_shape(lfo.shape() + SettingsUtils::f_inc(inc, shifted));
 			break;
 		case SKEW:
-			lfo.set_skew(lfo.skew() + f_inc(inc, shifted));
+			lfo.set_skew(lfo.skew() + SettingsUtils::f_inc(inc, shifted));
 			break;
 		case MIN:
-			lfo.set_min(lfo.min() + f_inc(inc, shifted));
+			lfo.set_min(lfo.min() + SettingsUtils::f_inc(inc, shifted));
 			break;
 		case MAX:
-			lfo.set_max(lfo.max() + f_inc(inc, shifted));
+			lfo.set_max(lfo.max() + SettingsUtils::f_inc(inc, shifted));
 			break;
 		case SYNC_PHASE:
-			lfo.set_sync_phase(lfo.sync_phase() + f_inc(inc, shifted));
+			lfo.set_sync_phase(lfo.sync_phase() + SettingsUtils::f_inc(inc, shifted));
 			break;
 		case RANDOMISE:
 			lfo.set_randomise(inc > 0);
@@ -116,9 +116,6 @@ public:
 
 private:
 
-	inline float f_inc(int inc, bool shift) {
-		return inc * (1.f / 100.f) * (shift ? 10.f : 1.f);
-	}
 };
 
 #endif

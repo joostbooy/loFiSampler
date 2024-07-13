@@ -89,10 +89,10 @@ public:
 			settings_->select_sample_index(settings_->selected_sample_index() + inc);
 			break;
 		case GAIN:
-			sample.set_gain(sample.gain() + f_inc(inc, shifted));
+			sample.set_gain(sample.gain() + SettingsUtils::f_inc(inc, shifted));
 			break;
 		case PAN:
-			sample.set_pan(sample.pan() + f_inc(inc, shifted));
+			sample.set_pan(sample.pan() + SettingsUtils::f_inc(inc, shifted));
 			break;
 		case START:
 			sample.set_start(sample.start() + (inc * (shifted ? kQuarterSecond : kMillisecond)));
@@ -133,13 +133,8 @@ public:
 	}
 
 private:
-
 	static const uint32_t kMillisecond = SAMPLE_RATE / 1000;
 	static const uint32_t kQuarterSecond = SAMPLE_RATE / 4;
-
-	inline float f_inc(int inc, bool shift) {
-		return inc * (1.f / 100.f) * (shift ? 10.f : 1.f);
-	}
 };
 
 #endif
