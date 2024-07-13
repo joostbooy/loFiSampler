@@ -7,22 +7,25 @@
 
 namespace SamplePage {
 
+	using TopPage::settings_;
+	using TopPage::engine_;
+
 	bool pasteable_;
 	Sample sample_;
 	SampleList sampleList_;
 
 	void clear() {
-		TopPage::settings_->selected_sample().init();
+		settings_->selected_sample().init();
 	}
 
 	void copy() {
-		sample_.paste(&TopPage::settings_->selected_sample());
+		sample_.paste(&settings_->selected_sample());
 		pasteable_ = true;
 	}
 
 	bool paste() {
 		if (pasteable_) {
-			TopPage::settings_->selected_sample().paste(&sample_);
+			settings_->selected_sample().paste(&sample_);
 			return true;
 		}
 		return false;
@@ -31,7 +34,7 @@ namespace SamplePage {
 	void init() {
 		pasteable_ = false;
 		sample_.init();
-		sampleList_.init(TopPage::engine_, TopPage::settings_);
+		sampleList_.init(engine_, settings_);
 	}
 
 	void enter() {

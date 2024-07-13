@@ -6,6 +6,9 @@
 
 namespace ListPage {
 
+	using TopPage::canvas_;
+	using TopPage::pages_;
+
 	SettingsList *list_;
 	void(*clear_callback_)() = nullptr;
 	bool(*paste_callback_)() = nullptr;
@@ -64,7 +67,7 @@ namespace ListPage {
 						clear_callback_();
 					}
 				});
-				TopPage::pages_->open(Pages::CONFIRMATION_PAGE);
+				pages_->open(Pages::CONFIRMATION_PAGE);
 			}
 			break;
 		case Controller::COPY_BUTTON:
@@ -84,7 +87,7 @@ namespace ListPage {
 						}
 					}
 				});
-				TopPage::pages_->open(Pages::CONFIRMATION_PAGE);
+				pages_->open(Pages::CONFIRMATION_PAGE);
 			}
 			break;
 		default:
@@ -110,7 +113,7 @@ namespace ListPage {
 		WindowPainter::draw_header();
 
 		Canvas::Color color;
-		TopPage::canvas_->set_font(Font::SMALL);
+		canvas_->set_font(Font::SMALL);
 		int item = list_->top_item();
 
 		for (int i = window.row().first; i <= window.row().last; ++i) {

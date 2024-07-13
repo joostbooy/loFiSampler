@@ -7,25 +7,25 @@
 
 namespace InstrumentPage {
 
-	//	using TopPage::settings_;
-	//	using TopPage::engine_;
+	using TopPage::settings_;
+	using TopPage::engine_;
 
 	bool pasteable_;
 	Instrument instrument_;
 	EnvelopeList instrumentList_;
 
 	void clear() {
-		TopPage::settings_->selected_instrument().init();
+		settings_->selected_instrument().init();
 	}
 
 	void copy() {
-		instrument_.paste(&TopPage::settings_->selected_instrument());
+		instrument_.paste(&settings_->selected_instrument());
 		pasteable_ = true;
 	}
 
 	bool paste() {
 		if (pasteable_) {
-			TopPage::settings_->selected_instrument().paste(&instrument_);
+			settings_->selected_instrument().paste(&instrument_);
 			return true;
 		}
 		return false;
@@ -34,7 +34,7 @@ namespace InstrumentPage {
 	void init() {
 		pasteable_ = false;
 		instrument_.init();
-		instrumentList_.init(TopPage::engine_, TopPage::settings_);
+		instrumentList_.init(engine_, settings_);
 	}
 
 	void enter() {

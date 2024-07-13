@@ -7,22 +7,26 @@
 
 namespace LfoPage {
 
+	using TopPage::engine_;
+	using TopPage::settings_;
+	using TopPage::canvas_;
+
 	bool pasteable_;
 	Lfo lfo_;
 	LfoList lfoList_;
 
 	void clear() {
-		TopPage::settings_->selected_lfo().init();
+		settings_->selected_lfo().init();
 	}
 
 	void copy() {
-		lfo_.paste(&TopPage::settings_->selected_lfo());
+		lfo_.paste(&settings_->selected_lfo());
 		pasteable_ = true;
 	}
 
 	bool paste() {
 		if (pasteable_) {
-			TopPage::settings_->selected_lfo().paste(&lfo_);
+			settings_->selected_lfo().paste(&lfo_);
 			return true;
 		}
 		return false;
@@ -31,7 +35,7 @@ namespace LfoPage {
 	void init() {
 		pasteable_ = false;
 		lfo_.init();
-		lfoList_.init(TopPage::engine_, TopPage::settings_);
+		lfoList_.init(engine_, settings_);
 	}
 
 	void enter() {
@@ -64,7 +68,7 @@ namespace LfoPage {
 		Lfo lfo;
 		LfoEngine lfoEngine;
 
-		lfo.paste(&TopPage::settings_->selected_lfo());
+		lfo.paste(&settings_->selected_lfo());
 		lfo.set_clock_sync(false);
 		lfo.set_randomise(false);
 		lfoEngine.init(&lfo);
@@ -76,13 +80,13 @@ namespace LfoPage {
 
 		for (int x2 = 0; x2 < 255; ++x2) {
 			int y2 = h * (1.f - lfoEngine.next());
-			TopPage::canvas_->draw_pixel(x + x2, y + y2, Canvas::BLACK);
+			canvas_->draw_pixel(x + x2, y + y2, Canvas::BLACK);
 		}
 
-		int index = TopPage::settings_->selected_lfo_index();
-		float phase = TopPage::engine_->modulationEngine().lfoEngine(index).phase();
+		int index = settings_->selected_lfo_index();
+		float phase = engine_->modulationEngine().lfoEngine(index).phase();
 
-		TopPage::canvas_->vertical_line(x + (phase * w), y, h, Canvas::BLACK);
+		canvas_->vertical_line(x + (phase * w), y, h, Canvas::BLACK);
 	}
 
 	const size_t target_fps() {

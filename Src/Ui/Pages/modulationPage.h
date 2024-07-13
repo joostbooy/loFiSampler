@@ -7,22 +7,25 @@
 
 namespace ModulationPage {
 
+	using TopPage::settings_;
+	using TopPage::engine_;
+
 	bool pasteable_;
 	Modulation modulation_;
 	ModulationList modulationList_;
 
 	void clear() {
-		TopPage::settings_->modulation().init();
+		settings_->modulation().init();
 	}
 
 	void copy() {
-		modulation_.paste(&TopPage::settings_->modulation());
+		modulation_.paste(&settings_->modulation());
 		pasteable_ = true;
 	}
 
 	bool paste() {
 		if (pasteable_) {
-			TopPage::settings_->modulation().paste(&modulation_);
+			settings_->modulation().paste(&modulation_);
 			return true;
 		}
 		return false;
@@ -31,7 +34,7 @@ namespace ModulationPage {
 	void init() {
 		pasteable_ = false;
 		modulation_.init();
-		modulationList_.init(TopPage::engine_, TopPage::settings_);
+		modulationList_.init(engine_, settings_);
 	}
 
 	void enter() {

@@ -3,6 +3,10 @@
 
 namespace ConfirmationPage {
 
+	using TopPage::canvas_;
+	using TopPage::pages_;
+	using TopPage::leds_;
+
 	enum Option {
 		CONFIRM,
 		CANCEL,
@@ -28,7 +32,7 @@ namespace ConfirmationPage {
 		str.write(message);
 		callback_ = callback;
 		w = font.string_width(str.read()) + 20;
-		x = (TopPage::canvas_->width() - w) / 2;
+		x = (canvas_->width() - w) / 2;
 	}
 
 	void init() {
@@ -37,7 +41,7 @@ namespace ConfirmationPage {
 
 	void enter() {
 		if (callback_ == nullptr) {
-			TopPage::pages_->close(Pages::CONFIRMATION_PAGE);
+			pages_->close(Pages::CONFIRMATION_PAGE);
 		}
 	}
 
@@ -49,7 +53,7 @@ namespace ConfirmationPage {
 		int selected_option = Controller::button_to_function(id);
 		if (state >= 1 && selected_option >= 0 && selected_option < NUM_OPTIONS) {
 			callback_(selected_option);
-			TopPage::pages_->close(Pages::CONFIRMATION_PAGE);
+			pages_->close(Pages::CONFIRMATION_PAGE);
 		}
 	}
 
@@ -58,15 +62,15 @@ namespace ConfirmationPage {
 	}
 
 	void refresh_leds() {
-		TopPage::leds_->footer_buttons(Leds::RED, Leds::RED, Leds::BLACK, Leds::BLACK);
+		leds_->footer_buttons(Leds::RED, Leds::RED, Leds::BLACK, Leds::BLACK);
 	}
 
 	void draw() {
-		TopPage::canvas_->set_font(Font::SMALL);
-		TopPage::canvas_->fill(x + 4, y + 4, w, h, Canvas::SUBTRACTED);
-		TopPage::canvas_->box(x, y, w, h, Canvas::WHITE, Canvas::BLACK);
-		TopPage::canvas_->frame(x + 4, y + 4, w - 8, h - 8, Canvas::WHITE);
-		TopPage::canvas_->draw_text(x, y, w, h, str.read(), Canvas::CENTER, Canvas::CENTER, Canvas::WHITE);
+		canvas_->set_font(Font::SMALL);
+		canvas_->fill(x + 4, y + 4, w, h, Canvas::SUBTRACTED);
+		canvas_->box(x, y, w, h, Canvas::WHITE, Canvas::BLACK);
+		canvas_->frame(x + 4, y + 4, w - 8, h - 8, Canvas::WHITE);
+		canvas_->draw_text(x, y, w, h, str.read(), Canvas::CENTER, Canvas::CENTER, Canvas::WHITE);
 
 		//	WindowPainter::draw_footer(option_text, NUM_OPTIONS);
 	}

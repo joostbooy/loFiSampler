@@ -7,22 +7,25 @@
 
 namespace MidiPage {
 
+	using TopPage::settings_;
+	using TopPage::engine_;
+
 	bool pasteable_;
 	Midi midi_;
 	MidiList midiList_;
 
 	void clear() {
-		TopPage::settings_->midi().init();
+		settings_->midi().init();
 	}
 
 	void copy() {
-		midi_.paste(&TopPage::settings_->midi());
+		midi_.paste(&settings_->midi());
 		pasteable_ = true;
 	}
 
 	bool paste() {
 		if (pasteable_) {
-			TopPage::settings_->midi().paste(&midi_);
+			settings_->midi().paste(&midi_);
 			return true;
 		}
 		return false;
@@ -31,7 +34,7 @@ namespace MidiPage {
 	void init() {
 		pasteable_ = false;
 		midi_.init();
-		midiList_.init(TopPage::engine_, TopPage::settings_);
+		midiList_.init(engine_, settings_);
 	}
 
 	void enter() {
