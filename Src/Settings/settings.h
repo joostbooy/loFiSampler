@@ -175,8 +175,8 @@ private:
 	FileWriter fileWriter;
 	FileReader fileReader;
 
-	Sdram *sdram_;
-	Disk *disk_;
+	Sdram *sdram_ = nullptr;
+	Disk *disk_ = nullptr;
 
 	int selected_lfo_index_;
 	int selected_sample_index_;
@@ -184,7 +184,9 @@ private:
 	int selected_envelope_index_;
 
 	void init() {
-		init(sdram_, disk_);
+		if (sdram_ != nullptr && disk_ != nullptr) {
+			init(sdram_, disk_);
+		}
 	}
 };
 
