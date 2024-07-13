@@ -81,7 +81,7 @@ void Sdio::init_dma(uint32_t buffer, DmaType dmaType) {
 }
 
 extern "C" {
-	void DMA2_Stream3_IRQHandler(void) {
+	void DMA2_Stream0_IRQHandler(void) {
 		uint32_t flags = DMA2->LISR;
 		DMA2->LIFCR |= DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0;
 
