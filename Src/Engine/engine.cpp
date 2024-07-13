@@ -1,6 +1,6 @@
 #include "engine.h"
 
-void Engine::init(Settings *settings, Uart *uart, Usb* usb, Gate *gate) {
+void Engine::init(Settings *settings, Uart *uart, Usb *usb, Gate *gate) {
 	settings_ = settings;
 	gate_ = gate;
 	midiEngine_.init(uart, usb);
