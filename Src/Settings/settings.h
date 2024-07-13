@@ -54,6 +54,12 @@ public:
 		}
 	}
 
+	void init() {
+		if (sdram_ != nullptr && disk_ != nullptr) {
+			init(sdram_, disk_);
+		}
+	}
+
 	Midi &midi() {
 		return midi_;
 	}
@@ -182,12 +188,6 @@ private:
 	int selected_sample_index_;
 	int selected_instrument_index_;
 	int selected_envelope_index_;
-
-	void init() {
-		if (sdram_ != nullptr && disk_ != nullptr) {
-			init(sdram_, disk_);
-		}
-	}
 };
 
 //extern Settings settings;
