@@ -44,14 +44,7 @@ public:
 	void set_footer_button(int index, Color color) {
 		set(footer_button_leds_[index].x, footer_button_leds_[index].y, color);
 	}
-
-	void footer_buttons(int num_active) {
-		for (int i = 0; i < 4; ++i) {
-			Color color = i < num_active ? RED : BLACK;
-			set_footer_button(i, color);
-		}
-	}
-
+	
 	void footer_buttons(Color c1, Color c2, Color c3, Color c4) {
 		Color colors[4] = {c1, c2, c3, c4};
 		for (int i = 0; i < 4; ++i) {
@@ -62,13 +55,6 @@ public:
 	// footer encoders
 	void set_footer_encoder(int index, Color color) {
 		set(footer_encoder_leds_[index].x, footer_encoder_leds_[index].y, color);
-	}
-
-	void footer_encoders(int num_active) {
-		for (int i = 0; i < 4; ++i) {
-			Color color = i < num_active ? RED : BLACK;
-			set_footer_encoder(i, color);
-		}
 	}
 
 	void footer_encoders(Color c1, Color c2, Color c3, Color c4) {
@@ -105,6 +91,7 @@ private:
 		{ .x = 5, .y = 2 },
 		{ .x = 6, .y = 2 },
 	};
+
 	Map chapter_leds_[6] = {
 		{ .x = 1, .y = 0 },	// Sample
 		{ .x = 0, .y = 0 },	// Instrument
