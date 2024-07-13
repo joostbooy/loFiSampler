@@ -7,22 +7,26 @@
 
 namespace EnvelopePage {
 
+	using TopPage::engine_;
+	using TopPage::settings_;
+	using TopPage::canvas_;
+	
 	bool pasteable_;
 	Envelope envelope_;
 	EnvelopeList envelopeList_;
 
 	void clear() {
-		TopPage::settings_->selected_envelope().init();
+		settings_->selected_envelope().init();
 	}
 
 	void copy() {
-		envelope_.paste(&TopPage::settings_->selected_envelope());
+		envelope_.paste(&settings_->selected_envelope());
 		pasteable_ = true;
 	}
 
 	bool paste() {
 		if (pasteable_) {
-			TopPage::settings_->selected_envelope().paste(&envelope_);
+			settings_->selected_envelope().paste(&envelope_);
 			return true;
 		}
 		return false;
@@ -31,7 +35,7 @@ namespace EnvelopePage {
 	void init() {
 		pasteable_ = false;
 		envelope_.init();
-		envelopeList_.init(TopPage::engine_, TopPage::settings_);
+		envelopeList_.init(engine_, settings_);
 	}
 
 	void enter() {
@@ -64,7 +68,7 @@ namespace EnvelopePage {
 		Envelope envelope;
 		EnvelopeEngine envelopeEngine;
 
-		envelope.paste(&TopPage::settings_->selected_envelope());
+		envelope.paste(&settings_->selected_envelope());
 		envelope.set_clock_sync(false);
 		envelopeEngine.init(&envelope);
 
@@ -75,13 +79,13 @@ namespace EnvelopePage {
 
 		for (int x2 = 0; x2 < 255; ++x2) {
 			int y2 = h * (1.f - envelopeEngine.next());
-			TopPage::canvas_->draw_pixel(x + x2, y + y2, Canvas::BLACK);
+			canvas_->draw_pixel(x + x2, y + y2, Canvas::BLACK);
 		}
 
-		int index = TopPage::settings_->selected_envelope_index();
-		float phase = TopPage::engine_->voiceEngine().most_recent_voice().envelopeEngine(index).phase();
+		int index = settings_->selected_envelope_index();
+		float phase = engine_->voiceEngine().most_recent_voice().envelopeEngine(index).phase();
 
-		TopPage::canvas_->vertical_line(x + (phase * w), y, h, Canvas::BLACK);
+		canvas_->vertical_line(x + (phase * w), y, h, Canvas::BLACK);
 	}
 
 	const size_t target_fps() {
