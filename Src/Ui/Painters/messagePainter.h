@@ -12,16 +12,16 @@ public:
 		canvas_ = canvas;
 	}
 
-	static void show(const char* text, uint16_t duration_ms = 1200) {
+	static void show(const char* text, uint16_t millis = 1200) {
 		str.write(text);
 		w = font.string_width(str.read()) + 20;
 		x = (canvas_->width() - w) / 2;
-		is_visible_ = true;
-		duration_ms_ = duration_ms;
+		millis_ = millis;
 	}
 
-	static void draw() {
-		if (is_visible_) {
+	static void draw(uint32_t millis) {
+		if (millis_ >= millis) {
+			millis_ -= millis;
 			canvas_->set_font(Font::SMALL);
 			canvas_->fill(x + 4, y + 4, w, h, Canvas::SUBTRACTED);
 			canvas_->box(x, y, w, h, Canvas::WHITE, Canvas::BLACK);
@@ -30,26 +30,14 @@ public:
 		}
 	}
 
-	static void tick(uint16_t ticks) {
-		if (duration_ms_ >= ticks){
-			duration_ms_ -= ticks;
-		} else {
-			duration_ms_ = 0;
-			is_visible_ = false;
-		}
-	}
-
 private:
+	static int x;
+	static int y;
+	static int w;
+	static int h;
 	static Canvas *canvas_;
-
-	static bool is_visible_;
-	static uint16_t duration_ms_;
+	static uint16_t millis_;
 	static StringBuilderBase<32>str;
-
-	static uint16_t x;
-	static uint16_t y;
-	static uint16_t w;
-	static uint16_t h;
 };
 
 #endif

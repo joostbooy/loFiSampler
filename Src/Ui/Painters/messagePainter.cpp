@@ -1,12 +1,11 @@
 #include "messagePainter.h"
 
-uint16_t MessagePainter::x = 0;
-uint16_t MessagePainter::y = 16;
-uint16_t MessagePainter::w = 0;
-uint16_t MessagePainter::h = 32;
+int MessagePainter::x = 0;
+int MessagePainter::y = 16;
+int MessagePainter::w = 0;
+int MessagePainter::h = 32;
 
 Canvas* MessagePainter::canvas_;
 
-bool MessagePainter::is_visible_;
-uint16_t MessagePainter::duration_ms_ = 0;
+uint16_t MessagePainter::millis_ = 0;
 StringBuilderBase<32> MessagePainter::str;
