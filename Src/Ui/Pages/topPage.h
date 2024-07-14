@@ -54,8 +54,7 @@ namespace TopPage {
 	}
 
 	void draw() {
-		MessagePainter::tick(pages_->target_fps());
-		MessagePainter::draw();
+		MessagePainter::draw(pages_->target_fps());
 	}
 
 	const size_t target_fps() {
