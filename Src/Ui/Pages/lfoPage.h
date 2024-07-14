@@ -85,7 +85,6 @@ namespace LfoPage {
 
 		int index = settings_->selected_lfo_index();
 		float phase = engine_->modulationEngine().lfoEngine(index).phase();
-
 		canvas_->vertical_line(x + (phase * w), y, h, Canvas::BLACK);
 	}
 

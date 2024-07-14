@@ -10,7 +10,7 @@ namespace EnvelopePage {
 	using TopPage::engine_;
 	using TopPage::settings_;
 	using TopPage::canvas_;
-	
+
 	bool pasteable_;
 	Envelope envelope_;
 	EnvelopeList envelopeList_;
@@ -84,7 +84,6 @@ namespace EnvelopePage {
 
 		int index = settings_->selected_envelope_index();
 		float phase = engine_->voiceEngine().most_recent_voice().envelopeEngine(index).phase();
-
 		canvas_->vertical_line(x + (phase * w), y, h, Canvas::BLACK);
 	}
 
