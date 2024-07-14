@@ -2,11 +2,13 @@
 #define OptionListPage_h
 
 #include "topPage.h"
+#include "settingsUtils.h"
 
 namespace OptionListPage {
 
 	using TopPage::canvas_;
 	using TopPage::pages_;
+	using TopPage::leds_;
 
 	int count_;
 	int selected_;
@@ -27,29 +29,6 @@ namespace OptionListPage {
 		count_ = count;
 	}
 
-	void init() {
-
-	}
-
-	void enter() {
-		selected_ = 0;
-		scroll_to_row(0);
-	}
-
-	void exit()  {
-
-	}
-
-	void on_button(int id, int state) {
-		callback_[selected_];
-		pages_->close(Pages::OPTION_LIST_PAGE);
-	}
-
-	void on_encoder(int id, int state) {
-		selected_ = SettingsUilts::clip(0, count - 1, selected_ + state);
-		scroll_to_row(selected_);
-	}
-
 	void scroll_to_row(int row) {
 		if (row < top_row_) {
 			top_row_ = row;
@@ -58,8 +37,38 @@ namespace OptionListPage {
 		}
 	}
 
-	void refresh_leds() {
+	void init() {
+		callback_ = nullptr;
+	}
 
+	void enter() {
+		selected_ = 0;
+		scroll_to_row(0);
+	}
+
+	void exit()  {
+		callback_ = nullptr;
+	}
+
+	void on_button(int id, int state) {
+		if (state) {
+			if (Controller::button_to_function(id) >= 0) {
+				if (callback_) {
+					callback_(selected_);
+				}
+				pages_->close(Pages::OPTION_LIST_PAGE);
+			}
+		}
+	}
+
+	void on_encoder(int id, int state) {
+		selected_ = SettingsUtils::clip(0, count_ - 1, selected_ + state);
+		scroll_to_row(selected_);
+	}
+
+	void refresh_leds() {
+		leds_->set_footer_encoders(Leds::RED, Leds::RED, Leds::RED, Leds::RED);
+		leds_->set_footer_buttons(Leds::RED, Leds::RED, Leds::RED, Leds::RED);
 	}
 
 	void draw() {
@@ -73,7 +82,7 @@ namespace OptionListPage {
 
 		for (int i = 0; i < kMaxRows; ++i) {
 			int row = i + top_row_;
-			if (row < count) {
+			if (row < count_) {
 				canvas_->draw_text(x + 4, y, w - 8, row_h, text_[row], Canvas::LEFT, Canvas::CENTER);
 				if (row == selected_) {
 					canvas_->fill(x, y, w, row_h, Canvas::INVERTED);
