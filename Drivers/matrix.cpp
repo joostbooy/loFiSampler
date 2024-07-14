@@ -1,9 +1,5 @@
 #include "matrix.h"
 
-
-
-
-
 void Matrix::init() {
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
 

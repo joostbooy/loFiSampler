@@ -3,13 +3,14 @@
 void Engine::init(Settings *settings, Uart *uart, Usb *usb, Gate *gate) {
 	settings_ = settings;
 	gate_ = gate;
+	
 	midiEngine_.init(uart, usb);
 	modulationEngine_.init(settings);
 	voiceEngine_.init(settings, &modulationEngine_);
 	sampleQue_.init(settings);
 
 	for (size_t i = 0; i < Modulation::kNumGatesToNote; ++i) {
-		last_gate_[i] = 0;
+		last_gate_[i] = gate_->read(i);
 	}
 }
 
