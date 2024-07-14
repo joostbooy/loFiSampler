@@ -156,8 +156,6 @@ namespace ListPage {
 		&on_encoder,
 		&target_fps
 	};
-
-
 };
 
 #endif
