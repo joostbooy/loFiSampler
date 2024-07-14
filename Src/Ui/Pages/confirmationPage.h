@@ -62,7 +62,7 @@ namespace ConfirmationPage {
 	}
 
 	void refresh_leds() {
-		leds_->footer_buttons(Leds::RED, Leds::RED, Leds::BLACK, Leds::BLACK);
+		leds_->set_footer_buttons(Leds::RED, Leds::RED, Leds::BLACK, Leds::BLACK);
 	}
 
 	void draw() {
