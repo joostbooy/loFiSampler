@@ -31,8 +31,8 @@ void Dac::init() {
 	I2S_HandleTypeDef hi2s3;
 	hi2s3.Instance = SPI3;
     hi2s3.Init.Mode = I2S_MODE_MASTER_TX;
-    hi2s3.Init.Standard = I2S_STANDARD_PHILIPS;
-    hi2s3.Init.DataFormat = I2S_DATAFORMAT_16B;
+    hi2s3.Init.Standard = I2S_STANDARD_PCM_SHORT;
+    hi2s3.Init.DataFormat = I2S_DATAFORMAT_32B;
     hi2s3.Init.MCLKOutput = I2S_MCLKOUTPUT_DISABLE;
     hi2s3.Init.AudioFreq = kSampleRate * kNumChannels;;
     hi2s3.Init.CPOL = I2S_CPOL_LOW;
@@ -43,7 +43,6 @@ void Dac::init() {
 
 
 	DMA_HandleTypeDef hdma_spi3_tx;
-
 	hdma_spi3_tx.Instance = DMA1_Stream5;
 	hdma_spi3_tx.Init.Direction = DMA_MEMORY_TO_PERIPH;
 	hdma_spi3_tx.Init.PeriphInc = DMA_PINC_DISABLE;
