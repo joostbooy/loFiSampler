@@ -46,8 +46,8 @@ void Display::init() {
     hspi5.Init.TIMode = SPI_TIMODE_DISABLE;
     hspi5.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
     hspi5.Init.CRCPolynomial = 7;
-    hspi5.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
-    hspi5.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
+    // hspi5.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
+    // hspi5.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
     HAL_SPI_Init(&hspi5);
 	__HAL_SPI_ENABLE(&hspi5);
 

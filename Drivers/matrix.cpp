@@ -46,8 +46,8 @@ void Matrix::init() {
 	hspi4.Init.TIMode = SPI_TIMODE_DISABLE;
 	hspi4.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
 	hspi4.Init.CRCPolynomial = 7;
-	hspi4.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
-	hspi4.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
+	//hspi4.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
+	//hspi4.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
 	HAL_SPI_Init(&hspi4);
 	__HAL_SPI_ENABLE(&hspi4);
 }
