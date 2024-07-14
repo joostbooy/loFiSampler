@@ -2,7 +2,6 @@
 #define TextBufferPainter_h
 
 #include "ui.h"
-#include "window.h"
 #include "StringBuilder.h"
 
 class TextBufferPainter {
@@ -14,43 +13,42 @@ public:
 	}
 
 	static void clear() {
-		entries = 0;
-		top_row = 0;
-		for (int i = 0; i < kMaxRows; ++i) {
-			text[i].clear();
+		entries_ = 0;
+		top_row_ = 0;
+		for (int i = 0; i < kNumRows; ++i) {
+			text_[i].clear();
 		}
 	}
 
-	static void write(const char* text_) {
-		text[entries % kMaxRows].write(text_);
+	static void write(const char* text) {
+		text_[entries_ % kNumRows].write(text);
 
-		++entries;
-		if (entries >= kMaxRows) {
-			top_row = (entries - kMaxRows) % kMaxRows;
+		++entries_;
+		if (entries_ >= kNumRows) {
+			top_row_ = (entries_ - kNumRows) % kNumRows;
 		}
 	}
 
 	static void draw() {
+		int x = 0;
+		int y = 10;
+		int w = canvas_->width();
+		int h = (canvas_->height() - 20) / kNumRows;
+
 		canvas_->set_font(Font::SMALL);
 
-		for (int i = 0; i < kMaxRows; ++i) {
-			int text_row = (top_row + i) % kMaxRows;
-			cell = window.cell(0, i);
-			canvas_->draw_text(cell.x, cell.y, cell.w, cell.h, text[text_row].read(), Canvas::LEFT, Canvas::CENTER);
+		for (int i = 0; i < kNumRows; ++i) {
+			int text__row = (top_row_ + i) % kNumRows;
+			canvas_->draw_text(x, y + (h * i), w, h, text_[text__row].read(), Canvas::LEFT, Canvas::CENTER);
 		}
 	}
 
 private:
+	static int entries_;
+	static int top_row_;
+	static const int kNumRows = 6;
+	static StringBuilderBase<32>text_[kNumRows];
 	static Canvas *canvas_;
-
-	static int entries;
-	static int top_row;
-	static const int kMaxRows = 6;
-
-	static Window window;
-	static Window::Cell cell;
-
-	static StringBuilderBase<32>text[kMaxRows];
 };
 
 #endif
