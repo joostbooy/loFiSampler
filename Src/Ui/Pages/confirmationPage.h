@@ -62,7 +62,7 @@ namespace ConfirmationPage {
 	}
 
 	void refresh_leds() {
-		leds_->set_footer_buttons(Leds::RED, Leds::RED, Leds::BLACK, Leds::BLACK);
+		leds_->set_footer_buttons(NUM_OPTIONS);
 	}
 
 	void draw() {
@@ -73,7 +73,7 @@ namespace ConfirmationPage {
 		canvas_->frame(x + 4, y + 4, w - 8, h - 8, Canvas::WHITE);
 		canvas_->draw_text(x, y, w, h, str.read(), Canvas::CENTER, Canvas::CENTER, Canvas::WHITE);
 
-		//	WindowPainter::draw_footer(option_text, NUM_OPTIONS);
+		WindowPainter::draw_footer(option_text, NUM_OPTIONS);
 	}
 
 	const size_t target_fps() {

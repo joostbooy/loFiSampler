@@ -25,14 +25,14 @@ public:
 	}
 
 	void set_all(Color color) {
-		set_footer_buttons(color, color, color, color);
-		set_footer_encoders(color, color, color, color);
+		set_footer_buttons(4);
+		set_footer_encoders(4);
 		for (int i = 0; i < 6; ++i) {
 			set(chapter_leds_[i].x, chapter_leds_[i].y, color);
 		}
 	}
 
-	// chapter
+	// Chapter
 	void set_chapter(int index) {
 		for (int i = 0; i < 6; ++i) {
 			Color color = i == index ? RED : BLACK;
@@ -40,27 +40,25 @@ public:
 		}
 	}
 
-	// footer buttons
+	// Footer buttons
 	void set_footer_button(int index, Color color) {
 		set(footer_button_leds_[index].x, footer_button_leds_[index].y, color);
 	}
 
-	void set_footer_buttons(Color c1, Color c2, Color c3, Color c4) {
-		Color colors[4] = {c1, c2, c3, c4};
+	void set_footer_buttons(int num_active) {
 		for (int i = 0; i < 4; ++i) {
-			set_footer_button(i, colors[i]);
+			set_footer_button(i, i < num_active ? RED : BLACK);
 		}
 	}
 
-	// footer encoders
+	// Footer encoders
 	void set_footer_encoder(int index, Color color) {
 		set(footer_encoder_leds_[index].x, footer_encoder_leds_[index].y, color);
 	}
 
-	void set_footer_encoders(Color c1, Color c2, Color c3, Color c4) {
-		Color colors[4] = {c1, c2, c3, c4};
+	void set_footer_encoders(int num_active) {
 		for (int i = 0; i < 4; ++i) {
-			set_footer_encoder(i, colors[i]);
+			set_footer_encoder(i, i < num_active ? RED : BLACK);
 		}
 	}
 

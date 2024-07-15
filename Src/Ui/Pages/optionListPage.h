@@ -67,8 +67,8 @@ namespace OptionListPage {
 	}
 
 	void refresh_leds() {
-		leds_->set_footer_encoders(Leds::RED, Leds::RED, Leds::RED, Leds::RED);
-		leds_->set_footer_buttons(Leds::RED, Leds::RED, Leds::RED, Leds::RED);
+		leds_->set_footer_encoders(4);
+		leds_->set_footer_buttons(4);
 	}
 
 	void draw() {
