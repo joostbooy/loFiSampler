@@ -114,6 +114,7 @@ namespace ListPage {
 
 	void draw() {
 		const int h = 20;
+		const int y = canvas_->height() - h;
 		const int w = canvas_->width() / list_->collumns();
 
 		canvas_->set_font(Font::SMALL);
@@ -122,15 +123,14 @@ namespace ListPage {
 			int item = i + list_->top_item();
 			if (item < list_->num_items()) {
 				int x = i * w;
-				canvas_->draw_text(x, 44, w, h, list_->item_text(item), Canvas::CENTER, Canvas::CENTER);
-				canvas_->draw_text(x, 54, w, h, list_->value_text(item), Canvas::CENTER, Canvas::CENTER);
+				canvas_->draw_text(x, y, w, h, list_->item_text(item), Canvas::CENTER, Canvas::CENTER);
+				canvas_->draw_text(x, y + 10, w, h, list_->value_text(item), Canvas::CENTER, Canvas::CENTER);
 			}
 		}
 
-		const int bar_y = 44;
 		const int bar_w = 8;
 		const int bar_x = canvas_->width() - bar_w;
-		WindowPainter::draw_vertical_scollbar(bar_x, bar_y, bar_w, h, list_->top_item(), list_->num_items(), list_->collumns());
+		WindowPainter::draw_vertical_scollbar(bar_x, y, bar_w, h, list_->top_item(), list_->num_items(), list_->collumns());
 	}
 
 	const size_t target_fps() {
