@@ -112,11 +112,6 @@ public:
 		}
 	}
 
-	void box(int x, int y, int w, int h, Color frame_clr, Color fill_clr, int border = 1){
-		frame(x, y, w, h, frame_clr, border);
-		fill(x + border, y + border, w - (border * 2), h - (border * 2), fill_clr);
-	}
-
 	void get_xy_allignment(int *x, int *y, int w, int h, int frame_w, int frame_h, Allign x_allign, Allign y_allign) {
 		int x_ = *x;
 		int y_ = *y;

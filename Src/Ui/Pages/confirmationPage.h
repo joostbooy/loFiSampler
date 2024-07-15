@@ -68,7 +68,8 @@ namespace ConfirmationPage {
 	void draw() {
 		canvas_->set_font(Font::SMALL);
 		canvas_->fill(x + 4, y + 4, w, h, Canvas::SUBTRACTED);
-		canvas_->box(x, y, w, h, Canvas::WHITE, Canvas::BLACK);
+		canvas_->frame(x, y, w, h, Canvas::WHITE);
+		canvas_->fill(x + 1, y + 1, w - 2, h - 2, Canvas::BLACK);
 		canvas_->frame(x + 4, y + 4, w - 8, h - 8, Canvas::WHITE);
 		canvas_->draw_text(x, y, w, h, str.read(), Canvas::CENTER, Canvas::CENTER, Canvas::WHITE);
 
