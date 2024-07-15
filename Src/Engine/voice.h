@@ -78,15 +78,21 @@ public:
 
 		apply_modulation();
 
+		int prescaler = instrument_.sample_rate_prescaler();
 		int16_t *ptr = &buffer[0].channel[instrument_.audio_channel() * 2];
 
 		for (size_t i = 0; i < size; ++i) {
-			int16_t left = next();
-			int16_t right = next();
+			int16_t	left = next();
+			int16_t	right = next();
 			Dsp::pan(&left, &right, sample_.pan());
 
-			*ptr += left;
-			*(ptr + 1) += right;
+			if ((++sample_count_ & prescaler) == 0) {
+				left_ = left;
+				right_ = right;
+			}
+
+			*ptr += left_;
+			*(ptr + 1) += right_;
 
 			ptr += Dac::kNumChannels;
 		}
@@ -137,6 +143,8 @@ private:
 	Instrument *instrument_src_;
 	ModulationEngine *modulationEngine_;
 	EnvelopeEngine envelopeEngine_[Settings::kNumEnvelopes];
+	int16_t left_, right_;
+	int sample_count_;
 
 	inline bool is_looping() {
 		return sample_.loop() && key_pressed_;
