@@ -112,18 +112,6 @@ namespace ListPage {
 		}
 	}
 
-	void draw_scollbar() {
-		const int y = 44;
-		const int h = 20;
-		const int w = 8;
-		const int x = canvas_->width() - w;
-		int bar_y = (list_->top_item() * h) / list_->num_items();
-		int bar_h = (list_->collumns() * h) / list_->num_items();
-
-		canvas_->fill(x, y, w, h, Canvas::BLACK);
-		canvas_->fill(x + 2, y + bar_y, w - 4, bar_h, Canvas::WHITE);
-	}
-
 	void draw() {
 		const int h = 20;
 		const int w = canvas_->width() / list_->collumns();
@@ -139,7 +127,10 @@ namespace ListPage {
 			}
 		}
 
-		draw_scollbar();
+		const int bar_y = 44;
+		const int bar_w = 8;
+		const int bar_x = canvas_->width() - bar_w;
+		WindowPainter::draw_vertical_scollbar(bar_x, bar_y, bar_w, h, list_->top_item(), list_->num_items(), list_->collumns());
 	}
 
 	const size_t target_fps() {

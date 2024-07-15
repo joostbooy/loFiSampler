@@ -89,6 +89,11 @@ namespace OptionListPage {
 				}
 			}
 		}
+
+		const int bar_y = 44;
+		const int bar_w = 8;
+		const int bar_x = canvas_->width() - bar_w;
+		WindowPainter::draw_vertical_scollbar(bar_x, bar_y, bar_w, h, top_row_, count_, kMaxRows);
 	}
 
 	const size_t target_fps() {
