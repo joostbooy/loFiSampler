@@ -2,42 +2,98 @@
 
 Dac* Dac::dac_;
 
-void Dac::init() {
+void Dac::dac_write(uint8_t command, uint8_t address, uint16_t data, uint8_t function) {
+	GPIOA->BSRR = GPIO_PIN_15 << 16;
 
+	spi_write(command);
+	spi_write((address << 4) | (data >> 12));
+	spi_write(data >> 4);
+	spi_write((data & 0xf) << 4 | function);
+
+	GPIOA->BSRR = GPIO_PIN_15;
+
+	Micros::delay(50);
+}
+
+void Dac::spi_write(uint8_t data) {
+	volatile uint8_t dummy;
+
+	while (!(SPI3->SR & SPI_FLAG_TXE));
+	SPI3->DR = data;
+
+	while (!(SPI3->SR & SPI_FLAG_RXNE));
+	dummy = SPI3->DR;
+}
+
+void Dac::init() {
 	dac_ = this;
 
+	// Enable internal reference;
+	/*
+	SPI_HandleTypeDef hspi3;
+	hspi3.Instance = SPI3;
+	hspi3.Init.Mode = SPI_MODE_MASTER;
+	hspi3.Init.Direction = SPI_DIRECTION_2LINES;
+	hspi3.Init.DataSize = SPI_DATASIZE_8BIT;
+	hspi3.Init.CLKPolarity = SPI_POLARITY_HIGH;
+	hspi3.Init.CLKPhase = SPI_PHASE_1EDGE;
+	hspi3.Init.NSS = SPI_NSS_SOFT;
+	hspi3.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
+	hspi3.Init.FirstBit = SPI_FIRSTBIT_MSB;
+	hspi3.Init.TIMode = SPI_TIMODE_DISABLE;
+	hspi3.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+	hspi3.Init.CRCPolynomial = 10;
+	HAL_SPI_Init(&hspi3);
+	__HAL_SPI_ENABLE(&hspi3);
+
+	// sync_pin HIGH
+	GPIOA->BSRR = GPIO_PIN_15;
+	// reset
+	dac_write(7, 0, 0, 0);
+	// load clear code register
+	dac_write(5, 0, 0, 3);
+	// enable internal reference
+	dac_write(8, 0, 0, 1);
+	// power up
+	dac_write(4, 0, 0, 0xff);
+
+	// Stop SPI
+	HAL_SPI_DeInit(&hspi3);
+	__HAL_SPI_DISABLE(&hspi3);
+*/
+
+	// Start I2S setup
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
 
 	/**I2S3 GPIO Configuration
-    PA15     ------> I2S3_WS
-    PC10     ------> I2S3_CK
-    PC12     ------> I2S3_SD
-    */
-    GPIO_InitStruct.Pin = GPIO_PIN_15;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    GPIO_InitStruct.Alternate = GPIO_AF6_SPI3;
-    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+	PA15     ------> I2S3_WS
+	PC10     ------> I2S3_CK
+	PC12     ------> I2S3_SD
+	*/
+	GPIO_InitStruct.Pin = GPIO_PIN_15;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Alternate = GPIO_AF6_SPI3;
+	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-    GPIO_InitStruct.Pin = GPIO_PIN_10|GPIO_PIN_12;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    GPIO_InitStruct.Alternate = GPIO_AF6_SPI3;
-    HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+	GPIO_InitStruct.Pin = GPIO_PIN_10|GPIO_PIN_12;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Alternate = GPIO_AF6_SPI3;
+	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
 
 	I2S_HandleTypeDef hi2s3;
 	hi2s3.Instance = SPI3;
-    hi2s3.Init.Mode = I2S_MODE_MASTER_TX;
-    hi2s3.Init.Standard = I2S_STANDARD_PCM_SHORT;
-    hi2s3.Init.DataFormat = I2S_DATAFORMAT_32B;
-    hi2s3.Init.MCLKOutput = I2S_MCLKOUTPUT_DISABLE;
-    hi2s3.Init.AudioFreq = kSampleRate * kNumChannels;;
-    hi2s3.Init.CPOL = I2S_CPOL_LOW;
-    hi2s3.Init.ClockSource = I2S_CLOCK_PLL;
-	//hi2s3.Init.FullDuplexMode = I2S_FULLDUPLEXMODE_DISABLE;
+	hi2s3.Init.Mode = I2S_MODE_MASTER_TX;
+	hi2s3.Init.Standard = I2S_STANDARD_PCM_SHORT;
+	hi2s3.Init.DataFormat = I2S_DATAFORMAT_32B;
+	hi2s3.Init.MCLKOutput = I2S_MCLKOUTPUT_DISABLE;
+	hi2s3.Init.AudioFreq = kSampleRate * kNumChannels;;
+	hi2s3.Init.CPOL = I2S_CPOL_LOW;
+	hi2s3.Init.ClockSource = I2S_CLOCK_PLL;
 	HAL_I2S_Init(&hi2s3);
 	__HAL_I2S_ENABLE(&hi2s3);
 

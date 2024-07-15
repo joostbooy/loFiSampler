@@ -2,6 +2,7 @@
 #define Dac_h
 
 #include "stm32f7xx.h"
+#include "micros.h"
 #include "debug.h"
 
 class Dac {
@@ -41,6 +42,9 @@ private:
 
 	typedef void(*Callback)(Buffer*, const size_t);
 	Callback callback_;
+
+	void spi_write(uint8_t data);
+	void dac_write(uint8_t command, uint8_t address, uint16_t data, uint8_t function);
 };
 
 #endif
