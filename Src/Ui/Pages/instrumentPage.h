@@ -4,15 +4,38 @@
 #include "listPage.h"
 #include "instrument.h"
 #include "instrumentList.h"
+#include "textInputPage.h"
+#include "optionListPage.h"
 
 namespace InstrumentPage {
 
 	using TopPage::settings_;
 	using TopPage::engine_;
+	using TopPage::pages_;
 
 	bool pasteable_;
 	Instrument instrument_;
 	EnvelopeList instrumentList_;
+
+	enum Options {
+		EDIT_NAME,
+		CANCEL,
+		NUM_OPTIONS
+	};
+
+	const char* const option_text[NUM_OPTIONS] = { "EDIT NAME", "CANCEL" };
+
+	void edit(int option) {
+		switch (option)
+		{
+		case EDIT_NAME:
+			TextInputPage::set(settings_->selected_instrument().name(), Instrument::kMaxNameLength, "SET INSTRUMENT NAME");
+			pages_->open(Pages::TEXT_INPUT_PAGE);
+			break;
+		default:
+			break;
+		}
+	}
 
 	void clear() {
 		settings_->selected_instrument().init();
@@ -51,6 +74,13 @@ namespace InstrumentPage {
 
 	void on_button(int id, int state) {
 		ListPage::on_button(id, state);
+
+		if (state > 0 && id == Controller::MENU_BUTTON) {
+			OptionListPage::set_count(NUM_OPTIONS);
+			OptionListPage::set_text(option_text);
+			OptionListPage::set_callback(edit);
+			pages_->open(Pages::OPTION_LIST_PAGE);
+		}
 	}
 
 	void on_encoder(int id, int state) {
