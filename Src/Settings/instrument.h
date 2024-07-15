@@ -209,14 +209,14 @@ public:
 	const size_t sample_rate_prescaler() {
 		switch (sample_rate())
 		{
-		case _125_HZ: 	return (Dac::kSampleRate / 125) - 1;
-		case _250_HZ: 	return (Dac::kSampleRate / 250) - 1;
-		case _500_HZ: 	return (Dac::kSampleRate / 500) - 1;
-		case _1_KHZ: 	return (Dac::kSampleRate / 1000) - 1;
-		case _2_KHZ: 	return (Dac::kSampleRate / 2000) - 1;
-		case _4_KHZ: 	return (Dac::kSampleRate / 4000) - 1;
-		case _8_KHZ:	return (Dac::kSampleRate / 8000) - 1;
-		case _16_KHZ:	return (Dac::kSampleRate / 16000) - 1;
+		case _125_HZ: 	return (SAMPLE_RATE / 125) - 1;
+		case _250_HZ: 	return (SAMPLE_RATE / 250) - 1;
+		case _500_HZ: 	return (SAMPLE_RATE / 500) - 1;
+		case _1_KHZ: 	return (SAMPLE_RATE / 1000) - 1;
+		case _2_KHZ: 	return (SAMPLE_RATE / 2000) - 1;
+		case _4_KHZ: 	return (SAMPLE_RATE / 4000) - 1;
+		case _8_KHZ:	return (SAMPLE_RATE / 8000) - 1;
+		case _16_KHZ:	return (SAMPLE_RATE / 16000) - 1;
 		default:
 			break;
 		}

@@ -4,16 +4,16 @@
 #include "stm32f7xx.h"
 #include "micros.h"
 #include "debug.h"
+#include "lookupTables.h"
 
 class Dac {
 
 public:
 	static Dac *dac_;
 
-	static const size_t kSampleRate = 16000;
 	static const size_t kNumChannels = 8;
 	static const size_t kBlockSize = 8;
-	static const size_t kUpdateRate = kSampleRate / kBlockSize / kNumChannels;
+	static const size_t kUpdateRate = SAMPLE_RATE / kBlockSize / kNumChannels;
 
 	struct Buffer {
 		int16_t channel[kNumChannels];
