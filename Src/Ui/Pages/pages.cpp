@@ -10,6 +10,7 @@
 #include "samplePage.h"
 #include "optionListPage.h"
 #include "hardwareTestPage.h"
+#include "textInputPage.h"
 
 Pages::Page* page_[Pages::NUM_PAGES] = {
 	[Pages::TOP_PAGE]			= &TopPage::page,
@@ -22,7 +23,8 @@ Pages::Page* page_[Pages::NUM_PAGES] = {
 	[Pages::SAMPLE_PAGE]		= &SamplePage::page,
 	[Pages::CONFIRMATION_PAGE]	= &ConfirmationPage::page,
 	[Pages::OPTION_LIST_PAGE]	= &OptionListPage::page,
-	[Pages::HARDWARE_TEST_PAGE]	= &HardwareTestPage::page
+	[Pages::HARDWARE_TEST_PAGE]	= &HardwareTestPage::page,
+	[Pages::TEXT_INPUT_PAGE]	= &TextInputPage::page
 };
 
 void Pages::init(Settings *settings, Engine *engine, Canvas *canvas, Leds *leds) {
