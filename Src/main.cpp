@@ -70,7 +70,7 @@ void fill(Dac::Buffer *buffer, const size_t size) {
 }
 
 void test_fill(Dac::Buffer *buffer, const size_t size) {
-	int16_t value = 0;
+	static int16_t value;
 	const int16_t inc = SAMPLE_RATE / 1000;
 
 	for (size_t i = 0; i < size; ++i) {
@@ -78,6 +78,18 @@ void test_fill(Dac::Buffer *buffer, const size_t size) {
 			buffer[i].channel[c] = value;
 		}
 		value += inc;
+	}
+}
+
+void test_dac_spi() {
+	static uint16_t value;
+	static uint16_t prescaler;
+
+	if (++prescaler & 63) {
+		for (size_t c = 0; c < Dac::kNumChannels; ++c) {
+			dac.write(c, value);
+		}
+		++value;
 	}
 }
 
@@ -90,27 +102,28 @@ int main(void)
 	Debug::init();
 
 	dac.init();
-	uart.init();
-	gate.init();
-	usb.init();
-	adc.init();
-	matrix.init();
-	display.init();
-	sdram.init();
-	sdmmc.init();
+	//uart.init();
+	//gate.init();
+	//usb.init();
+	//adc.init();
+	//matrix.init();
+	//display.init();
+	//sdram.init();
+	//sdmmc.init();
 
 	// Init engine, settings & ui
-	disk.init(&sdmmc);
-	settings.init(&sdram, &disk);
-	engine.init(&settings, &uart, &usb, &gate);
-	ui.init(&settings, &engine, &matrix, &display);
+	//	disk.init(&sdmmc);
+	//	settings.init(&sdram, &disk);
+	//	engine.init(&settings, &uart, &usb, &gate);
+	//	ui.init(&settings, &engine, &matrix, &display);
 
 	// Start timers
-	dac.start(fill);
-	timer.start_3(CLOCK_ISR_FREQ);
-	timer.start_7(1000);
+	//	dac.start(fill);
+	//	timer.start_3(CLOCK_ISR_FREQ);
+	//	timer.start_7(1000);
 
 	while (1) {
-		ui.process();
+		//ui.process();
+		test_dac_spi();
 	}
 }

@@ -28,8 +28,29 @@ void Dac::spi_write(uint8_t data) {
 void Dac::init() {
 	dac_ = this;
 
+	GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+	/**I2S3 GPIO Configuration
+	PA15     ------> I2S3_WS
+	PC10     ------> I2S3_CK
+	PC12     ------> I2S3_SD
+	*/
+	GPIO_InitStruct.Pin = GPIO_PIN_15;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Alternate = GPIO_AF6_SPI3;
+	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+	GPIO_InitStruct.Pin = GPIO_PIN_10|GPIO_PIN_12;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Alternate = GPIO_AF6_SPI3;
+	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
 	// Enable internal reference;
-	/*
+
 	SPI_HandleTypeDef hspi3;
 	hspi3.Instance = SPI3;
 	hspi3.Init.Mode = SPI_MODE_MASTER;
@@ -58,33 +79,12 @@ void Dac::init() {
 	dac_write(4, 0, 0, 0xff);
 
 	// Stop SPI
-	HAL_SPI_DeInit(&hspi3);
-	__HAL_SPI_DISABLE(&hspi3);
-*/
-
-	// Start I2S setup
-	GPIO_InitTypeDef GPIO_InitStruct = {0};
-
-	/**I2S3 GPIO Configuration
-	PA15     ------> I2S3_WS
-	PC10     ------> I2S3_CK
-	PC12     ------> I2S3_SD
-	*/
-	GPIO_InitStruct.Pin = GPIO_PIN_15;
-	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-	GPIO_InitStruct.Alternate = GPIO_AF6_SPI3;
-	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-	GPIO_InitStruct.Pin = GPIO_PIN_10|GPIO_PIN_12;
-	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-	GPIO_InitStruct.Alternate = GPIO_AF6_SPI3;
-	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+//	HAL_SPI_DeInit(&hspi3);
+//	__HAL_SPI_DISABLE(&hspi3);
 
 
+// Start I2S setup
+/*
 	I2S_HandleTypeDef hi2s3;
 	hi2s3.Instance = SPI3;
 	hi2s3.Init.Mode = I2S_MODE_MASTER_TX;
@@ -110,6 +110,7 @@ void Dac::init() {
 	HAL_DMA_Init(&hdma_spi3_tx);
 	__HAL_LINKDMA(&hi2s3, hdmatx, hdma_spi3_tx);
 	HAL_I2S_Transmit_DMA(&hi2s3, (uint16_t*)dma_buffer_, kDmaBufferSize);
+	*/
 }
 
 void Dac::start(void (*callback)(Buffer*, size_t)) {

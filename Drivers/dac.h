@@ -36,6 +36,10 @@ public:
 		}
 	}
 
+	void write(int channel, int value) {
+		dac_write(3, channel, value, 15);
+	}
+
 private:
 	static const uint32_t kDmaBufferSize = kBlockSize * kNumChannels * 2;
 	uint32_t dma_buffer_[kDmaBufferSize];
