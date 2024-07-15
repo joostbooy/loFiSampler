@@ -26,13 +26,13 @@ void Canvas::draw_bitmap(int x, int y, Bitmap::Id id, int frame) {
 }
 
 void Canvas::draw_char(int x, int y, char c) {
-	const uint8_t* ptr = font.data(c);
-	int char_width = font.width(c);
+	const uint8_t* ptr = font_.data(c);
+	int char_width = font_.width(c);
 	text_cursor_ = x;
 
 	for (int i = 0; i < char_width; ++i) {
 		uint8_t data = *ptr++;
-		for (int pixel = 0; pixel < font.height(); ++pixel) {
+		for (int pixel = 0; pixel < font_.height(); ++pixel) {
 			if (data & (1 << pixel)) {
 				draw_pixel(text_cursor_, y + pixel, font_color);
 			}

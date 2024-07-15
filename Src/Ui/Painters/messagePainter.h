@@ -14,7 +14,8 @@ public:
 
 	static void show(const char* text, uint16_t millis = 1200) {
 		str.write(text);
-		w = font.string_width(str.read()) + 20;
+		canvas_->set_font(Font::SMALL);
+		w = canvas_->font().string_width(str.read()) + 20;
 		x = (canvas_->width() - w) / 2;
 		millis_ = millis;
 	}

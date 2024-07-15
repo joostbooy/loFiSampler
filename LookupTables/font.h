@@ -63,7 +63,7 @@ public:
 		return table_ptr(c) + 1;
 	}
 
-	const char* glyph(GlyphId id) {
+	static const char* glyph(GlyphId id) {
 		glyph_to_char_ = static_cast<const char>(id);
 		return const_cast<const char*>(&glyph_to_char_);
 	}
@@ -71,17 +71,15 @@ public:
 private:
 	char first_char_;
 	char last_char_;
-	char glyph_to_char_;
 	uint16_t height_;
 	uint16_t table_width_;
 	const uint8_t *data_;
+	static char glyph_to_char_;
 
 	const uint8_t* table_ptr(char c) {
 		int table_index = c - first_char_;
 		return &data_[table_index * table_width_];
 	}
 };
-
-extern Font font;
 
 #endif

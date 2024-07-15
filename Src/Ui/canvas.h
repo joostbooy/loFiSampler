@@ -29,12 +29,11 @@ public:
 		BOTTOM,
 	};
 
-	//Frame frameBuffer_
+	// frameBuffer
 	static constexpr size_t width() { return kWidth; }
 	static constexpr size_t height() { return kHeight; }
 	const size_t size() { return frameBuffer_.size(); }
 	uint8_t *data() { return frameBuffer_.data(); }
-
 
 	void init() {
 		set_font(Font::SMALL);
@@ -161,9 +160,13 @@ public:
 	}
 
 	// text
+	Font &font() {
+		return font_;
+	}
+
 	void set_font(Font::Type type, Color color = BLACK) {
 		font_color = color;
-		font.set_type(type);
+		font_.set_type(type);
 	}
 
 	int text_cursor(){
@@ -184,7 +187,7 @@ public:
 		if (str) {
 			int x_ = x;
 			int y_ = y;
-			get_xy_allignment(&x_, &y_, w, h, font.string_width(str), font.height(), x_allign, y_allign);
+			get_xy_allignment(&x_, &y_, w, h, font_.string_width(str), font_.height(), x_allign, y_allign);
 			draw_text(x_, y_, str, color);
 		}
 	}
@@ -208,6 +211,8 @@ private:
 	static const size_t kWidth = 256;
 	static const size_t kHeight = 64;
 	FrameBuffer <kWidth, kHeight> frameBuffer_;
+
+	Font font_;
 };
 
 #endif

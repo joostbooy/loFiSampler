@@ -4,7 +4,7 @@
 //MikroElektronika 2011
 //http://www.mikroe.com
 
-Font font;
+char Font::glyph_to_char_;
 
 static const uint8_t font_6x6[] = {
 	0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,  // Code for char
@@ -228,18 +228,18 @@ static const uint8_t font_8x8[] = {
 	switch (id)
 	{
 	case Font::SMALL:
-		font.data_ = &font_6x6[0];
-		font.height_ = 6;
-		font.table_width_ = 7;
-		font.first_char_ = ' ';
-		font.last_char_ = Font::NUM_OF_GLYPHS - 1;
+		data_ = &font_6x6[0];
+		height_ = 6;
+		table_width_ = 7;
+		first_char_ = ' ';
+		last_char_ = Font::NUM_OF_GLYPHS - 1;
 		break;
 	case Font::LARGE:
-		font.data_ = &font_8x8[0];
-		font.height_ = 8;
-		font.table_width_ = 9;
-		font.first_char_ = ' ';
-		font.last_char_ = '~';
+		data_ = &font_8x8[0];
+		height_ = 8;
+		table_width_ = 9;
+		first_char_ = ' ';
+		last_char_ = '~';
 		break;
 	default:
 		break;

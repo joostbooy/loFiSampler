@@ -31,7 +31,7 @@ namespace ConfirmationPage {
 	void set(const char* message, Callback callback) {
 		str.write(message);
 		callback_ = callback;
-		w = font.string_width(str.read()) + 20;
+		w = canvas_->font().string_width(str.read()) + 20;
 		x = (canvas_->width() - w) / 2;
 	}
 

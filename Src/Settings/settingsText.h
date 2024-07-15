@@ -24,7 +24,7 @@ public:
 	}
 
 	static const char* bool_to_checkmark(bool state) {
-		return state ? font.glyph(Font::CHECKMARK) : " ";
+		return state ? Font::glyph(Font::CHECKMARK) : " ";
 	}
 
 	static const char* percentage_to_text(uint32_t ammount, uint32_t total) {
