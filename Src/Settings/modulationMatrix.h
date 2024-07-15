@@ -16,7 +16,7 @@ public:
 		LOOP_START,
 		LOOP_END,
 		BIT_DEPTH,
-		SAMPLERATE,
+		SAMPLE_RATE_DIVIDER,
 
 		NUM_DESTINATIONS
 	};
@@ -26,15 +26,15 @@ public:
 	const char *destination_text(int value) {
 		switch (value)
 		{
-		case PAN:			return "PAN";
-		case BEND:			return "BEND";
-		case GAIN:			return "GAIN";
-		case START:			return "START";
-		case END:			return "END";
-		case LOOP_START:	return "LOOP START";
-		case LOOP_END:		return "LOOP END";
-		case BIT_DEPTH:		return "BIT DEPTH";
-		case SAMPLERATE:	return "SAMPLE RATE";
+		case PAN:					return "PAN";
+		case BEND:					return "BEND";
+		case GAIN:					return "GAIN";
+		case START:					return "START";
+		case END:					return "END";
+		case LOOP_START:			return "LOOP START";
+		case LOOP_END:				return "LOOP END";
+		case BIT_DEPTH:				return "BIT DEPTH";
+		case SAMPLE_RATE_DIVIDER:	return "SAMPLE RATE DIVIDER";
 		default:
 			break;
 		}

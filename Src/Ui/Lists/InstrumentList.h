@@ -17,7 +17,7 @@ public:
 		MIDI_PORT,
 		MIDI_CHANNEL,
 		BIT_DEPTH,
-		SAMPLERATE,
+		SAMPLE_RATE_DIVIDER,
 		BEND_RANGE,
 
 		NUM_ITEMS
@@ -30,16 +30,16 @@ public:
 	const char* item_text(int item) override {
 		switch (item)
 		{
-		case INSTRUMENT:		return "INSTRUMENT";
-		case PAN:				return "PAN";
-		case GAIN:				return "GAIN";
-		case BEND:				return "BEND";
-		case AUDIO_CHANNEL:		return "AUDIO CHANNEL";
-		case MIDI_PORT:			return "MIDI PORT";
-		case MIDI_CHANNEL:		return "MIDI CHANNEL";
-		case BIT_DEPTH:			return "BIT DEPTH";
-		case SAMPLERATE:		return "SAMPLE RATE";
-		case BEND_RANGE:		return "BEND RANGE";
+		case INSTRUMENT:			return "INSTRUMENT";
+		case PAN:					return "PAN";
+		case GAIN:					return "GAIN";
+		case BEND:					return "BEND";
+		case AUDIO_CHANNEL:			return "AUDIO CHANNEL";
+		case MIDI_PORT:				return "MIDI PORT";
+		case MIDI_CHANNEL:			return "MIDI CHANNEL";
+		case BIT_DEPTH:				return "BIT DEPTH";
+		case SAMPLE_RATE_DIVIDER:	return "SAMPLE RATE DIVIDER";
+		case BEND_RANGE:			return "BEND RANGE";
 		default:
 			break;
 		}
@@ -51,16 +51,16 @@ public:
 
 		switch (item)
 		{
-		case INSTRUMENT:	return SettingsText::int_to_text(settings_->selected_instrument_index() + 1);
-		case PAN:			return instrument.pan_text();
-		case GAIN:			return instrument.gain_text();
-		case BEND:			return instrument.bend_text();
-		case AUDIO_CHANNEL:	return instrument.audio_channel_text();
-		case MIDI_PORT:		return instrument.midi_port_text();
-		case MIDI_CHANNEL:	return instrument.midi_channel_text();
-		case BIT_DEPTH:		return instrument.bit_depth_text();
-		case SAMPLERATE:	return instrument.sample_rate_text();
-		case BEND_RANGE:	return instrument.bend_range_text();
+		case INSTRUMENT:			return SettingsText::int_to_text(settings_->selected_instrument_index() + 1);
+		case PAN:					return instrument.pan_text();
+		case GAIN:					return instrument.gain_text();
+		case BEND:					return instrument.bend_text();
+		case AUDIO_CHANNEL:			return instrument.audio_channel_text();
+		case MIDI_PORT:				return instrument.midi_port_text();
+		case MIDI_CHANNEL:			return instrument.midi_channel_text();
+		case BIT_DEPTH:				return instrument.bit_depth_text();
+		case SAMPLE_RATE_DIVIDER:	return instrument.sample_rate_divider_text();
+		case BEND_RANGE:			return instrument.bend_range_text();
 		default:
 			break;
 		}
@@ -98,8 +98,8 @@ public:
 		case BIT_DEPTH:
 			instrument.set_bit_depth(instrument.bit_depth() + inc);
 			break;
-		case SAMPLERATE:
-			instrument.set_sample_rate(instrument.sample_rate() + inc);
+		case SAMPLE_RATE_DIVIDER:
+			instrument.set_sample_rate_divider(instrument.sample_rate_divider() + inc);
 			break;
 		case BEND_RANGE:
 			instrument.set_bend_range(instrument.bend_range() + inc);

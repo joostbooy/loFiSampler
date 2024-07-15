@@ -78,7 +78,7 @@ public:
 
 		apply_modulation();
 
-		int prescaler = instrument_.sample_rate_prescaler();
+		int divider = instrument_.sample_rate_divider();
 		int16_t *ptr = &buffer[0].channel[instrument_.audio_channel() * 2];
 
 		for (size_t i = 0; i < size; ++i) {
@@ -86,7 +86,8 @@ public:
 			int16_t	right = next();
 			Dsp::pan(&left, &right, sample_.pan());
 
-			if ((++sample_count_ & prescaler) == 0) {
+			if (++sample_count_ >= divider) {
+				sample_count_ = 0;
 				left_ = left;
 				right_ = right;
 			}
@@ -206,7 +207,7 @@ private:
 
 		instrument_.set_bend(instrument_src_->bend() * frame->data[ModulationMatrix::BEND]);
 		instrument_.set_bit_depth(instrument_src_->bit_depth() * frame->data[ModulationMatrix::BIT_DEPTH]);
-		instrument_.set_sample_rate(instrument_src_->sample_rate() * frame->data[ModulationMatrix::SAMPLERATE]);
+		instrument_.set_sample_rate_divider(instrument_src_->sample_rate_divider() * frame->data[ModulationMatrix::SAMPLE_RATE_DIVIDER]);
 		sample_.set_start(sample_src_->start() * frame->data[ModulationMatrix::START]);
 		sample_.set_end(sample_src_->end() * frame->data[ModulationMatrix::END]);
 		sample_.set_loop_start(sample_src_->loop_start() * frame->data[ModulationMatrix::LOOP_START]);

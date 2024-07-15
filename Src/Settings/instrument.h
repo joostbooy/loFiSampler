@@ -14,37 +14,6 @@ class Instrument {
 
 public:
 
-	enum SampleRates {
-		_125_HZ,
-		_250_HZ,
-		_500_HZ,
-		_1_KHZ,
-		_2_KHZ,
-		_4_KHZ,
-		_8_KHZ,
-		_16_KHZ,
-
-		NUM_SAMPLE_RATES
-	};
-
-	const char * sample_rate_text(int value) {
-		switch (value)
-		{
-		case _125_HZ:	return "125 HZ";
-		case _250_HZ:	return "250 HZ";
-		case _500_HZ:	return "500 HZ";
-		case _1_KHZ:	return "1 KHZ";
-		case _2_KHZ:	return "2 KHZ";
-		case _4_KHZ:	return "4 KHZ";
-		case _8_KHZ:	return "8 KHZ";
-		case _16_KHZ:	return "16 KHZ";
-		default:
-			break;
-		}
-
-		return nullptr;
-	}
-
 	static const size_t kMaxNameLength = 16;
 	static const size_t kMaxNumSamples = 128;
 
@@ -58,6 +27,7 @@ public:
 		set_bit_depth(16);
 		set_bend_range(2);
 		set_bend(0.5);
+		set_sample_rate_divider(1);
 
 		modulationMatrix().init();
 
@@ -193,34 +163,17 @@ public:
 		return 16 - bit_depth();
 	}
 
-	// SampleRate
-	int8_t sample_rate() {
-		return sample_rate_;
+	// Sample rate divider
+	int sample_rate_divider() {
+		return sample_rate_divider_;
 	}
 
-	void set_sample_rate(int8_t value) {
-		sample_rate_ = SettingsUtils::clip(0, NUM_SAMPLE_RATES - 1, value);
+	void set_sample_rate_divider(int value) {
+		sample_rate_divider_ = SettingsUtils::clip(1, 125, value);
 	}
 
-	const char* sample_rate_text() {
-		return sample_rate_text(sample_rate());
-	}
-
-	const size_t sample_rate_prescaler() {
-		switch (sample_rate())
-		{
-		case _125_HZ: 	return (SAMPLE_RATE / 125) - 1;
-		case _250_HZ: 	return (SAMPLE_RATE / 250) - 1;
-		case _500_HZ: 	return (SAMPLE_RATE / 500) - 1;
-		case _1_KHZ: 	return (SAMPLE_RATE / 1000) - 1;
-		case _2_KHZ: 	return (SAMPLE_RATE / 2000) - 1;
-		case _4_KHZ: 	return (SAMPLE_RATE / 4000) - 1;
-		case _8_KHZ:	return (SAMPLE_RATE / 8000) - 1;
-		case _16_KHZ:	return (SAMPLE_RATE / 16000) - 1;
-		default:
-			break;
-		}
-		return 1;
+	const char* sample_rate_divider_text() {
+		return SettingsText::int_to_text(SAMPLE_RATE / sample_rate_divider());
 	}
 
 	// Audio channel
@@ -299,9 +252,9 @@ public:
 		fileWriter.write(midi_port_);
 		fileWriter.write(midi_channel_);
 		fileWriter.write(bit_depth_);
-		fileWriter.write(sample_rate_);
 		fileWriter.write(bend_range_);
 		fileWriter.write(num_samples_);
+		fileWriter.write(sample_rate_divider_);
 
 		modulationMatrix().save(fileWriter);
 	}
@@ -314,9 +267,9 @@ public:
 		fileReader.read(midi_port_);
 		fileReader.read(midi_channel_);
 		fileReader.read(bit_depth_);
-		fileReader.read(sample_rate_);
 		fileReader.read(bend_range_);
 		fileReader.read(num_samples_);
+		fileReader.read(sample_rate_divider_);
 
 		modulationMatrix().load(fileReader);
 	}
@@ -329,10 +282,10 @@ public:
 		midi_port_ = instrument->midi_port();
 		midi_channel_ = instrument->midi_channel();
 		bit_depth_ = instrument->bit_depth();
-		sample_rate_ = instrument->sample_rate();
 		bend_range_ = instrument->bend_range();
 		bit_depth_ = instrument->bit_depth();
 		num_samples_ = instrument->num_samples();
+		sample_rate_divider_ = instrument->sample_rate_divider();
 
 		modulationMatrix().paste(&instrument->modulationMatrix());
 	}
@@ -345,7 +298,7 @@ private:
 	int8_t midi_port_;
 	int8_t midi_channel_;
 	int8_t bit_depth_;
-	int8_t sample_rate_;
+	int sample_rate_divider_;
 	uint8_t bend_range_;
 	size_t num_samples_;
 
