@@ -36,19 +36,19 @@ public:
 		}
 	}
 
+	// TEMP !
 	void write(int channel, int value) {
-		dac_write(3, channel, value, 15);
+		spi_write(3, channel, value, 15);
 	}
 
 private:
+	void(*callback_)(Buffer*, const size_t);
+
 	static const uint32_t kDmaBufferSize = kBlockSize * kNumChannels * 2;
 	uint32_t dma_buffer_[kDmaBufferSize];
 
-	typedef void(*Callback)(Buffer*, const size_t);
-	Callback callback_;
-
 	void spi_write(uint8_t data);
-	void dac_write(uint8_t command, uint8_t address, uint16_t data, uint8_t function);
+	void spi_write(uint8_t command, uint8_t address, uint16_t data, uint8_t function);
 };
 
 #endif

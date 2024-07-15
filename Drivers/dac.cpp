@@ -2,13 +2,13 @@
 
 Dac* Dac::dac_;
 
-void Dac::dac_write(uint8_t command, uint8_t address, uint16_t data, uint8_t function) {
+void Dac::spi_write(uint8_t command, uint8_t address, uint16_t data, uint8_t function) {
 	GPIOA->BSRR = GPIO_PIN_15 << 16;
 
 	spi_write(command);
 	spi_write((address << 4) | (data >> 12));
 	spi_write(data >> 4);
-	spi_write((data & 0xf) << 4 | function);
+	spi_write((data & 0xF) << 4 | function);
 
 	GPIOA->BSRR = GPIO_PIN_15;
 
@@ -49,8 +49,6 @@ void Dac::init() {
 	GPIO_InitStruct.Alternate = GPIO_AF6_SPI3;
 	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-	// Enable internal reference;
-
 	SPI_HandleTypeDef hspi3;
 	hspi3.Instance = SPI3;
 	hspi3.Init.Mode = SPI_MODE_MASTER;
@@ -70,28 +68,28 @@ void Dac::init() {
 	// sync_pin HIGH
 	GPIOA->BSRR = GPIO_PIN_15;
 	// reset
-	dac_write(7, 0, 0, 0);
+	spi_write(7, 0, 0, 0);
 	// load clear code register
-	dac_write(5, 0, 0, 3);
+	spi_write(5, 0, 0, 3);
 	// enable internal reference
-	dac_write(8, 0, 0, 1);
+	spi_write(8, 0, 0, 1);
 	// power up
-	dac_write(4, 0, 0, 0xff);
+	spi_write(4, 0, 0, 0xFF);
 
 	// Stop SPI
-//	HAL_SPI_DeInit(&hspi3);
-//	__HAL_SPI_DISABLE(&hspi3);
+	//	HAL_SPI_DeInit(&hspi3);
+	//	__HAL_SPI_DISABLE(&hspi3);
 
 
-// Start I2S setup
-/*
+	// Start I2S setup
+	/*
 	I2S_HandleTypeDef hi2s3;
 	hi2s3.Instance = SPI3;
 	hi2s3.Init.Mode = I2S_MODE_MASTER_TX;
 	hi2s3.Init.Standard = I2S_STANDARD_PCM_SHORT;
 	hi2s3.Init.DataFormat = I2S_DATAFORMAT_32B;
 	hi2s3.Init.MCLKOutput = I2S_MCLKOUTPUT_DISABLE;
-	hi2s3.Init.AudioFreq = kSampleRate * kNumChannels;;
+	hi2s3.Init.AudioFreq = kSampleRate * kNumChannels;
 	hi2s3.Init.CPOL = I2S_CPOL_LOW;
 	hi2s3.Init.ClockSource = I2S_CLOCK_PLL;
 	HAL_I2S_Init(&hi2s3);

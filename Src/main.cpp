@@ -85,7 +85,7 @@ void test_dac_spi() {
 	static uint16_t value;
 	static uint16_t prescaler;
 
-	if (++prescaler & 63) {
+	if ((++prescaler & 63) == 0) {
 		for (size_t c = 0; c < Dac::kNumChannels; ++c) {
 			dac.write(c, value);
 		}
