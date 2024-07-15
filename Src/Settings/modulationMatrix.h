@@ -16,6 +16,7 @@ public:
 		LOOP_START,
 		LOOP_END,
 		BIT_DEPTH,
+		SAMPLERATE,
 
 		NUM_DESTINATIONS
 	};
@@ -33,6 +34,7 @@ public:
 		case LOOP_START:	return "LOOP START";
 		case LOOP_END:		return "LOOP END";
 		case BIT_DEPTH:		return "BIT DEPTH";
+		case SAMPLERATE:	return "SAMPLE RATE";
 		default:
 			break;
 		}

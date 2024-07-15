@@ -206,6 +206,7 @@ private:
 
 		instrument_.set_bend(instrument_src_->bend() * frame->data[ModulationMatrix::BEND]);
 		instrument_.set_bit_depth(instrument_src_->bit_depth() * frame->data[ModulationMatrix::BIT_DEPTH]);
+		instrument_.set_sample_rate(instrument_src_->sample_rate() * frame->data[ModulationMatrix::SAMPLERATE]);
 		sample_.set_start(sample_src_->start() * frame->data[ModulationMatrix::START]);
 		sample_.set_end(sample_src_->end() * frame->data[ModulationMatrix::END]);
 		sample_.set_loop_start(sample_src_->loop_start() * frame->data[ModulationMatrix::LOOP_START]);
