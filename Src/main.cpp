@@ -69,6 +69,18 @@ void fill(Dac::Buffer *buffer, const size_t size) {
 	engine.fill(buffer, size);
 }
 
+void test_fill(Dac::Buffer *buffer, const size_t size) {
+	int16_t value = 0;
+	const int16_t inc = SAMPLE_RATE / 1000;
+
+	for (size_t i = 0; i < size; ++i) {
+		for (size_t c = 0; c < Dac::kNumChannels; ++c) {
+			buffer[i].channel[c] = value;
+		}
+		value += inc;
+	}
+}
+
 int main(void)
 {
 	// Init drivers
