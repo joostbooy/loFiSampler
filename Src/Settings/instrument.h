@@ -15,6 +15,10 @@ class Instrument {
 public:
 
 	enum SampleRates {
+		_125_HZ,
+		_250_HZ,
+		_500_HZ,
+		_1_KHZ,
 		_2_KHZ,
 		_4_KHZ,
 		_8_KHZ,
@@ -26,6 +30,10 @@ public:
 	const char * sample_rate_text(int value) {
 		switch (value)
 		{
+		case _125_HZ:	return "125 HZ";
+		case _250_HZ:	return "250 HZ";
+		case _500_HZ:	return "500 HZ";
+		case _1_KHZ:	return "1 KHZ";
 		case _2_KHZ:	return "2 KHZ";
 		case _4_KHZ:	return "4 KHZ";
 		case _8_KHZ:	return "8 KHZ";
@@ -201,10 +209,14 @@ public:
 	const size_t sample_rate_prescaler() {
 		switch (sample_rate())
 		{
-		case _2_KHZ: 	return Dac::kSampleRate / 2000;
-		case _4_KHZ: 	return Dac::kSampleRate / 4000;
-		case _8_KHZ:	return Dac::kSampleRate / 8000;
-		case _16_KHZ:	return Dac::kSampleRate / 16000;
+		case _125_HZ: 	return (Dac::kSampleRate / 125) - 1;
+		case _250_HZ: 	return (Dac::kSampleRate / 250) - 1;
+		case _500_HZ: 	return (Dac::kSampleRate / 500) - 1;
+		case _1_KHZ: 	return (Dac::kSampleRate / 1000) - 1;
+		case _2_KHZ: 	return (Dac::kSampleRate / 2000) - 1;
+		case _4_KHZ: 	return (Dac::kSampleRate / 4000) - 1;
+		case _8_KHZ:	return (Dac::kSampleRate / 8000) - 1;
+		case _16_KHZ:	return (Dac::kSampleRate / 16000) - 1;
 		default:
 			break;
 		}
