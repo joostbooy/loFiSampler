@@ -154,9 +154,13 @@ public:
 	}
 
 	// bitmap
+	Bitmap &bitmap() {
+		return bitmap_;
+	}
+
 	void set_bitmap(Bitmap::Id id, Color color = BLACK) {
 		bitmap_color = color;
-		bitmap.set(id);
+		bitmap_.set(id);
 	}
 
 	// text
@@ -196,7 +200,7 @@ public:
 		int x_ = x;
 		int y_ = y;
 		set_bitmap(id);
-		get_xy_allignment(&x_, &y_, w, h, bitmap.width, bitmap.height, x_allign, y_allign);
+		get_xy_allignment(&x_, &y_, w, h, bitmap_.width, bitmap_.height, x_allign, y_allign);
 		draw_bitmap(x_, y_, id);
 	}
 
@@ -213,6 +217,7 @@ private:
 	FrameBuffer <kWidth, kHeight> frameBuffer_;
 
 	Font font_;
+	Bitmap bitmap_;
 };
 
 #endif

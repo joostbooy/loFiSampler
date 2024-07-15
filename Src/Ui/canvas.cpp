@@ -4,9 +4,9 @@ void Canvas::draw_bitmap(int x, int y, Bitmap::Id id, int frame) {
 	set_bitmap(id);
 
 	int shift = 0;
-	int x2 = x + bitmap.width;
-	int y2 = y + bitmap.height;
-	const uint8_t* ptr = bitmap.pointer(frame);
+	int x2 = x + bitmap_.width;
+	int y2 = y + bitmap_.height;
+	const uint8_t* ptr = bitmap_.pointer(frame);
 
 	for (int xi = x; xi < x2; ++xi) {
 		for (int yi = y; yi < y2; ++yi) {

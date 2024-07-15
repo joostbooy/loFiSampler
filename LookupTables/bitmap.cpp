@@ -1,6 +1,4 @@
-#include "bitMap.h"
-
-Bitmap bitmap;
+#include "bitmap.h"
 
 static const uint8_t placeholder_page_16x16[] = {
 	0x00, 0x00, 0xFE, 0x7F, 0x02, 0x40, 0x02, 0x40, 0x32, 0x48,
@@ -97,88 +95,88 @@ void Bitmap::set(Bitmap::Id id) {
 	switch (id)
 	{
 	case Bitmap::PLACEHOLDER_PAGE:
-		bitmap.data = &placeholder_page_16x16[0],
-		bitmap.width = 16;
-		bitmap.height = 16;
-		bitmap.frames = 1;
+		data = &placeholder_page_16x16[0],
+		width = 16;
+		height = 16;
+		frames = 1;
 		break;
 	case Bitmap::MIDI_IN_PAGE:
-		bitmap.data = &midi_in_page_16x16[0],
-		bitmap.width = 16;
-		bitmap.height = 16;
-		bitmap.frames = 1;
+		data = &midi_in_page_16x16[0],
+		width = 16;
+		height = 16;
+		frames = 1;
 		break;
 	case Bitmap::MIDI_OUT_PAGE:
-		bitmap.data = &midi_out_page_16x16[0],
-		bitmap.width = 16;
-		bitmap.height = 16;
-		bitmap.frames = 1;
+		data = &midi_out_page_16x16[0],
+		width = 16;
+		height = 16;
+		frames = 1;
 		break;
 	case Bitmap::CV_IN_PAGE:
-		bitmap.data = &cv_in_page_16x16[0],
-		bitmap.width = 16;
-		bitmap.height = 16;
-		bitmap.frames = 1;
+		data = &cv_in_page_16x16[0],
+		width = 16;
+		height = 16;
+		frames = 1;
 		break;
 	case Bitmap::CV_OUT_PAGE:
-		bitmap.data = &cv_out_page_16x16[0],
-		bitmap.width = 16;
-		bitmap.height = 16;
-		bitmap.frames = 1;
+		data = &cv_out_page_16x16[0],
+		width = 16;
+		height = 16;
+		frames = 1;
 		break;
 	case Bitmap::PROJECT_LOAD_PAGE:
-		bitmap.data = &project_load_page_16x16[0],
-		bitmap.width = 16;
-		bitmap.height = 16;
-		bitmap.frames = 1;
+		data = &project_load_page_16x16[0],
+		width = 16;
+		height = 16;
+		frames = 1;
 		break;
 	case Bitmap::PROJECT_SAVE_PAGE:
-		bitmap.data = &project_save_page_16x16[0],
-		bitmap.width = 16;
-		bitmap.height = 16;
-		bitmap.frames = 1;
+		data = &project_save_page_16x16[0],
+		width = 16;
+		height = 16;
+		frames = 1;
 		break;
 	case Bitmap::SONG_PAGE:
-		bitmap.data = &song_page_16x16[0],
-		bitmap.width = 16;
-		bitmap.height = 16;
-		bitmap.frames = 1;
+		data = &song_page_16x16[0],
+		width = 16;
+		height = 16;
+		frames = 1;
 		break;
 	case Bitmap::SONG_MONITOR_PAGE:
-		bitmap.data = &song_monitor_page_16x16[0],
-		bitmap.width = 16;
-		bitmap.height = 16;
-		bitmap.frames = 1;
+		data = &song_monitor_page_16x16[0],
+		width = 16;
+		height = 16;
+		frames = 1;
 		break;
 	case Bitmap::SETTINGS_PAGE:
-		bitmap.data = &settings_page_16x16[0],
-		bitmap.width = 16;
-		bitmap.height = 16;
-		bitmap.frames = 1;
+		data = &settings_page_16x16[0],
+		width = 16;
+		height = 16;
+		frames = 1;
 		break;
 	case Bitmap::PATTERN_PAGE:
-		bitmap.data = &pattern_page_16x16[0],
-		bitmap.width = 16;
-		bitmap.height = 16;
-		bitmap.frames = 1;
+		data = &pattern_page_16x16[0],
+		width = 16;
+		height = 16;
+		frames = 1;
 		break;
 	case Bitmap::TRACK_PAGE:
-		bitmap.data = &track_page_16x16[0],
-		bitmap.width = 16;
-		bitmap.height = 16;
-		bitmap.frames = 1;
+		data = &track_page_16x16[0],
+		width = 16;
+		height = 16;
+		frames = 1;
 		break;
 	case Bitmap::WARNING_ICON:
-		bitmap.data = &warning_icon_16x16[0],
-		bitmap.width = 16;
-		bitmap.height = 16;
-		bitmap.frames = 1;
+		data = &warning_icon_16x16[0],
+		width = 16;
+		height = 16;
+		frames = 1;
 		break;
 	case Bitmap::TIMER:
-		bitmap.data = &timer_8x8[0],
-		bitmap.width = 8;
-		bitmap.height = 8;
-		bitmap.frames = 9;
+		data = &timer_8x8[0],
+		width = 8;
+		height = 8;
+		frames = 9;
 		break;
 	default:
 		break;
@@ -187,8 +185,8 @@ void Bitmap::set(Bitmap::Id id) {
 
 const uint8_t* Bitmap::pointer(uint8_t frame) {
 	uint8_t index = 0;
-	if (bitmap.frames > 1) {
-		index = frame * bitmap.width * std::ceil(bitmap.height / 8.0f);
+	if (frames > 1) {
+		index = frame * width * std::ceil(height / 8.0f);
 	}
-	return bitmap.data + index;
+	return data + index;
 }
