@@ -168,7 +168,7 @@ public:
 		font_.set_type(type);
 	}
 
-	int text_cursor(){
+	int text_cursor() {
 		return text_cursor_;
 	}
 
