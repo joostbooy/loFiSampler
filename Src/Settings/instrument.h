@@ -173,7 +173,7 @@ public:
 	}
 
 	const char* sample_rate_divider_text() {
-		return SettingsText::int_to_text(SAMPLE_RATE / sample_rate_divider());
+		return SettingsText::str.write(SAMPLE_RATE / sample_rate_divider(), " HZ");
 	}
 
 	// Audio channel
