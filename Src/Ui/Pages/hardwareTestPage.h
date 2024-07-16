@@ -128,6 +128,7 @@ namespace HardwareTestPage {
 
 	void draw() {
 		TextBufferPainter::draw();
+		WindowPainter::draw_footer(footer_option_text, NUM_OPTIONS);
 	}
 
 	const size_t target_fps() {
