@@ -5,6 +5,7 @@
 #include "voice.h"
 #include "stack.h"
 #include "sampleQue.h"
+#include "limiter.h"
 #include <algorithm>
 
 class VoiceEngine {
@@ -41,10 +42,10 @@ public:
 				voice_[i].fill(buffer, size);
 			}
 		}
-
-	//	for (size_t i = 0; i < Dac::kNumChannels; ++i) {
-	//		limiter_[i].process(&buffer[0].channel[i], Dac::kBlockSize, Dac::kNumChannels);
-	//	}
+		
+		for (size_t i = 0; i < Dac::kNumChannels; ++i) {
+			limiter_[i].process(&buffer[0].channel[i], Dac::kBlockSize, Dac::kNumChannels);
+		}
 	}
 
 	void request_voices(size_t count) {
@@ -111,7 +112,7 @@ private:
 	Voice voice_[Settings::kMaxVoices];
 	Stack<uint8_t, Settings::kMaxVoices> active_voices_;
 	Stack<uint8_t, Settings::kMaxVoices> available_voices_;
-//	Limiter<int16_t> limiter_[Dac::kNumChannels];
+	Limiter limiter_[Dac::kNumChannels];
 	size_t most_recent_voice_ = 0;
 };
 
