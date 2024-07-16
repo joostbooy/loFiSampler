@@ -78,7 +78,6 @@ public:
 
 		apply_modulation();
 
-		int divider = instrument_.sample_rate_divider();
 		int16_t *ptr = &buffer[0].channel[instrument_.audio_channel() * 2];
 
 		for (size_t i = 0; i < size; ++i) {
@@ -86,7 +85,7 @@ public:
 			int16_t	right = next();
 			Dsp::pan(&left, &right, sample_.pan());
 
-			if (++sample_count_ >= divider) {
+			if (++sample_count_ >= instrument_.sample_rate_divider()) {
 				sample_count_ = 0;
 				left_ = left;
 				right_ = right;
