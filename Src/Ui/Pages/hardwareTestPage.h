@@ -6,6 +6,11 @@
 
 namespace HardwareTestPage {
 
+	using TopPage::settings_;
+	using TopPage::str_;
+	using TopPage::leds_;
+	using TopPage::pages_;
+
 	const char *id_text(int id) {
 		switch (id)
 		{
@@ -65,15 +70,17 @@ namespace HardwareTestPage {
 	}
 
 	void test_ram() {
-		int16_t *ptr = TopPage::settings_->sdram()->pointer();
-		size_t size = TopPage::settings_->sdram()->size_bytes() / 2;
+		settings_->init();
+
+		int16_t *ptr = settings_->sdram()->pointer();
+		size_t size = settings_->sdram()->size_bytes() / 2;
 
 		for (size_t i = 0; i < size; ++i) {
 			volatile int16_t w_data = Rng::u16();
 			*ptr = w_data;
 			volatile int16_t r_data = *ptr;
 			if (r_data != w_data) {
-				MessagePainter::show(TopPage::str_.write("RAM ERROR AT ADRESS ", size_t(ptr)));
+				MessagePainter::show(str_.write("RAM ERROR AT ADRESS ", size_t(ptr)));
 				return;
 			}
 			++ptr;
@@ -83,16 +90,16 @@ namespace HardwareTestPage {
 	}
 
 	void on_button(int id, int state) {
-		TextBufferPainter::write(TopPage::str_.write(id_text(id), " ", state));
+		TextBufferPainter::write(str_.write(id_text(id), " ", state));
 
 		switch (Controller::button_to_function(id))
 		{
 		case TOGGLE_LEDS:
 			if (state) {
 				if (led_toggle_state_ ^= 1) {
-					TopPage::leds_->set_all(Leds::BLACK);
+					leds_->set_all(Leds::BLACK);
 				} else {
-					TopPage::leds_->set_all(Leds::RED);
+					leds_->set_all(Leds::RED);
 				}
 			}
 			break;
@@ -103,7 +110,7 @@ namespace HardwareTestPage {
 						test_ram();
 					}
 				});
-				TopPage::pages_->open(Pages::CONFIRMATION_PAGE);
+				pages_->open(Pages::CONFIRMATION_PAGE);
 			}
 			break;
 		default:
@@ -112,7 +119,7 @@ namespace HardwareTestPage {
 	}
 
 	void on_encoder(int id, int state) {
-		TextBufferPainter::write(TopPage::str_.write(id_text(id), " ", state));
+		TextBufferPainter::write(str_.write(id_text(id), " ", state));
 	}
 
 	void refresh_leds() {
