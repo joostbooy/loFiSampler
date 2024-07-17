@@ -6,6 +6,7 @@
 #include "stack.h"
 #include "sampleQue.h"
 #include "limiter.h"
+#include "delayEngine.h"
 #include <algorithm>
 
 class VoiceEngine {
@@ -13,6 +14,9 @@ class VoiceEngine {
 public:
 
 	void init(Settings *settings, ModulationEngine *modulationEngine) {
+		settings_ = settings;
+		delayEngine_.init(settings);
+
 		active_voices_.clear();
 		available_voices_.clear();
 
@@ -42,7 +46,11 @@ public:
 				voice_[i].fill(buffer, size);
 			}
 		}
-		
+
+		//	int16_t *left = &buffer[0].channel[settings_->delay().channel() * 2];
+		//	int16_t *right = &buffer[0].channel[(settings_->delay().channel() * 2) + 1];
+		//	delayEngine_.process(left, right, Dac::kBlockSize, Dac::kNumChannels);
+
 		for (size_t i = 0; i < Dac::kNumChannels; ++i) {
 			limiter_[i].process(&buffer[0].channel[i], Dac::kBlockSize, Dac::kNumChannels);
 		}
@@ -114,6 +122,8 @@ private:
 	Stack<uint8_t, Settings::kMaxVoices> available_voices_;
 	Limiter limiter_[Dac::kNumChannels];
 	size_t most_recent_voice_ = 0;
+	DelayEngine delayEngine_;
+	Settings *settings_;
 };
 
 #endif
