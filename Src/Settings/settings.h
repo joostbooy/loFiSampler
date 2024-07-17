@@ -7,6 +7,7 @@
 #include "modulation.h"
 #include "instrument.h"
 #include "envelope.h"
+#include "delay.h"
 #include "stringBuilder.h"
 #include "settingsUtils.h"
 #include "disk.h"
@@ -33,6 +34,7 @@ public:
 		path.clear();
 
 		midi().init();
+		delay().init();
 		modulation().init();
 		ModulationMatrix::init(&modulation_);
 		Sample::init(sdram_);
@@ -62,6 +64,10 @@ public:
 
 	Midi &midi() {
 		return midi_;
+	}
+
+	Delay &delay() {
+		return delay_;
 	}
 
 	Modulation &modulation() {
@@ -172,6 +178,7 @@ private:
 	StringBuilderBase<63>path;
 
 	Midi midi_;
+	Delay delay_;
 	Modulation modulation_;
 	Lfo lfo_[kNumLfos];
 	Sample sample_[kMaxSamples];
