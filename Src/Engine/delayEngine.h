@@ -8,11 +8,14 @@ class DelayEngine {
 
 public:
 
+	static const size_t kDelayLineSize = SAMPLE_RATE * 3;
+	static const size_t kRamSize = kDelayLineSize * 2;
+
 	void init(Settings *settings) {
 		pos_ = 0;
 		delay_ = &settings->delay();
-		std::fill(&delay_l_[0], &delay_l_[delay_line_size_], 0);
-		std::fill(&delay_r_[0], &delay_r_[delay_line_size_], 0);
+		std::fill(&delay_l_[0], &delay_l_[kDelayLineSize], 0);
+		std::fill(&delay_r_[0], &delay_r_[kDelayLineSize], 0);
 	}
 
 	void process(int16_t *left, int16_t *right, size_t size, size_t inc) {
@@ -29,7 +32,7 @@ public:
 			left += inc;
 			right += inc;
 
-			if (++pos_ >= (delay_->amount() * delay_line_size_)) {
+			if (++pos_ >= (delay_->amount() * kDelayLineSize)) {
 				pos_ = 0;
 			}
 		}
@@ -38,7 +41,6 @@ public:
 private:
 	Delay *delay_;
 	size_t pos_;
-	size_t delay_line_size_ = SAMPLE_RATE; // 1 second
 	int16_t *delay_l_;
 	int16_t *delay_r_;
 };
