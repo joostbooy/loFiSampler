@@ -18,7 +18,11 @@ public:
 		std::fill(&delay_r_[0], &delay_r_[kDelayLineSize], 0);
 	}
 
-	void process(int16_t *left, int16_t *right, size_t size, size_t inc) {
+	void process(Dac::Buffer *buffer, size_t size) {
+		int channel = delay_->channel() * 2;
+		int16_t *left = &buffer[0].channel[channel];
+		int16_t *right = &buffer[0].channel[channel + 1];
+
 		while (size--) {
 			int16_t l = *left;
 			int16_t r = *right;
@@ -29,8 +33,8 @@ public:
 			*left = Dsp::cross_fade(l, delay_l_[pos_], delay_->mix());
 			*right = Dsp::cross_fade(r, delay_r_[pos_], delay_->mix());
 
-			left += inc;
-			right += inc;
+			left += Dac::kNumChannels;
+			right += Dac::kNumChannels;
 
 			if (++pos_ >= (delay_->amount() * kDelayLineSize)) {
 				pos_ = 0;

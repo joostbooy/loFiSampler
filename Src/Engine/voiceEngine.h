@@ -47,9 +47,7 @@ public:
 			}
 		}
 
-		//	int16_t *left = &buffer[0].channel[settings_->delay().channel() * 2];
-		//	int16_t *right = &buffer[0].channel[(settings_->delay().channel() * 2) + 1];
-		//	delayEngine_.process(left, right, Dac::kBlockSize, Dac::kNumChannels);
+		//	delayEngine_.process(buffer, size);
 
 		for (size_t i = 0; i < Dac::kNumChannels; ++i) {
 			limiter_[i].process(&buffer[0].channel[i], Dac::kBlockSize, Dac::kNumChannels);
