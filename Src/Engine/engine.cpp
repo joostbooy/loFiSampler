@@ -3,11 +3,12 @@
 void Engine::init(Settings *settings, Uart *uart, Usb *usb, Gate *gate) {
 	settings_ = settings;
 	gate_ = gate;
-	
+
 	midiEngine_.init(uart, usb);
 	modulationEngine_.init(settings);
 	voiceEngine_.init(settings, &modulationEngine_);
 	sampleQue_.init(settings);
+	delayEngine_.init(settings);
 
 	for (size_t i = 0; i < Modulation::kNumGatesToNote; ++i) {
 		last_gate_[i] = gate_->read(i);
@@ -138,7 +139,13 @@ void Engine::fill(Dac::Buffer *buffer, const size_t size) {
 		modulationEngine_.retrigger_lfos(e.midi_event_);
 	}
 
+	std::fill(&buffer[0].channel[0], &buffer[size].channel[0], 0);
+
 	modulationEngine_.tick_lfos();
-	voiceEngine_.fill(buffer, size);
-	voiceEngine_.update_available_voices();
+	voiceEngine_.process(buffer, size);
+	//	delayEngine_.process(buffer, size);
+
+	for (size_t i = 0; i < Dac::kNumChannels; ++i) {
+		limiter_[i].process(&buffer[0].channel[i], Dac::kBlockSize, Dac::kNumChannels);
+	}
 }

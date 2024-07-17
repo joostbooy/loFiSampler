@@ -5,8 +5,6 @@
 #include "voice.h"
 #include "stack.h"
 #include "sampleQue.h"
-#include "limiter.h"
-#include "delayEngine.h"
 #include <algorithm>
 
 class VoiceEngine {
@@ -14,9 +12,6 @@ class VoiceEngine {
 public:
 
 	void init(Settings *settings, ModulationEngine *modulationEngine) {
-		settings_ = settings;
-		delayEngine_.init(settings);
-
 		active_voices_.clear();
 		available_voices_.clear();
 
@@ -38,20 +33,13 @@ public:
 		return voice_[most_recent_voice_];
 	}
 
-	void fill(Dac::Buffer *buffer, const size_t size) {
-		std::fill(&buffer[0].channel[0], &buffer[size].channel[0], 0);
-
+	void process(Dac::Buffer *buffer, const size_t size) {
 		for (size_t i = 0; i < Settings::kMaxVoices; ++i) {
 			if (voice_[i].state() != Voice::IDLE) {
 				voice_[i].fill(buffer, size);
 			}
 		}
-
-		//	delayEngine_.process(buffer, size);
-
-		for (size_t i = 0; i < Dac::kNumChannels; ++i) {
-			limiter_[i].process(&buffer[0].channel[i], Dac::kBlockSize, Dac::kNumChannels);
-		}
+		update_available_voices();
 	}
 
 	void request_voices(size_t count) {
@@ -90,19 +78,6 @@ public:
 		most_recent_voice_ = v;
 	}
 
-	void update_available_voices() {
-		uint8_t index = 0;
-		while (index < active_voices_.size()) {
-			uint8_t v = active_voices_.read(index);
-			if (voice_[v].is_available()) {
-				active_voices_.remove_by_index(index);
-				available_voices_.push(v);
-			} else {
-				++index;
-			}
-		}
-	}
-
 	void kill_midi_channel(uint8_t port, uint8_t channel) {
 		uint8_t count = active_voices_.size();
 
@@ -118,10 +93,20 @@ private:
 	Voice voice_[Settings::kMaxVoices];
 	Stack<uint8_t, Settings::kMaxVoices> active_voices_;
 	Stack<uint8_t, Settings::kMaxVoices> available_voices_;
-	Limiter limiter_[Dac::kNumChannels];
 	size_t most_recent_voice_ = 0;
-	DelayEngine delayEngine_;
-	Settings *settings_;
+
+	void update_available_voices() {
+		uint8_t index = 0;
+		while (index < active_voices_.size()) {
+			uint8_t v = active_voices_.read(index);
+			if (voice_[v].is_available()) {
+				active_voices_.remove_by_index(index);
+				available_voices_.push(v);
+			} else {
+				++index;
+			}
+		}
+	}
 };
 
 #endif

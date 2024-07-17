@@ -9,6 +9,8 @@
 #include "envelopeEngine.h"
 #include "modulationEngine.h"
 #include "voiceEngine.h"
+#include "delayEngine.h"
+#include "limiter.h"
 #include "sampleQue.h"
 
 class Engine {
@@ -57,8 +59,10 @@ private:
 	SampleQue sampleQue_;
 	MidiEngine midiEngine_;
 	VoiceEngine voiceEngine_;
+	DelayEngine delayEngine_;
 	MidiClockEngine midiClockEngine_;
 	ModulationEngine modulationEngine_;
+	Limiter limiter_[Dac::kNumChannels];
 	bool last_gate_[Modulation::kNumGatesToNote];
 
 	void start();
