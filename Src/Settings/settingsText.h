@@ -2,6 +2,7 @@
 #define SettingsText_h
 
 #include "stringBuilder.h"
+#include "lookupTables.h"
 #include "font.h"
 #include "dsp.h"
 
@@ -32,20 +33,26 @@ public:
 		return str.write(static_cast<int>(percentage), "%");
 	}
 
-	static const char* note_to_text(uint8_t note, bool print_octave = true) {
+	static const char* bytes_to_time(size_t bytes) {
+		size_t seconds = bytes / SAMPLE_RATE;
+
+		size_t hours = seconds / 3600;
+		seconds -= (hours * 3600);
+
+		size_t minutes = seconds / 60;
+		seconds -= (minutes * 60);
+
+		return str.write(hours, ":", minutes, ":", seconds);
+	}
+
+	static const char* note_to_text(uint8_t note) {
 		uint8_t oct = 0;
 		while (note >= 12) {
 			note -= 12;
 			++oct;
 		}
 
-		str.write(note_text_[note]);
-
-		if (print_octave) {
-			str.append(oct);
-		}
-
-		return str.read();
+		return str.write(note_text_[note], oct);
 	}
 
 	static const char* midi_channel_text(int channel) {
