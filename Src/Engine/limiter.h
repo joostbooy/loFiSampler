@@ -16,6 +16,7 @@ public:
 			data += inc;
 		}
 	}
+
 private:
 	float peak_ = 0.5f;
 
