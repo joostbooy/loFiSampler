@@ -72,7 +72,7 @@ public:
 		envelopeEngine_[1].release();
 	}
 
-	void fill(Dac::Buffer *buffer, const size_t size) {
+	void fill(Dac::Buffer *buffer, size_t size) {
 		sample_.paste(sample_src_);
 		instrument_.paste(instrument_src_);
 
@@ -80,7 +80,7 @@ public:
 
 		int16_t *ptr = &buffer[0].channel[instrument_.audio_channel() * 2];
 
-		for (size_t i = 0; i < size; ++i) {
+		while (size--) {
 			int16_t	left = next();
 			int16_t	right = next();
 			Dsp::pan(&left, &right, sample_.pan());
