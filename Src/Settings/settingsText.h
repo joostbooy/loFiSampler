@@ -33,8 +33,8 @@ public:
 		return str.write(static_cast<int>(percentage), "%");
 	}
 
-	static const char* bytes_to_time(size_t bytes) {
-		size_t seconds = bytes / SAMPLE_RATE;
+	static const char* samples_to_time(size_t samples) {
+		size_t seconds = samples / SAMPLE_RATE;
 
 		size_t hours = seconds / 3600;
 		seconds -= (hours * 3600);
