@@ -9,6 +9,7 @@ public:
 		set_amount(0.5f);
 		set_feedback(0.5f);
 		set_mix(0.0f);
+		set_channel(0);
 	}
 
 	// Amount
@@ -42,7 +43,7 @@ public:
 		return mix_;
 	}
 
-	void set_feedback(float value) {
+	void set_mix(float value) {
 		mix_ = SettingsUtils::clip_float(value);
 	}
 
@@ -50,29 +51,46 @@ public:
 		return SettingsText::float_to_text(mix(), 0, 100);
 	}
 
+	// Channel
+	int channel() {
+		return channel_;
+	}
+
+	void set_channel(int value) {
+		channel_ = SettingsUtils::clip(0, (Dac::kNumChannels / 2) - 1, value);
+	}
+
+	const char *channel_text() {
+		return SettingsText::int_to_text((channel_ * 2) + 1);
+	}
+
 	// storage
 	void save(FileWriter &fileWriter) {
 		fileWriter.write(amount_);
 		fileWriter.write(feedback_);
 		fileWriter.write(mix_);
+		fileWriter.write(channel_);
 	}
 
 	void load(FileReader &fileReader) {
 		fileReader.read(amount_);
 		fileReader.read(feedback_);
 		fileReader.read(mix_);
+		fileReader.read(channel_);
 	}
 
 	void paste(Delay *delay) {
 		amount_ = delay->amount();
 		feedback_ = delay->feedback();
 		mix_ = delay->mix();
+		channel_ = delay->channel();
 	}
 
 private:
 	float amount_;
 	float feedback_;
 	float mix_;
+	int channel_;
 };
 
 #endif
