@@ -33,16 +33,28 @@ public:
 		return str.write(static_cast<int>(percentage), "%");
 	}
 
+	//	static const char* samples_to_time(size_t samples) {
+	//		size_t seconds = samples / SAMPLE_RATE;
+
+	//		size_t hours = seconds / 3600;
+	//		seconds -= (hours * 3600);
+
+	//		size_t minutes = seconds / 60;
+	//		seconds -= (minutes * 60);
+
+	//		return str.write(hours, ":", minutes, ":", seconds);
+	//	}
+
 	static const char* samples_to_time(size_t samples) {
-		size_t seconds = samples / SAMPLE_RATE;
+		size_t milliseconds = samples / (SAMPLE_RATE / 1000);
 
-		size_t hours = seconds / 3600;
-		seconds -= (hours * 3600);
+		size_t minutes = milliseconds / 60000;
+		milliseconds -= (minutes * 60000);
 
-		size_t minutes = seconds / 60;
-		seconds -= (minutes * 60);
+		size_t seconds = milliseconds / 1000;
+		milliseconds -= (seconds * 1000);
 
-		return str.write(hours, ":", minutes, ":", seconds);
+		return str.write(minutes, ":", seconds, ":", milliseconds);
 	}
 
 	static const char* note_to_text(uint8_t note) {
