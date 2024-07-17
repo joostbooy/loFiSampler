@@ -8,8 +8,6 @@ class DelayEngine {
 
 public:
 
-	static const size_t kDelayLineSize = SAMPLE_RATE * 2;
-
 	void init(Settings *settings) {
 		pos_ = 0;
 		delay_ = &settings->delay();
@@ -42,6 +40,8 @@ public:
 	}
 
 private:
+	static const size_t kDelayLineSize = SAMPLE_RATE * 2;
+
 	Delay *delay_;
 	size_t pos_;
 	int16_t delay_l_[kDelayLineSize];

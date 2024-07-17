@@ -139,11 +139,12 @@ void Engine::fill(Dac::Buffer *buffer, const size_t size) {
 		modulationEngine_.retrigger_lfos(e.midi_event_);
 	}
 
-	std::fill(&buffer[0].channel[0], &buffer[size].channel[0], 0);
-
 	modulationEngine_.tick_lfos();
+
+	// fill buffer
+	std::fill(&buffer[0].channel[0], &buffer[size].channel[0], 0);
 	voiceEngine_.process(buffer, size);
-	//	delayEngine_.process(buffer, size);
+	delayEngine_.process(buffer, size);
 
 	for (size_t i = 0; i < Dac::kNumChannels; ++i) {
 		limiter_[i].process(&buffer[0].channel[i], Dac::kBlockSize, Dac::kNumChannels);
