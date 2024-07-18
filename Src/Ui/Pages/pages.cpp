@@ -8,6 +8,7 @@
 #include "midiPage.h"
 #include "modulationPage.h"
 #include "samplePage.h"
+#include "delayPage.h"
 #include "optionListPage.h"
 #include "hardwareTestPage.h"
 #include "textInputPage.h"
@@ -21,6 +22,7 @@ Pages::Page* page_[Pages::NUM_PAGES] = {
 	[Pages::MIDI_PAGE]			= &MidiPage::page,
 	[Pages::MODULATION_PAGE]	= &ModulationPage::page,
 	[Pages::SAMPLE_PAGE]		= &SamplePage::page,
+	[Pages::DELAY_PAGE]			= &DelayPage::page,
 	[Pages::CONFIRMATION_PAGE]	= &ConfirmationPage::page,
 	[Pages::OPTION_LIST_PAGE]	= &OptionListPage::page,
 	[Pages::HARDWARE_TEST_PAGE]	= &HardwareTestPage::page,
