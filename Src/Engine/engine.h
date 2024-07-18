@@ -58,11 +58,11 @@ private:
 	Settings *settings_;
 	SampleQue sampleQue_;
 	MidiEngine midiEngine_;
+	Limiter limiter_;
 	VoiceEngine voiceEngine_;
 	DelayEngine delayEngine_;
 	MidiClockEngine midiClockEngine_;
 	ModulationEngine modulationEngine_;
-	Limiter limiter_[Dac::kNumChannels];
 	bool last_gate_[Modulation::kNumGatesToNote];
 
 	void start();
