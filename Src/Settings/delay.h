@@ -5,11 +5,14 @@ class Delay {
 
 public:
 
+	static const size_t kMaxDelay = SAMPLE_RATE * 2;
+
 	void init() {
 		set_amount(0.5f);
 		set_feedback(0.5f);
 		set_mix(0.0f);
 		set_channel(0);
+		set_sync(false);
 	}
 
 	// Amount
@@ -22,7 +25,19 @@ public:
 	}
 
 	const char *amount_text() {
-		return SettingsText::float_to_text(amount(), 0, 100);
+		if (sync()) {
+			return nullptr;
+		} else {
+			return SettingsText::samples_to_time(amount() * kMaxDelay);
+		}
+	}
+
+	size_t num_samples() {
+		if (sync()) {
+			return 0; //SAMPLE_RATE * MidiSync::read_inc(amount() * MidiSync::max_value);
+		} else {
+			return amount() * kMaxDelay;
+		}
 	}
 
 	// Feedback
@@ -64,12 +79,26 @@ public:
 		return SettingsText::int_to_text((channel_ * 2) + 1);
 	}
 
+	// Sync
+	bool sync() {
+		return sync_;
+	}
+
+	void set_sync(bool value) {
+		sync_ = value;
+	}
+
+	const char *sync_text() {
+		return SettingsText::bool_to_on_off(sync());
+	}
+
 	// storage
 	void save(FileWriter &fileWriter) {
 		fileWriter.write(amount_);
 		fileWriter.write(feedback_);
 		fileWriter.write(mix_);
 		fileWriter.write(channel_);
+		fileWriter.write(sync_);
 	}
 
 	void load(FileReader &fileReader) {
@@ -77,13 +106,15 @@ public:
 		fileReader.read(feedback_);
 		fileReader.read(mix_);
 		fileReader.read(channel_);
+		fileReader.read(sync_);
 	}
 
 	void paste(Delay *delay) {
+		mix_ = delay->mix();
 		amount_ = delay->amount();
 		feedback_ = delay->feedback();
-		mix_ = delay->mix();
 		channel_ = delay->channel();
+		sync_ = delay->sync();
 	}
 
 private:
@@ -91,6 +122,7 @@ private:
 	float feedback_;
 	float mix_;
 	int channel_;
+	bool sync_;
 };
 
 #endif

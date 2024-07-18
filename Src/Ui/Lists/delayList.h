@@ -13,6 +13,7 @@ public:
 		FEEDBACK,
 		MIX,
 		CHANNEL,
+		SYNC,
 
 		NUM_ITEMS
 	};
@@ -29,6 +30,7 @@ public:
 		case FEEDBACK:	return "FEEDBACK";
 		case MIX:		return "MIX";
 		case CHANNEL:	return "CHANNEL";
+		case SYNC:		return "SYNC";
 		default:
 			break;
 		}
@@ -44,6 +46,7 @@ public:
 		case FEEDBACK:	return delay.feedback_text();
 		case MIX:		return delay.mix_text();
 		case CHANNEL:	return delay.channel_text();
+		case SYNC:		return delay.sync_text();
 		default:
 			break;
 		}
@@ -55,10 +58,21 @@ public:
 
 		switch (item)
 		{
-		case AMOUNT:	return delay.set_amount(delay.amount() + SettingsUtils::f_inc(inc, shifted));
-		case FEEDBACK:	return delay.set_feedback(delay.feedback() + SettingsUtils::f_inc(inc, shifted));
-		case MIX:		return delay.set_mix(delay.mix() + SettingsUtils::f_inc(inc, shifted));
-		case CHANNEL:	return delay.set_channel(delay.channel() +inc);
+		case AMOUNT:
+			delay.set_amount(delay.amount() + SettingsUtils::f_inc(inc, shifted));
+			break;
+		case FEEDBACK:
+			delay.set_feedback(delay.feedback() + SettingsUtils::f_inc(inc, shifted));
+			break;
+		case MIX:
+			delay.set_mix(delay.mix() + SettingsUtils::f_inc(inc, shifted));
+			break;
+		case CHANNEL:
+			delay.set_channel(delay.channel() +inc);
+			break;
+		case SYNC:
+			delay.set_sync(inc > 0);
+			break;
 		default:
 			break;
 		}
