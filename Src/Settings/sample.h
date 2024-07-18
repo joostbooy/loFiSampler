@@ -82,7 +82,7 @@ public:
 	}
 
 	const char *size_text() {
-		return SettingsText::str.write(size());
+		return SettingsText::samples_to_time(size());
 	}
 
 	bool is_stereo() {
