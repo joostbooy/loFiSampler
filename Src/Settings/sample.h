@@ -103,7 +103,7 @@ public:
 	}
 
 	const char *start_text() {
-		return SettingsText::str.write(start());
+		return SettingsText::samples_to_time(start());
 	}
 
 	// end
@@ -116,7 +116,7 @@ public:
 	}
 
 	const char *end_text() {
-		return SettingsText::str.write(end());
+		return SettingsText::samples_to_time(end());
 	}
 
 	// loop start
@@ -129,7 +129,7 @@ public:
 	}
 
 	const char *loop_start_text() {
-		return SettingsText::str.write(loop_start());
+		return SettingsText::samples_to_time(loop_start());
 	}
 
 	// loop end
@@ -142,7 +142,7 @@ public:
 	}
 
 	const char *loop_end_text() {
-		return SettingsText::str.write(loop_end());
+		return SettingsText::samples_to_time(loop_end());
 	}
 
 	// loop
