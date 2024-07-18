@@ -9,7 +9,6 @@ namespace DelayPage {
 
 	using TopPage::settings_;
 	using TopPage::engine_;
-	using TopPage::pages_;
 
 	bool pasteable_;
 	Delay delay_;
