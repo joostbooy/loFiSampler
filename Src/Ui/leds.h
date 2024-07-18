@@ -25,8 +25,11 @@ public:
 	}
 
 	void set_all(Color color) {
-		set_footer_buttons(4);
-		set_footer_encoders(4);
+		for (int i = 0; i < 4; ++i) {
+			set_footer_button(i, color);
+			set_footer_encoder(i, color);
+		}
+		
 		for (int i = 0; i < 6; ++i) {
 			set(chapter_leds_[i].x, chapter_leds_[i].y, color);
 		}
