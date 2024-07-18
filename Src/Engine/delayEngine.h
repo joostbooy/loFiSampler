@@ -11,8 +11,8 @@ public:
 	void init(Settings *settings) {
 		pos_ = 0;
 		delay_ = &settings->delay();
-		std::fill(&delay_l_[0], &delay_l_[kMax], 0);
-		std::fill(&delay_r_[0], &delay_r_[kMax], 0);
+		std::fill(&delay_l_[0], &delay_l_[Delay::kMaxDelay], 0);
+		std::fill(&delay_r_[0], &delay_r_[Delay::kMaxDelay], 0);
 	}
 
 	void process(Dac::Buffer *buffer, size_t size) {
@@ -40,12 +40,10 @@ public:
 	}
 
 private:
-	static const size_t kMax = Delay::kMaxDelay;
-
 	Delay *delay_;
 	size_t pos_;
-	int16_t delay_l_[kMax];
-	int16_t delay_r_[kMax];
+	int16_t delay_l_[Delay::kMaxDelay];
+	int16_t delay_r_[Delay::kMaxDelay];
 };
 
 #endif
