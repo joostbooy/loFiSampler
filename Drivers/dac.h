@@ -10,28 +10,31 @@ class Dac {
 
 public:
 	static Dac *dac_;
-
-	static const size_t kNumChannels = 8;
+	static const size_t kNumStereoChannels = 4;
 	static const size_t kBlockSize = 8;
-	static const size_t kUpdateRate = SAMPLE_RATE / kBlockSize / kNumChannels;
+	static const size_t kUpdateRate = SAMPLE_RATE / kBlockSize / (kNumStereoChannels * 2);
 
-	struct Buffer {
-		int16_t channel[kNumChannels];
-	}buffer_[kBlockSize];
+	struct Channel {
+		int16_t left[kBlockSize];
+		int16_t right[kBlockSize];
+	}channel_[kNumStereoChannels];
 
 	void init();
-	void start(void(*callback)(Buffer*, const size_t));
+	void start(void(*callback)(Channel*, const size_t));
 
 	void fill(const size_t offset) {
-		callback_(buffer_, kBlockSize);
+		callback_(channel_, kBlockSize);
 
 		uint16_t *ptr = reinterpret_cast<uint16_t*>(&dma_buffer_[offset * (kDmaBufferSize / 2)]);
 
-		for (size_t i = 0; i < kBlockSize; ++i) {
-			for (size_t chn = 0; chn < kNumChannels; ++chn) {
-				uint16_t sample = buffer_[i].channel[chn] + 32768;
-				*ptr++ = 0x1000 | (chn << 9) | (sample >> 8);
-				*ptr++ = sample << 8;
+		for (size_t chn = 0; chn < kNumStereoChannels; ++chn) {
+			for (size_t i = 0; i < kBlockSize; ++i) {
+				uint16_t left = channel_[chn].left[i] + 32768;
+				uint16_t right = channel_[chn].right[i] + 32768;
+				*ptr++ = 0x1000 | (chn << 9) | (left >> 8);
+				*ptr++ = left << 8;
+				*ptr++ = 0x1000 | (chn << 9) | (right >> 8);
+				*ptr++ = right << 8;
 			}
 		}
 	}
@@ -42,9 +45,9 @@ public:
 	}
 
 private:
-	void(*callback_)(Buffer*, const size_t);
+	void(*callback_)(Channel*, const size_t);
 
-	static const uint32_t kDmaBufferSize = kBlockSize * kNumChannels * 2;
+	static const uint32_t kDmaBufferSize = kBlockSize * (kNumStereoChannels * 2) * 2;
 	uint32_t dma_buffer_[kDmaBufferSize];
 
 	void spi_write(uint8_t data);

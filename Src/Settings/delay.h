@@ -72,7 +72,7 @@ public:
 	}
 
 	void set_channel(int value) {
-		channel_ = SettingsUtils::clip(0, (Dac::kNumChannels / 2) - 1, value);
+		channel_ = SettingsUtils::clip(0, Dac::kNumStereoChannels - 1, value);
 	}
 
 	const char *channel_text() {

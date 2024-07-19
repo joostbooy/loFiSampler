@@ -33,10 +33,10 @@ public:
 		return voice_[most_recent_voice_];
 	}
 
-	void process(Dac::Buffer *buffer, const size_t size) {
+	void process(Dac::Channel *channel, const size_t size) {
 		for (size_t i = 0; i < Settings::kMaxVoices; ++i) {
 			if (voice_[i].state() != Voice::IDLE) {
-				voice_[i].fill(buffer, size);
+				voice_[i].fill(channel, size);
 			}
 		}
 		update_available_voices();

@@ -72,14 +72,15 @@ public:
 		envelopeEngine_[1].release();
 	}
 
-	void fill(Dac::Buffer *buffer, size_t size) {
+	void fill(Dac::Channel *channel, size_t size) {
 		sample_.paste(sample_src_);
 		instrument_.paste(instrument_src_);
 
 		apply_modulation();
 
-		int16_t *ptr = &buffer[0].channel[instrument_.audio_channel() * 2];
-			
+		int16_t *l_ptr = &channel[instrument_.audio_channel()].left[0];
+		int16_t *r_ptr = &channel[instrument_.audio_channel()].right[0];
+
 		while (size--) {
 			int16_t	left = next();
 			int16_t	right = next();
@@ -91,10 +92,8 @@ public:
 				right_ = right;
 			}
 
-			*ptr += left_;
-			*(ptr + 1) += right_;
-
-			ptr += Dac::kNumChannels;
+			*l_ptr++ += left_;
+			*r_ptr++ += right_;
 		}
 	}
 

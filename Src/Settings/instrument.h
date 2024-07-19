@@ -182,7 +182,7 @@ public:
 	}
 
 	void set_audio_channel(int8_t value) {
-		audio_channel_ = SettingsUtils::clip(0, (Dac::kNumChannels / 2) - 1, value);
+		audio_channel_ = SettingsUtils::clip(0, Dac::kNumStereoChannels - 1, value);
 	}
 
 	const char* audio_channel_text() {

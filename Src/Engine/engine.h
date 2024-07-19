@@ -23,7 +23,7 @@ public:
 	};
 
 	void init(Settings*, Uart*, Usb*, Gate*);
-	void fill(Dac::Buffer *buffer, const size_t size);
+	void fill(Dac::Channel *channel, const size_t size);
 	void tick();
 
 	bool last_gate(int index) {

@@ -21,7 +21,7 @@ void Engine::start() {
 
 	for (int i = 0; i < Midi::NUM_PORTS; ++i) {
 		if (settings_->midi().send_clock(i)) {
-			midiEngine_.write(i, MidiEngine::CLOCK_START);
+			midiEngine_.write_clock(i, MidiEngine::CLOCK_START);
 		}
 	}
 }
@@ -29,7 +29,7 @@ void Engine::start() {
 void Engine::stop() {
 	for (int i = 0; i < Midi::NUM_PORTS; ++i) {
 		if (settings_->midi().send_clock(i)) {
-			midiEngine_.write(i, MidiEngine::CLOCK_STOP);
+			midiEngine_.write_clock(i, MidiEngine::CLOCK_STOP);
 		}
 	}
 }
@@ -38,11 +38,22 @@ void Engine::tick() {
 	if (midiClockEngine_.tick()) {
 		for (int i = 0; i < Midi::NUM_PORTS; ++i) {
 			if (settings_->midi().send_clock(i)) {
-				midiEngine_.write(i, MidiEngine::CLOCK_PULSE);
+				midiEngine_.write_clock(i, MidiEngine::CLOCK_PULSE);
 			}
 		}
 	}
 	midiEngine_.poll();
+
+	//	for (size_t i = 0; i < Modulation::kNumGatesToNote; ++i) {
+	//		bool current = gate_->read(i);
+
+	//		if (current != last_gate_[i]) {
+	//			last_gate_[i] = current;
+	//			e = settings_->modulation().gate_to_midi(i);
+	//			current ? e.message |= MidiEngine::NOTE_ON : e.message |= MidiEngine::NOTE_OFF;
+	//			midiEngine_.write_input(e);
+	//		}
+	//	}
 }
 
 void Engine::note_on(MidiEngine::Event &e) {
@@ -129,10 +140,19 @@ void Engine::process_requests() {
 	}
 }
 
-void Engine::fill(Dac::Buffer *buffer, const size_t size) {
+//void Engine::process() {
+//	if (!suspended_) {
+//		process_midi();
+//		process_gates();
+//	}
+//}
+
+void Engine::fill(Dac::Channel *channel, const size_t size) {
 	process_midi();
 	process_gates();
 	process_requests();
+
+	// suspended_ = true;
 
 	while (sampleQue_.readable() && voiceEngine_.available()) {
 		SampleQue::Event e = sampleQue_.read();
@@ -142,8 +162,10 @@ void Engine::fill(Dac::Buffer *buffer, const size_t size) {
 	modulationEngine_.tick_lfos();
 
 	// clear & fill buffer
-	std::fill(&buffer[0].channel[0], &buffer[size].channel[0], 0);
-	voiceEngine_.process(buffer, size);
-	delayEngine_.process(buffer, size);
-	limiter_.process(buffer, size);
+	std::fill(&channel[0].left[0], &channel[Dac::kNumStereoChannels].left[size], 0);
+	voiceEngine_.process(channel, size);
+	delayEngine_.process(channel, size);
+	limiter_.process(channel, size);
+
+	// suspended_ = false;
 }

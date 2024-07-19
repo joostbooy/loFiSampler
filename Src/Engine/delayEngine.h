@@ -15,10 +15,9 @@ public:
 		std::fill(&delay_r_[0], &delay_r_[Delay::kMaxDelay], 0);
 	}
 
-	void process(Dac::Buffer *buffer, size_t size) {
-		int channel = delay_->channel() * 2;
-		int16_t *left = &buffer[0].channel[channel];
-		int16_t *right = &buffer[0].channel[channel + 1];
+	void process(Dac::Channel *channel, size_t size) {
+		int16_t *left = &channel[delay_->channel()].left[0];
+		int16_t *right = &channel[delay_->channel()].right[0];
 
 		float mix = delay_->mix();
 		float feedback = delay_->feedback();
@@ -31,11 +30,8 @@ public:
 			delay_l_[pos_] = l + (delay_l_[pos_] * feedback);
 			delay_r_[pos_] = r + (delay_r_[pos_] * feedback);
 
-			*left = Dsp::cross_fade(l, delay_l_[pos_], mix);
-			*right = Dsp::cross_fade(r, delay_r_[pos_], mix);
-
-			left += Dac::kNumChannels;
-			right += Dac::kNumChannels;
+			*left++ = Dsp::cross_fade(l, delay_l_[pos_], mix);
+			*right++ = Dsp::cross_fade(r, delay_r_[pos_], mix);
 
 			if (++pos_ >= num_samples) {
 				pos_ = 0;

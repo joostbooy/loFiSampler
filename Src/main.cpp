@@ -65,28 +65,30 @@ extern "C" {
 
 } //extern "C"
 
-void fill(Dac::Buffer *buffer, const size_t size) {
-	engine.fill(buffer, size);
+void fill(Dac::Channel *channel, const size_t size) {
+	engine.fill(channel, size);
 }
 
-void test_fill(Dac::Buffer *buffer, const size_t size) {
+void test_fill(Dac::Channel *channel, const size_t size) {
 	static int16_t value;
 	const int16_t inc = SAMPLE_RATE / 1000;
 
-	for (size_t i = 0; i < size; ++i) {
-		for (size_t c = 0; c < Dac::kNumChannels; ++c) {
-			buffer[i].channel[c] = value;
+	for (size_t c = 0; c < Dac::kNumStereoChannels; ++c) {
+		for (size_t i = 0; i < size; ++i) {
+			channel[c].left[i] = value;
+			channel[c].right[i] = value;
 		}
 		value += inc;
 	}
 }
+
 
 void test_dac_spi() {
 	static uint16_t value;
 	static uint16_t prescaler;
 
 	if ((++prescaler & 63) == 0) {
-		for (size_t c = 0; c < Dac::kNumChannels; ++c) {
+		for (size_t c = 0; c < Dac::kNumStereoChannels; ++c) {
 			dac.write(c, value);
 		}
 		++value;

@@ -105,7 +105,7 @@ void Dac::init() {
 	hi2s3.Init.Standard = I2S_STANDARD_PCM_SHORT;
 	hi2s3.Init.DataFormat = I2S_DATAFORMAT_32B;
 	hi2s3.Init.MCLKOutput = I2S_MCLKOUTPUT_DISABLE;
-	hi2s3.Init.AudioFreq = SAMPLE_RATE * kNumChannels;
+	hi2s3.Init.AudioFreq = SAMPLE_RATE * (kNumStereoChannels * 2);
 	hi2s3.Init.CPOL = I2S_CPOL_LOW;
 	hi2s3.Init.ClockSource = I2S_CLOCK_PLL;
 	HAL_I2S_Init(&hi2s3);
@@ -127,7 +127,7 @@ void Dac::init() {
 	*/
 }
 
-void Dac::start(void (*callback)(Buffer*, size_t)) {
+void Dac::start(void (*callback)(Channel*, size_t)) {
 	callback_ = callback;
 	HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_2);
 	HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 0, 0);
