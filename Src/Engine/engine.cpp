@@ -154,7 +154,7 @@ void Engine::fill(Dac::Channel *channel, const size_t size) {
 
 	// clear & fill buffer
 	std::fill(&channel[0].left[0], &channel[Dac::kNumStereoChannels].left[0], 0);
-	voiceEngine_.process(channel, size);
-	delayEngine_.process(channel, size);
-	limiter_.process(channel, size);
+	voiceEngine_.fill(channel, size);
+	delayEngine_.fill(channel, size);
+	limiter_.fill(channel, size);
 }

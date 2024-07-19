@@ -11,10 +11,10 @@ public:
 		std::fill(&peak_[0], &peak_[Dac::kNumStereoChannels * 2], 0.5f);
 	}
 
-	inline void process(Dac::Channel *channel, size_t size) {
+	inline void fill(Dac::Channel *channel, size_t size) {
 		for (size_t chn = 0; chn < Dac::kNumStereoChannels; ++chn) {
-			process(&channel[chn].left[0], chn, size);
-			process(&channel[chn].right[0], chn, size);
+			fill(&channel[chn].left[0], chn, size);
+			fill(&channel[chn].right[0], chn, size);
 		}
 	}
 
@@ -30,7 +30,7 @@ private:
 		return value_ > 32767 ? 32767 : (value_ < -32768 ? -32768 : value_);
 	}
 
-	inline void process(int16_t *data, int chn, size_t size) {
+	inline void fill(int16_t *data, int chn, size_t size) {
 		while (size--) {
 			float s = int_to_float(*data);
 			float error = fabsf(s) - peak_[chn];

@@ -33,7 +33,7 @@ public:
 		return voice_[most_recent_voice_];
 	}
 
-	void process(Dac::Channel *channel, const size_t size) {
+	void fill(Dac::Channel *channel, const size_t size) {
 		for (size_t i = 0; i < Settings::kMaxVoices; ++i) {
 			if (voice_[i].state() != Voice::IDLE) {
 				voice_[i].fill(channel, size);

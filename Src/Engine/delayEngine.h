@@ -15,7 +15,7 @@ public:
 		std::fill(&delay_r_[0], &delay_r_[Delay::kMaxDelay], 0);
 	}
 
-	void process(Dac::Channel *channel, size_t size) {
+	void fill(Dac::Channel *channel, size_t size) {
 		int16_t *left = &channel[delay_->audio_channel()].left[0];
 		int16_t *right = &channel[delay_->audio_channel()].right[0];
 
