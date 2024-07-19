@@ -15,7 +15,6 @@ public:
 		std::fill(&delay_r_[0], &delay_r_[Delay::kMaxDelay], 0);
 	}
 
-
 	void process(Dac::Buffer *buffer, size_t size) {
 		int channel = delay_->channel() * 2;
 		int16_t *left = &buffer[0].channel[channel];
