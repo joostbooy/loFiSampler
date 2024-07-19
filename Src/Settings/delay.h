@@ -76,7 +76,7 @@ public:
 	}
 
 	const char *channel_text() {
-		return SettingsText::int_to_text((channel_ * 2) + 1);
+		return SettingsText::audio_channel_to_text(channel());
 	}
 
 	// Sync

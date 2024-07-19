@@ -186,8 +186,7 @@ public:
 	}
 
 	const char* audio_channel_text() {
-		int chn = (audio_channel() * 2) + 1;
-		return SettingsText::str.write(chn, " & ", chn + 1);
+		return SettingsText::audio_channel_to_text(audio_channel());
 	}
 
 	// Bend range
