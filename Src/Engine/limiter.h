@@ -36,8 +36,7 @@ private:
 			float error = fabsf(s) - peak_[chn];
 			peak_[chn] += (error > 0 ? 0.05f : 0.00002f) * error;
 			float gain = (peak_[chn] <= 1.0f ? 1.0f : 1.0f / peak_[chn]);
-			*data = float_to_int(s * gain * 0.8f);
-			data += Dac::kNumStereoChannels;
+			*data++ = float_to_int(s * gain * 0.8f);
 		}
 	}
 };
