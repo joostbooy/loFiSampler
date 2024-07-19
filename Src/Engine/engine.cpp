@@ -140,19 +140,10 @@ void Engine::process_requests() {
 	}
 }
 
-//void Engine::process() {
-//	if (!suspended_) {
-//		process_midi();
-//		process_gates();
-//	}
-//}
-
 void Engine::fill(Dac::Channel *channel, const size_t size) {
 	process_midi();
 	process_gates();
 	process_requests();
-
-	// suspended_ = true;
 
 	while (sampleQue_.readable() && voiceEngine_.available()) {
 		SampleQue::Event e = sampleQue_.read();
@@ -162,10 +153,8 @@ void Engine::fill(Dac::Channel *channel, const size_t size) {
 	modulationEngine_.tick_lfos();
 
 	// clear & fill buffer
-	std::fill(&channel[0].left[0], &channel[Dac::kNumStereoChannels].left[size], 0);
+	std::fill(&channel[0].left[0], &channel[Dac::kNumStereoChannels].left[0], 0);
 	voiceEngine_.process(channel, size);
 	delayEngine_.process(channel, size);
 	limiter_.process(channel, size);
-
-	// suspended_ = false;
 }
