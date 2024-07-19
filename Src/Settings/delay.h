@@ -26,7 +26,7 @@ public:
 
 	const char *amount_text() {
 		if (sync()) {
-			return nullptr;
+			return MidiSync::tempo_text(amount() * (MidiSync::NUM_TEMPOS - 1));
 		} else {
 			return SettingsText::samples_to_time(amount() * kMaxDelay);
 		}
@@ -34,7 +34,8 @@ public:
 
 	size_t num_samples() {
 		if (sync()) {
-			return 0; //SAMPLE_RATE * MidiSync::read_inc(amount() * MidiSync::max_value);
+			size_t samples = MidiSync::read_num_samples(amount() * (MidiSync::NUM_TEMPOS - 1));
+			return SettingsUtils::clip_max(kMaxDelay, samples);
 		} else {
 			return amount() * kMaxDelay;
 		}

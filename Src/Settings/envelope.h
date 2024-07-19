@@ -79,7 +79,7 @@ public:
 
 	const char *attack_time_text() {
 		if (clock_sync()) {
-			return MidiSync::tempo_text(attack_time() * MidiSync::max_value());
+			return MidiSync::tempo_text(attack_time() * (MidiSync::NUM_TEMPOS - 1));
 		} else {
 			return nullptr;
 		}
@@ -87,7 +87,7 @@ public:
 
 	float attack_inc() {
 		if (clock_sync()) {
-			return MidiSync::read_inc(attack_time() * MidiSync::max_value());
+			return MidiSync::read_inc(attack_time() * (MidiSync::NUM_TEMPOS - 1));
 		} else {
 			return lut_phase_inc[int(attack_time() * (PHASE_TABLE_SIZE - 1))];
 		}
@@ -117,7 +117,7 @@ public:
 
 	const char *decay_time_text() {
 		if (clock_sync()) {
-			return MidiSync::tempo_text(decay_time() * MidiSync::max_value());
+			return MidiSync::tempo_text(decay_time() * (MidiSync::NUM_TEMPOS - 1));
 		} else {
 			return nullptr;
 		}
@@ -125,7 +125,7 @@ public:
 
 	float decay_inc() {
 		if (clock_sync()) {
-			return MidiSync::read_inc(decay_time() * MidiSync::max_value());
+			return MidiSync::read_inc(decay_time() * (MidiSync::NUM_TEMPOS - 1));
 		} else {
 			return lut_phase_inc[int(decay_time() * (PHASE_TABLE_SIZE - 1))];
 		}
@@ -159,7 +159,7 @@ public:
 		if (mode() == GATE) {
 			return "-";
 		} else if (clock_sync()) {
-			return MidiSync::tempo_text(hold_time() * MidiSync::max_value());
+			return MidiSync::tempo_text(hold_time() * (MidiSync::NUM_TEMPOS - 1));
 		} else {
 			return nullptr;
 		}
@@ -167,7 +167,7 @@ public:
 
 	float hold_inc() {
 		if (clock_sync()) {
-			return MidiSync::read_inc(hold_time() * MidiSync::max_value());
+			return MidiSync::read_inc(hold_time() * (MidiSync::NUM_TEMPOS - 1));
 		} else {
 			return lut_phase_inc[int(hold_time() * (PHASE_TABLE_SIZE - 1))];
 		}
@@ -198,7 +198,7 @@ public:
 
 	const char *release_time_text() {
 		if (clock_sync()) {
-			return MidiSync::tempo_text(release_time() * MidiSync::max_value());
+			return MidiSync::tempo_text(release_time() * (MidiSync::NUM_TEMPOS - 1));
 		} else {
 			return nullptr;
 		}
@@ -206,7 +206,7 @@ public:
 
 	float release_inc() {
 		if (clock_sync()) {
-			return MidiSync::read_inc(release_time() * MidiSync::max_value());
+			return MidiSync::read_inc(release_time() * (MidiSync::NUM_TEMPOS - 1));
 		} else {
 			return lut_phase_inc[int(release_time() * (PHASE_TABLE_SIZE - 1))];
 		}

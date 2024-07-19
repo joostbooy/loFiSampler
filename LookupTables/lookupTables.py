@@ -7,10 +7,15 @@ import lutCompiler
 
 #table variables
 tables = []
+
+block_size = 8
+sample_rate = 16000
+control_rate = sample_rate / block_size
+
 ppqn = 24
 max_bpm = 300
 clock_isr_freq = 4000
-sample_rate = 16000
+
 
 '''____________________
 	BPM INC
@@ -31,38 +36,33 @@ ________________________'''
 name = 'phase_inc'
 
 phase_table_size = 256
-freq_min = 1.0 / (sample_rate * 10.0)
-freq_max = 1.0 / (sample_rate / 10.0)
+freq_min = 1.0 / (control_rate * 10.0)
+freq_max = 1.0 / (control_rate / 10.0)
 steps = numpy.linspace(freq_min, freq_max, phase_table_size)
 
 tables.append('float ' + name)
 tables.append(steps.astype('float32'))
 
 '''_____________________________
-     TEMPO SYNC PHASE INC
+     SYNC CONTROL RATE INCREMENTS
 _____________________________'''
 
-bpm = numpy.arange(1.0, max_bpm + 1)
-hertz = bpm / 60 / 4
-values = sample_rate * hertz
+values = 1.0 / (control_rate * (60 / bpm))
 
-name = 'tempo_sync_phase_inc'
-values_whole = 1.0 / values
-tables.append('float ' + name)
-tables.append(values_whole.astype('float32'))
-
-'''____________________
-	RECIPROCAL
-________________________'''
-name = 'reciprocal'
-
-max_steps = 32
-step = numpy.arange(1, max_steps + 1)
-values = 1.0 / step
-values = numpy.insert(values, 0, 0.0)
-
+name = 'sync_control_rate_inc'
 tables.append('float ' + name)
 tables.append(values.astype('float32'))
+
+'''_____________________________
+     BEAT LENGTH IN SAMPLES
+_____________________________'''
+
+values = sample_rate * (60 / bpm)
+
+name = 'beat_length_samples'
+tables.append('float ' + name)
+tables.append(values.astype('float32'))
+
 
 '''____________________
 	EXP TABLE
@@ -108,8 +108,8 @@ tables.append(values.astype('float32'))
 ________________________'''
 
 defines = [
+'BLOCK_SIZE '				+ str(block_size),
 'SAMPLE_RATE '				+ str(sample_rate),
-'PPQN '						+ str(ppqn),
 'MAX_BPM '					+ str(max_bpm),
 'CLOCK_ISR_FREQ '			+ str(clock_isr_freq),
 'EXP_TABLE_SIZE '			+ str(exp_table_size),

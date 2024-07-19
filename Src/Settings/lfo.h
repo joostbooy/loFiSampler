@@ -37,7 +37,7 @@ public:
 
 	const char *speed_text() {
 		if (clock_sync()) {
-			return MidiSync::tempo_text(speed() * MidiSync::max_value());
+			return MidiSync::tempo_text(speed() * (MidiSync::NUM_TEMPOS - 1));
 		} else {
 			return nullptr;
 		}
@@ -45,7 +45,7 @@ public:
 
 	float inc() {
 		if (clock_sync()) {
-			return MidiSync::read_inc(speed() * MidiSync::max_value());
+			return MidiSync::read_inc(speed() * (MidiSync::NUM_TEMPOS - 1));
 		} else {
 			return lut_phase_inc[int(speed() * (PHASE_TABLE_SIZE - 1))];
 		}
