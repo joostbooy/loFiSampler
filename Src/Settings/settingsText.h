@@ -35,7 +35,7 @@ public:
 
 	static const char* audio_channel_to_text(int channel) {
 		int channel_ = channel * 2;
-		return str.write(channel_ + 1, "&", channel_ + 2);
+		return str.write(channel_ + 1, " & ", channel_ + 2);
 	}
 
 	static const char* samples_to_time(size_t samples) {
@@ -56,7 +56,6 @@ public:
 			note -= 12;
 			++oct;
 		}
-
 		return str.write(note_text_[note], oct);
 	}
 

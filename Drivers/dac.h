@@ -27,8 +27,8 @@ public:
 
 		uint16_t *ptr = reinterpret_cast<uint16_t*>(&dma_buffer_[offset * (kDmaBufferSize / 2)]);
 
-		for (size_t chn = 0; chn < kNumStereoChannels; ++chn) {
-			for (size_t i = 0; i < kBlockSize; ++i) {
+		for (size_t i = 0; i < kBlockSize; ++i) {
+			for (size_t chn = 0; chn < kNumStereoChannels; ++chn) {
 				uint16_t left = channel_[chn].left[i] + 32768;
 				uint16_t right = channel_[chn].right[i] + 32768;
 				*ptr++ = 0x1000 | (chn << 9) | (left >> 8);
@@ -46,7 +46,6 @@ public:
 
 private:
 	void(*callback_)(Channel*, const size_t);
-
 	static const uint32_t kDmaBufferSize = kBlockSize * (kNumStereoChannels * 2) * 2;
 	uint32_t dma_buffer_[kDmaBufferSize];
 
