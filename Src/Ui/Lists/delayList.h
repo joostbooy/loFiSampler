@@ -12,7 +12,7 @@ public:
 		AMOUNT,
 		FEEDBACK,
 		MIX,
-		CHANNEL,
+		AUDIO_CHANNEL,
 		SYNC,
 
 		NUM_ITEMS
@@ -26,11 +26,11 @@ public:
 	const char* item_text(int item) override {
 		switch (item)
 		{
-		case AMOUNT:	return "AMOUNT";
-		case FEEDBACK:	return "FEEDBACK";
-		case MIX:		return "MIX";
-		case CHANNEL:	return "CHANNEL";
-		case SYNC:		return "SYNC";
+		case AMOUNT:		return "AMOUNT";
+		case FEEDBACK:		return "FEEDBACK";
+		case MIX:			return "MIX";
+		case AUDIO_CHANNEL:	return "AUDIO CHANNEL";
+		case SYNC:			return "SYNC";
 		default:
 			break;
 		}
@@ -42,11 +42,11 @@ public:
 
 		switch (item)
 		{
-		case AMOUNT:	return delay.amount_text();
-		case FEEDBACK:	return delay.feedback_text();
-		case MIX:		return delay.mix_text();
-		case CHANNEL:	return delay.channel_text();
-		case SYNC:		return delay.sync_text();
+		case AMOUNT:		return delay.amount_text();
+		case FEEDBACK:		return delay.feedback_text();
+		case MIX:			return delay.mix_text();
+		case AUDIO_CHANNEL:	return delay.audio_channel_text();
+		case SYNC:			return delay.sync_text();
 		default:
 			break;
 		}
@@ -67,8 +67,8 @@ public:
 		case MIX:
 			delay.set_mix(delay.mix() + SettingsUtils::f_inc(inc, shifted));
 			break;
-		case CHANNEL:
-			delay.set_channel(delay.channel() +inc);
+		case AUDIO_CHANNEL:
+			delay.set_audio_channel(delay.audio_channel() +inc);
 			break;
 		case SYNC:
 			delay.set_sync(inc > 0);

@@ -11,7 +11,7 @@ public:
 		set_amount(0.5f);
 		set_feedback(0.5f);
 		set_mix(0.0f);
-		set_channel(0);
+		set_audio_channel(0);
 		set_sync(false);
 	}
 
@@ -66,17 +66,17 @@ public:
 		return SettingsText::float_to_text(mix(), 0, 100);
 	}
 
-	// Channel
-	int channel() {
-		return channel_;
+	// Audio channel
+	int audio_channel() {
+		return audio_channel_;
 	}
 
-	void set_channel(int value) {
-		channel_ = SettingsUtils::clip(0, Dac::kNumStereoChannels - 1, value);
+	void set_audio_channel(int value) {
+		audio_channel_ = SettingsUtils::clip(0, Dac::kNumStereoChannels - 1, value);
 	}
 
-	const char *channel_text() {
-		return SettingsText::audio_channel_to_text(channel());
+	const char *audio_channel_text() {
+		return SettingsText::audio_channel_to_text(audio_channel());
 	}
 
 	// Sync
@@ -97,7 +97,7 @@ public:
 		fileWriter.write(amount_);
 		fileWriter.write(feedback_);
 		fileWriter.write(mix_);
-		fileWriter.write(channel_);
+		fileWriter.write(audio_channel_);
 		fileWriter.write(sync_);
 	}
 
@@ -105,7 +105,7 @@ public:
 		fileReader.read(amount_);
 		fileReader.read(feedback_);
 		fileReader.read(mix_);
-		fileReader.read(channel_);
+		fileReader.read(audio_channel_);
 		fileReader.read(sync_);
 	}
 
@@ -113,7 +113,7 @@ public:
 		mix_ = delay->mix();
 		amount_ = delay->amount();
 		feedback_ = delay->feedback();
-		channel_ = delay->channel();
+		audio_channel_ = delay->audio_channel();
 		sync_ = delay->sync();
 	}
 
@@ -121,7 +121,7 @@ private:
 	float amount_;
 	float feedback_;
 	float mix_;
-	int channel_;
+	int audio_channel_;
 	bool sync_;
 };
 

@@ -16,8 +16,8 @@ public:
 	}
 
 	void process(Dac::Channel *channel, size_t size) {
-		int16_t *left = &channel[delay_->channel()].left[0];
-		int16_t *right = &channel[delay_->channel()].right[0];
+		int16_t *left = &channel[delay_->audio_channel()].left[0];
+		int16_t *right = &channel[delay_->audio_channel()].right[0];
 
 		float mix = delay_->mix();
 		float feedback = delay_->feedback();
