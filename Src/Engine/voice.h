@@ -50,9 +50,6 @@ public:
 		channel_ = e.midi_event_.message & 0x0F;
 		velocity_ = e.midi_event_.data[1] * (1.f / 127.f);
 
-		envelopeEngine_[0].attack();
-		envelopeEngine_[1].attack();
-
 		key_pressed_ = true;
 		stop_requested_ = false;
 		fade_phase_  = 1.f;
@@ -64,6 +61,9 @@ public:
 			phase_ = sample_src_->end();
 			state_ = BACKWARD;
 		}
+
+		envelopeEngine_[0].attack();
+		envelopeEngine_[1].attack();
 	}
 
 	void note_off() {
@@ -79,7 +79,7 @@ public:
 		apply_modulation();
 
 		int16_t *ptr = &buffer[0].channel[instrument_.audio_channel() * 2];
-
+			
 		while (size--) {
 			int16_t	left = next();
 			int16_t	right = next();
@@ -107,6 +107,7 @@ public:
 
 		uint8_t shifts = instrument_.bit_shifts();
 		int16_t value = (Dsp::cross_fade(*a, *b, fractional) >> shifts) << shifts;
+		//int16_t value = int(value / instrument_.bitdepth) * instrument_.bitdepth;
 
 		phase_ += get_inc(note_, sample_.root_note(), instrument_.bend_range(), instrument_.bend(), sample_.cents());
 
