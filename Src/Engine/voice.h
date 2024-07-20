@@ -81,12 +81,19 @@ public:
 		int16_t *l_ptr = &channel[instrument_.audio_channel()].left[0];
 		int16_t *r_ptr = &channel[instrument_.audio_channel()].right[0];
 
-		while (size--) {
-			int16_t	left = next();
-			int16_t	right = next();
-			Dsp::pan(&left, &right, sample_.pan());
+		int shifts = 16 - instrument_.bit_depth();
+		int sample_rate_divider = instrument_.sample_rate_divider();
 
-			if (++sample_count_ >= instrument_.sample_rate_divider()) {
+		float inc = get_inc(note_, sample_.root_note(), instrument_.bend_range(), instrument_.bend(), sample_.cents());
+		float gain = sample_.gain() * instrument_.gain();
+		float pan = sample_.pan();
+
+		while (size--) {
+			int16_t	left = next(inc, gain, shifts);
+			int16_t	right = next(inc, gain, shifts);
+			Dsp::pan(&left, &right, pan);
+
+			if (++sample_count_ >= sample_rate_divider) {
 				sample_count_ = 0;
 				left_ = left;
 				right_ = right;
@@ -97,18 +104,17 @@ public:
 		}
 	}
 
-	int16_t next() {
+	int16_t next(float inc, float gain, uint8_t shifts) {
 		uint32_t intergral = static_cast<uint32_t>(phase_);
 		float fractional = phase_ - intergral;
 
 		int16_t *a = sample_.data(intergral);
 		int16_t *b = a + (sample_.num_channels() * state_);
 
-		uint8_t shifts = instrument_.bit_shifts();
 		int16_t value = (Dsp::cross_fade(*a, *b, fractional) >> shifts) << shifts;
 		//int16_t value = int(value / instrument_.bitdepth) * instrument_.bitdepth;
 
-		phase_ += get_inc(note_, sample_.root_note(), instrument_.bend_range(), instrument_.bend(), sample_.cents());
+		phase_ += inc;
 
 		if (state_ == FORWARD) {
 			if (is_looping()) {
@@ -124,7 +130,7 @@ public:
 			}
 		}
 
-		return value * sample_.gain() * instrument_.gain();
+		return value * gain;
 	}
 
 private:
