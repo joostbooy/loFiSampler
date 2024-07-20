@@ -82,56 +82,36 @@ public:
 		int16_t *r_ptr = &channel[instrument_.audio_channel()].right[0];
 
 		int shifts = 16 - instrument_.bit_depth();
-		int sample_rate_divider = instrument_.sample_rate_divider();
-
-		float pan = sample_.pan();
 		float gain = sample_.gain() * instrument_.gain();
 		float inc = get_inc(note_, sample_.root_note(), instrument_.bend_range(), instrument_.bend(), sample_.cents());
 
 		while (size--) {
-			int16_t	left, right;
-			next(inc, gain, shifts, &left, &right);
+			uint32_t intergral = static_cast<uint32_t>(phase_);
+			float fractional = phase_ - intergral;
 
-			Dsp::pan(&left, &right, pan);
+			int16_t l, r;
+			int16_t l_next, r_next;
 
-			if (++sample_count_ >= sample_rate_divider) {
+			sample_.read(intergral, &l, &r);
+			sample_.read(intergral + state_, &l_next, &r_next);
+			l = Dsp::cross_fade(l, l_next, fractional);
+			r = Dsp::cross_fade(r, r_next, fractional);
+			l = gain * ((l >> shifts) << shifts);
+			r = gain * ((r >> shifts) << shifts);
+
+			phase_ += inc;
+			update_state(intergral);
+
+			Dsp::pan(&l, &r, sample_.pan());
+
+			if (++sample_count_ >= instrument_.sample_rate_divider()) {
 				sample_count_ = 0;
-				left_ = left;
-				right_ = right;
+				left_ = l;
+				right_ = r;
 			}
 
 			*l_ptr++ += left_;
 			*r_ptr++ += right_;
-		}
-	}
-
-	inline void next(float inc, float gain, uint8_t shifts, int16_t *left, int16_t *right) {
-		uint32_t intergral = static_cast<uint32_t>(phase_);
-		float fractional = phase_ - intergral;
-
-		int16_t l, r;
-		int16_t l_next, r_next;
-
-		sample_.read(intergral, &l, &r);
-		sample_.read(intergral + state_, &l_next, &r_next);
-
-		*left = gain * ((Dsp::cross_fade(l, l_next, fractional) >> shifts) << shifts);
-		*right = gain * ((Dsp::cross_fade(r, l_next, fractional) >> shifts) << shifts);
-
-		phase_ += inc;
-
-		if (state_ == FORWARD) {
-			if (is_looping()) {
-				next_loop_forward(intergral);
-			} else {
-				next_forward(intergral);
-			}
-		} else if (state_ == BACKWARD) {
-			if (is_looping()) {
-				next_loop_backward(intergral);
-			} else {
-				next_backward(intergral);
-			}
 		}
 	}
 
@@ -153,6 +133,22 @@ private:
 	EnvelopeEngine envelopeEngine_[Settings::kNumEnvelopes];
 	int16_t left_, right_;
 	int sample_count_;
+
+	inline void update_state(uint32_t phase) {
+		if (state_ == FORWARD) {
+			if (is_looping()) {
+				next_loop_forward(phase);
+			} else {
+				next_forward(phase);
+			}
+		} else if (state_ == BACKWARD) {
+			if (is_looping()) {
+				next_loop_backward(phase);
+			} else {
+				next_backward(phase);
+			}
+		}
+	}
 
 	inline bool is_looping() {
 		return sample_.loop() && key_pressed_;
