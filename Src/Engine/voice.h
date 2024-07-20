@@ -84,9 +84,9 @@ public:
 		int shifts = 16 - instrument_.bit_depth();
 		int sample_rate_divider = instrument_.sample_rate_divider();
 
-		float inc = get_inc(note_, sample_.root_note(), instrument_.bend_range(), instrument_.bend(), sample_.cents());
-		float gain = sample_.gain() * instrument_.gain();
 		float pan = sample_.pan();
+		float gain = sample_.gain() * instrument_.gain();
+		float inc = get_inc(note_, sample_.root_note(), instrument_.bend_range(), instrument_.bend(), sample_.cents());
 
 		while (size--) {
 			int16_t	left = next(inc, gain, shifts);
@@ -110,7 +110,6 @@ public:
 
 		int16_t *a = sample_.data(intergral);
 		int16_t *b = a + (sample_.num_channels() * state_);
-
 		int16_t value = (Dsp::cross_fade(*a, *b, fractional) >> shifts) << shifts;
 		//int16_t value = int(value / instrument_.bitdepth) * instrument_.bitdepth;
 
