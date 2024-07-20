@@ -90,14 +90,14 @@ public:
 
 		while (size--) {
 			int16_t	left, right;
-			next(inc, shifts, &left, &right);
+			next(inc, gain, shifts, &left, &right);
 
 			Dsp::pan(&left, &right, pan);
 
 			if (++sample_count_ >= sample_rate_divider) {
 				sample_count_ = 0;
-				left_ = left * gain;
-				right_ = right * gain;
+				left_ = left;
+				right_ = right;
 			}
 
 			*l_ptr++ += left_;
@@ -105,7 +105,7 @@ public:
 		}
 	}
 
-	void next(float inc, uint8_t shifts, int16_t *left, int16_t *right) {
+	inline void next(float inc, float gain, uint8_t shifts, int16_t *left, int16_t *right) {
 		uint32_t intergral = static_cast<uint32_t>(phase_);
 		float fractional = phase_ - intergral;
 
@@ -115,8 +115,8 @@ public:
 		sample_.read(intergral, &l, &r);
 		sample_.read(intergral + state_, &l_next, &r_next);
 
-		*left = (Dsp::cross_fade(l, l_next, fractional) >> shifts) << shifts;
-		*right = (Dsp::cross_fade(r, l_next, fractional) >> shifts) << shifts;
+		*left = gain * ((Dsp::cross_fade(l, l_next, fractional) >> shifts) << shifts);
+		*right = gain * ((Dsp::cross_fade(r, l_next, fractional) >> shifts) << shifts);
 
 		phase_ += inc;
 
@@ -134,7 +134,6 @@ public:
 			}
 		}
 	}
-
 
 private:
 	float phase_;
