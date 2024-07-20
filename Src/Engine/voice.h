@@ -89,14 +89,15 @@ public:
 		float inc = get_inc(note_, sample_.root_note(), instrument_.bend_range(), instrument_.bend(), sample_.cents());
 
 		while (size--) {
-			int16_t	left = next(inc, gain, shifts);
-			int16_t	right = next(inc, gain, shifts);
+			int16_t	left, right;
+			next(inc, shifts, &left, &right);
+
 			Dsp::pan(&left, &right, pan);
 
 			if (++sample_count_ >= sample_rate_divider) {
 				sample_count_ = 0;
-				left_ = left;
-				right_ = right;
+				left_ = left * gain;
+				right_ = right * gain;
 			}
 
 			*l_ptr++ += left_;
@@ -104,14 +105,18 @@ public:
 		}
 	}
 
-	int16_t next(float inc, float gain, uint8_t shifts) {
+	void next(float inc, uint8_t shifts, int16_t *left, int16_t *right) {
 		uint32_t intergral = static_cast<uint32_t>(phase_);
 		float fractional = phase_ - intergral;
 
-		int16_t *a = sample_.data(intergral);
-		int16_t *b = a + (sample_.num_channels() * state_);
-		int16_t value = (Dsp::cross_fade(*a, *b, fractional) >> shifts) << shifts;
-		//int16_t value = int(value / instrument_.bitdepth) * instrument_.bitdepth;
+		int16_t l, r;
+		int16_t l_next, r_next;
+
+		sample_.read(intergral, &l, &r);
+		sample_.read(intergral + state_, &l_next, &r_next);
+
+		*left = (Dsp::cross_fade(l, l_next, fractional) >> shifts) << shifts;
+		*right = (Dsp::cross_fade(r, l_next, fractional) >> shifts) << shifts;
 
 		phase_ += inc;
 
@@ -128,9 +133,8 @@ public:
 				next_backward(intergral);
 			}
 		}
-
-		return value * gain;
 	}
+
 
 private:
 	float phase_;

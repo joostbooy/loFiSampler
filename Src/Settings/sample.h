@@ -38,9 +38,6 @@ public:
 	void init() {
 		// set_data(nullptr);
 
-		//	set_size(0);
-		//	set_start(0);
-
 		set_loop(false);
 		set_u_turn(false);
 		set_play_mode(FORWARD);
@@ -64,8 +61,15 @@ public:
 		entry_ = entry;
 	}
 
-	int16_t *data(size_t index) {
-		return is_stereo() ? &entry_->data[index] : &entry_->data[index / 2];
+	void read(size_t index, int16_t *left, int16_t *right) {
+		if (is_stereo()) {
+			size_t i = index * 2;
+			*left = entry_->data[i];
+			*right = entry_->data[i + 1];
+		} else {
+			*left = entry_->data[index];
+			*right = *left;
+		}
 	}
 
 	bool has_data() {
@@ -73,25 +77,24 @@ public:
 	}
 
 	// size
-	void set_size(size_t value) {
-		//	size_ = value;
-	}
-
 	size_t size() {
-		return is_stereo() ? entry_->size : entry_->size * 2;
+		return is_stereo() ? entry_->size / 2 : entry_->size;
 	}
 
 	const char *size_text() {
 		return SettingsText::samples_to_time(size());
 	}
 
+
+	// channels
+	int num_channels() {
+		return entry_->num_channels;
+	}
+
 	bool is_stereo() {
 		return entry_->num_channels == 2;
 	}
 
-	int num_channels() {
-		return entry_->num_channels;
-	}
 
 	// start
 	void set_start(size_t value) {
