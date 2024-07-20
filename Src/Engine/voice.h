@@ -50,6 +50,8 @@ public:
 		channel_ = e.midi_event_.message & 0x0F;
 		velocity_ = e.midi_event_.data[1] * (1.f / 127.f);
 
+		left_ = 0;
+		right_ = 0;
 		key_pressed_ = true;
 		stop_requested_ = false;
 		fade_phase_  = 1.f;
