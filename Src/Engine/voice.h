@@ -101,10 +101,10 @@ public:
 			l = gain * ((l >> shifts) << shifts);
 			r = gain * ((r >> shifts) << shifts);
 
-			phase_ += inc;
-			update_state(intergral);
-
 			Dsp::pan(&l, &r, sample_.pan());
+
+			phase_ += inc;
+			update_state(phase_);
 
 			if (++sample_count_ >= instrument_.sample_rate_divider()) {
 				sample_count_ = 0;
