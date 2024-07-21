@@ -64,11 +64,11 @@ public:
 	}
 
 	static size_t read_beat_length(int value) {
-		return lut_beat_length[MidiClockEngine::bpm()] * beat_multiplier(value);
+		return lut_beat_length[MidiClockEngine::bpm() - MIN_BPM] * beat_multiplier(value);
 	}
 
 	static float read_inc(int value) {
-		return lut_sync_phase_inc[MidiClockEngine::bpm()] * inc_multiplier(value);
+		return lut_sync_phase_inc[MidiClockEngine::bpm() - MIN_BPM] * inc_multiplier(value);
 	}
 
 private:

@@ -34,7 +34,7 @@ public:
 		}
 
 		++isr_ticks;
-		tempo_phase += lut_bpm_inc[bpm_];
+		tempo_phase += lut_bpm_inc[bpm_ - MIN_BPM];
 		return tempo_phase < tempo_inc;
 	}
 
@@ -43,6 +43,7 @@ public:
 
 		if (((++num_readings % 4) == 0) && isr_average > 0) {
 			ext_bpm_ = uint32_t(45000000UL * 60UL / 24UL / (kUpdatePeriod * (isr_average / 4)));
+			ext_bpm_ = SettingsUtils::clip(MIN_BPM, MAX_BPM, ext_bpm_);
 			isr_average = 0;
 		}
 

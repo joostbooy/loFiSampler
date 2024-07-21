@@ -78,11 +78,10 @@ public:
 		return is_clock_message(e) ? e.message : e.message & 0xF0;
 	}
 
-	bool write(Event &e) {
+	bool write_output(Event &e) {
 		uint8_t size = e.message != last_message_[e.port] ? 3 : 2;
 
 		if (output_que[e.port].available_size() >= size) {
-
 			if (size == 3) {
 				output_que[e.port].write(e.message);
 				last_message_[e.port] = e.message;
@@ -96,7 +95,7 @@ public:
 		return false;
 	}
 
-	bool write(uint8_t port, uint8_t message) {
+	bool write_clock(uint8_t port, uint8_t message) {
 		if (clock_output_que[port].writeable()) {
 			clock_output_que[port].write(message);
 			return true;
