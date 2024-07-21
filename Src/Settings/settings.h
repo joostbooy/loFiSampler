@@ -169,9 +169,14 @@ public:
 		return 0;
 	}
 
-	// sdram
+	// Sdram
 	Sdram *sdram() {
 		return sdram_;
+	}
+
+	// Disk
+	Disk *disk() {
+		return disk_;
 	}
 
 private:
