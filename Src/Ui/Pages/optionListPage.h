@@ -82,10 +82,12 @@ namespace OptionListPage {
 
 		for (int i = 0; i < kMaxRows; ++i) {
 			int row = i + top_row_;
+			int row_y = (i * row_h) + y;
+
 			if (row < count_) {
-				canvas_->draw_text(x + 4, y, w - 8, row_h, text_[row], Canvas::LEFT, Canvas::CENTER);
+				canvas_->draw_text(x + 4, row_y, w - 8, row_h, text_[row], Canvas::LEFT, Canvas::CENTER);
 				if (row == selected_) {
-					canvas_->fill(x, y, w, row_h, Canvas::INVERTED);
+					canvas_->fill(x, row_y, w, row_h, Canvas::INVERTED);
 				}
 			}
 		}
