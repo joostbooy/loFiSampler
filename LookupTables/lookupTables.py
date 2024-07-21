@@ -13,6 +13,7 @@ sample_rate = 16000
 control_rate = sample_rate / block_size
 
 ppqn = 24
+min_bpm = 30
 max_bpm = 300
 clock_isr_freq = 4000
 
@@ -23,7 +24,7 @@ ________________________'''
 
 name = 'bpm_inc'
 
-bpm = numpy.arange(1.0, max_bpm + 1)
+bpm = numpy.arange(min_bpm, max_bpm + 1)
 hertz = bpm / 60 * ppqn
 values = hertz / clock_isr_freq * (1 << 32);
 
@@ -44,22 +45,22 @@ tables.append('float ' + name)
 tables.append(steps.astype('float32'))
 
 '''_____________________________
-     SYNC CONTROL RATE INCREMENTS
+     SYNC PHASE INC
 _____________________________'''
+name = 'sync_phase_inc'
 
 values = 1.0 / (control_rate * (60 / bpm))
 
-name = 'sync_control_rate_inc'
 tables.append('float ' + name)
 tables.append(values.astype('float32'))
 
 '''_____________________________
-     BEAT LENGTH IN SAMPLES
+     BEAT LENGTH
 _____________________________'''
+name = 'beat_length'
 
 values = sample_rate * (60 / bpm)
 
-name = 'beat_length_samples'
 tables.append('float ' + name)
 tables.append(values.astype('float32'))
 
@@ -110,6 +111,7 @@ ________________________'''
 defines = [
 'BLOCK_SIZE '				+ str(block_size),
 'SAMPLE_RATE '				+ str(sample_rate),
+'MIN_BPM '					+ str(min_bpm),
 'MAX_BPM '					+ str(max_bpm),
 'CLOCK_ISR_FREQ '			+ str(clock_isr_freq),
 'EXP_TABLE_SIZE '			+ str(exp_table_size),
