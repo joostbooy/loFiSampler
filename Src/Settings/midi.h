@@ -60,7 +60,7 @@ public:
 	}
 
 	void set_bpm(int value) {
-		bpm_ = SettingsUtils::clip(MIN_BPM, MAX_BPM - 1, value);
+		bpm_ = SettingsUtils::clip(MIN_BPM, MAX_BPM, value);
 	}
 
 	const char *bpm_text() {
