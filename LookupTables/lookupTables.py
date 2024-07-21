@@ -45,25 +45,18 @@ tables.append('float ' + name)
 tables.append(steps.astype('float32'))
 
 '''_____________________________
-     SYNC PHASE INC
-_____________________________'''
-name = 'sync_phase_inc'
-
-values = 1.0 / (control_rate * (60 / bpm))
-
-tables.append('float ' + name)
-tables.append(values.astype('float32'))
-
-'''_____________________________
      BEAT LENGTH
 _____________________________'''
+
 name = 'beat_length'
-
 values = sample_rate * (60 / bpm)
-
 tables.append('float ' + name)
 tables.append(values.astype('float32'))
 
+name = 'beat_length_inc'
+values = 1.0 / (control_rate * (60 / bpm))
+tables.append('float ' + name)
+tables.append(values.astype('float32'))
 
 '''____________________
 	EXP TABLE
