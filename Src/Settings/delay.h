@@ -34,7 +34,7 @@ public:
 
 	size_t num_samples() {
 		if (sync()) {
-			size_t samples = MidiSync::read_num_samples(amount() * (MidiSync::NUM_TEMPOS - 1));
+			size_t samples = MidiSync::read_beat_length(amount() * (MidiSync::NUM_TEMPOS - 1));
 			return SettingsUtils::clip_max(kMaxDelay, samples);
 		} else {
 			return amount() * kMaxDelay;
