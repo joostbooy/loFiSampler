@@ -84,12 +84,13 @@ void test_fill(Dac::Channel *channel, const size_t size) {
 
 
 void test_dac_spi() {
-	static uint16_t value;
-	static uint16_t prescaler;
+	static uint16_t value = 0;
+	static uint16_t prescaler = 0;
 
 	if ((++prescaler & 63) == 0) {
 		for (size_t c = 0; c < Dac::kNumStereoChannels; ++c) {
-			dac.write(c, value);
+			dac.write((c * 2), value);
+			dac.write((c * 2) + 1, value);
 		}
 		++value;
 	}
@@ -100,8 +101,8 @@ int main(void)
 	// Init drivers
 	sys.init();
 
-	Micros::init();
 	Debug::init();
+	Micros::init();
 
 	dac.init();
 	//uart.init();
