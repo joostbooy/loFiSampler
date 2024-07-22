@@ -181,7 +181,7 @@ namespace TextInputPage {
 	}
 
 	bool name_excists() {
-		return disk != nullptr && disk->entry.excists(char_stack.pointer());
+		return disk != nullptr && disk->entry().excists(char_stack.pointer());
 	}
 
 	void onButton(int id, int state) {

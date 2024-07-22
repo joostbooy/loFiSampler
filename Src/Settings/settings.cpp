@@ -14,7 +14,7 @@ bool Settings::save() {
 		return false;
 	}
 
-	fileWriter.start(&disk_->file, path.read(), current_version());
+	fileWriter.start(&disk_->file(), path.read(), current_version());
 
 	midi().save(fileWriter);
 	modulation().save(fileWriter);
@@ -47,7 +47,7 @@ bool Settings::save() {
 bool Settings::load(const char* new_path) {
 	init();	// also clears the path
 
-	fileReader.start(&disk_->file, new_path);
+	fileReader.start(&disk_->file(), new_path);
 
 	midi().load(fileReader);
 	modulation().load(fileReader);
