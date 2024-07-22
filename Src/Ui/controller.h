@@ -2,6 +2,7 @@
 #define Controller_h
 
 #include <stdint.h>
+#include "chapter.h"
 
 #define SERIAL_ID(collumn, row) ((collumn * 8) + row)
 
@@ -85,6 +86,20 @@ public:
 		case FUNCTION_BUTTON_C:		return 2;
 		case FUNCTION_BUTTON_D:		return 3;
 		default:					return -1;
+			break;
+		}
+	}
+
+	static int8_t button_to_chapter(uint8_t id) {
+		switch (id)
+		{
+		case SAMPLE_CHAPTER_BUTTON:		return Chapter::SAMPLE;
+		case INSTRUMENT_CHAPTER_BUTTON:	return Chapter::INSTRUMENT;
+		case MODULATION_CHAPTER_BUTTON:	return Chapter::MOD;
+		case SYSTEM_CHAPTER_BUTTON:		return Chapter::SYSTEM;
+		case MIDI_CHAPTER_BUTTON:		return Chapter::MIDI;
+		case STORAGE_CHAPTER_BUTTON:	return Chapter::STORAGE;
+		default:						return -1;
 			break;
 		}
 	}
