@@ -4,20 +4,23 @@ Dac* Dac::dac_;
 
 void Dac::spi_write(uint8_t command, uint8_t address, uint16_t data, uint8_t function) {
 	GPIOA->BSRR = GPIO_PIN_15 << 16;
+	asm("NOP");
 
 	spi_write(command);
 	spi_write((address << 4) | (data >> 12));
 	spi_write(data >> 4);
 	spi_write((data & 0xF) << 4 | function);
+	asm("NOP");
 
 	GPIOA->BSRR = GPIO_PIN_15;
+	asm("NOP");
 
-	Micros::delay(50);
+//	Micros::delay(50);
 }
 
-void Dac::spi_write(uint8_t data) {
-	volatile uint8_t dummy;
+volatile uint8_t dummy;
 
+void Dac::spi_write(uint8_t data) {
 	while (!(SPI3->SR & SPI_FLAG_TXE));
 	SPI3->DR = data;
 
