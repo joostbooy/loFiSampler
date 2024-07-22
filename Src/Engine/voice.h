@@ -88,8 +88,12 @@ public:
 		float inc = get_inc(note_, sample_.root_note(), instrument_.bend_range(), instrument_.bend(), sample_.cents());
 
 		while (size--) {
+			update_state(phase_);
+
 			uint32_t intergral = static_cast<uint32_t>(phase_);
 			float fractional = phase_ - intergral;
+
+			phase_ += inc;
 
 			int16_t l, r;
 			int16_t l_next, r_next;
@@ -102,9 +106,6 @@ public:
 			r = gain * ((r >> shifts) << shifts);
 
 			Dsp::pan(&l, &r, sample_.pan());
-
-			phase_ += inc;
-			update_state(phase_);
 
 			if (++sample_count_ >= instrument_.sample_rate_divider()) {
 				sample_count_ = 0;
