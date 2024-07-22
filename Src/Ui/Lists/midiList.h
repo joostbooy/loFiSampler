@@ -57,8 +57,8 @@ public:
 		{
 		case BPM:				return midi.set_bpm(midi.bpm() + (inc * (shifted ? 10 : 1)));
 		case CLOCK_SOURCE:		return midi.set_clock_source(midi.clock_source() + inc);
-		case SEND_CLOCK_UART:	return midi.set_send_clock(Midi::UART, midi.send_clock(Midi::UART) + inc);
-		case SEND_CLOCK_USB:	return midi.set_send_clock(Midi::USB, midi.send_clock(Midi::USB) + inc);
+		case SEND_CLOCK_UART:	return midi.set_send_clock(Midi::UART, inc > 0);
+		case SEND_CLOCK_USB:	return midi.set_send_clock(Midi::USB, inc > 0);
 		default:
 			break;
 		}
