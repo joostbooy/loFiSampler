@@ -152,8 +152,8 @@ void Engine::fill(Dac::Channel *channel, const size_t size) {
 	}
 	modulationEngine_.tick_lfos();
 
-	// clear & fill buffer
 	std::fill(&channel[0].left[0], &channel[Dac::kNumStereoChannels].left[0], 0);
+	
 	voiceEngine_.fill(channel, size);
 	delayEngine_.fill(channel, size);
 	limiter_.fill(channel, size);
