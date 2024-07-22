@@ -1,6 +1,6 @@
 # AUDIO SAMPLER
 Work in progress
-<img src="LfoFiSampler_faceplate.png"/></a>
+<img src="LoFiSampler_faceplate.png"/></a>
 
 ## Features
 - 4 stereo output tracks
