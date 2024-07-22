@@ -96,8 +96,8 @@ public:
 
 			sample_.read(intergral, &l, &r);
 			sample_.read(intergral + state_, &l_next, &r_next);
-			l = l + (l_next - l) * fractional;
-			r = r + (r_next - r) * fractional;
+			l = Dsp::cross_fade(l, l_next, fractional);
+			r = Dsp::cross_fade(r, r_next, fractional);
 			l = gain * ((l >> shifts) << shifts);
 			r = gain * ((r >> shifts) << shifts);
 
