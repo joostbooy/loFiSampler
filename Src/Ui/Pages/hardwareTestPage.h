@@ -92,29 +92,31 @@ namespace HardwareTestPage {
 	void on_button(int id, int state) {
 		TextBufferPainter::write(str_.write(id_text(id), " ", state));
 
-		switch (Controller::button_to_function(id))
-		{
-		case TOGGLE_LEDS:
-			if (state) {
-				if (led_toggle_state_ ^= 1) {
-					leds_->set_all(Leds::BLACK);
-				} else {
-					leds_->set_all(Leds::RED);
-				}
-			}
-			break;
-		case TEST_RAM:
-			if (state) {
-				ConfirmationPage::set("THIS WILL WIPE ALL RAM", [](int option) {
-					if (option == ConfirmationPage::CONFIRM) {
-						test_ram();
+		if (Controller::is_pressed(Controller::SHIFT_BUTTON)) {
+			switch (Controller::button_to_function(id))
+			{
+			case TOGGLE_LEDS:
+				if (state) {
+					if (led_toggle_state_ ^= 1) {
+						leds_->set_all(Leds::BLACK);
+					} else {
+						leds_->set_all(Leds::RED);
 					}
-				});
-				pages_->open(Pages::CONFIRMATION_PAGE);
+				}
+				break;
+			case TEST_RAM:
+				if (state) {
+					ConfirmationPage::set("THIS WILL WIPE ALL RAM", [](int option) {
+						if (option == ConfirmationPage::CONFIRM) {
+							test_ram();
+						}
+					});
+					pages_->open(Pages::CONFIRMATION_PAGE);
+				}
+				break;
+			default:
+				break;
 			}
-			break;
-		default:
-			break;
 		}
 	}
 
