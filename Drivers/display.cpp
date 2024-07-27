@@ -41,11 +41,12 @@ void Display::init() {
     hspi5.Init.CLKPolarity = SPI_POLARITY_HIGH;
     hspi5.Init.CLKPhase = SPI_PHASE_2EDGE;
     hspi5.Init.NSS = SPI_NSS_SOFT;
-    hspi5.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
+    hspi5.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
     hspi5.Init.FirstBit = SPI_FIRSTBIT_MSB;
     hspi5.Init.TIMode = SPI_TIMODE_DISABLE;
     hspi5.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
     hspi5.Init.CRCPolynomial = 7;
+	//hspi5.Init.CRCPolynomial = 7;
     // hspi5.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
     // hspi5.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
     HAL_SPI_Init(&hspi5);
@@ -55,7 +56,7 @@ void Display::init() {
 	DMA2_Stream4->CR &= ~DMA_SxCR_EN;	// disable stream & wait
 	while ((DMA2_Stream4->CR) & DMA_SxCR_EN);
 
-	DMA2_Stream4->CR = (0 << 25) | DMA_SxCR_MINC | DMA_SxCR_DIR_0 | DMA_SxCR_TCIE | DMA_SxCR_DMEIE;
+	DMA2_Stream4->CR = (2 << 25) | DMA_SxCR_MINC | DMA_SxCR_DIR_0 | DMA_SxCR_TCIE | DMA_SxCR_DMEIE;
 	DMA2_Stream4->FCR &= ~DMA_SxFCR_DMDIS;
 
 	dma_busy_ = false;
