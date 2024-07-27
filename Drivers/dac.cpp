@@ -15,7 +15,7 @@ void Dac::spi_write(uint8_t command, uint8_t address, uint16_t data, uint8_t fun
 	GPIOA->BSRR = GPIO_PIN_15;
 	asm("NOP");
 
-//	Micros::delay(50);
+	//	Micros::delay(50);
 }
 
 volatile uint8_t dummy;
@@ -40,13 +40,13 @@ void Dac::init() {
 	*/
 
 
-/*
+	/*
 	GPIO_InitStruct.Pin = GPIO_PIN_15;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-*/
+	*/
 	GPIO_InitStruct.Pin = GPIO_PIN_15;
 	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
@@ -115,6 +115,7 @@ void Dac::init() {
 	__HAL_I2S_ENABLE(&hi2s3);
 
 
+	// Channel 0, stream 5
 	DMA_HandleTypeDef hdma_spi3_tx;
 	hdma_spi3_tx.Instance = DMA1_Stream5;
 	hdma_spi3_tx.Init.Direction = DMA_MEMORY_TO_PERIPH;
@@ -139,8 +140,8 @@ void Dac::start(void (*callback)(Channel*, size_t)) {
 
 extern "C" {
 	void DMA1_Stream5_IRQHandler(void) {
-		uint32_t flags = DMA1->LISR;
-		DMA1->LIFCR |= DMA_HIFCR_CTCIF5 | DMA_HIFCR_CHTIF5;
+		uint32_t flags = DMA1->HISR;
+		DMA1->HIFCR |= DMA_HIFCR_CTCIF5 | DMA_HIFCR_CHTIF5;
 
 		if (flags & DMA_HISR_TCIF5) {
 			Dac::dac_->fill(1);
