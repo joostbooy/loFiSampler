@@ -1,5 +1,6 @@
 #include "pages.h"
 #include "topPage.h"
+#include "chapterPage.h"
 #include "lfoPage.h"
 #include "envelopePage.h"
 #include "instrumentPage.h"
@@ -15,6 +16,7 @@
 
 Pages::Page* page_[Pages::NUM_PAGES] = {
 	[Pages::TOP_PAGE]			= &TopPage::page,
+	[Pages::CHAPTER_PAGE]		= &ChapterPage::page,
 	[Pages::LIST_PAGE]			= &ListPage::page,
 	[Pages::LFO_PAGE]			= &LfoPage::page,
 	[Pages::ENVELOPE_PAGE]		= &EnvelopePage::page,
@@ -26,7 +28,7 @@ Pages::Page* page_[Pages::NUM_PAGES] = {
 	[Pages::CONFIRMATION_PAGE]	= &ConfirmationPage::page,
 	[Pages::OPTION_LIST_PAGE]	= &OptionListPage::page,
 	[Pages::HARDWARE_TEST_PAGE]	= &HardwareTestPage::page,
-	[Pages::TEXT_INPUT_PAGE]	= &TextInputPage::page
+	[Pages::TEXT_INPUT_PAGE]	= &TextInputPage::page,
 };
 
 void Pages::init(Settings *settings, Engine *engine, Canvas *canvas, Leds *leds) {
@@ -34,22 +36,22 @@ void Pages::init(Settings *settings, Engine *engine, Canvas *canvas, Leds *leds)
 	page_stack_.clear();
 	TopPage::init(settings, engine, canvas, leds, this);
 
-	for (int i = 0; i < NUM_PAGES; ++i) {
-		page_[i]->init();
-	}
+//	for (int i = 0; i < NUM_PAGES; ++i) {
+//		page_[i]->init();
+//	}
 
-	open(HARDWARE_TEST_PAGE);
+	//open(DUMMY_PAGE);
 }
 
-void Pages::open(PageId id) {
-	if (page_stack_.find(id) == false && page_stack_.writeable() == true) {
+void Pages::open(int id) {
+	if (page_stack_.find(id) < 0 && page_stack_.writeable() == true) {
 		page_stack_.push(id);
 		page_[id]->enter();
 		curr_page_ = id;
 	}
 }
 
-void Pages::close(PageId id) {
+void Pages::close(int id) {
 	if (page_stack_.remove_by_value(id)) {
 		page_[id]->exit();
 		if (page_stack_.readable()) {

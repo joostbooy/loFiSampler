@@ -12,6 +12,7 @@ public:
 
 	enum PageId {
 		TOP_PAGE,
+		CHAPTER_PAGE,
 		LIST_PAGE,
 		LFO_PAGE,
 		ENVELOPE_PAGE,
@@ -24,12 +25,13 @@ public:
 		OPTION_LIST_PAGE,
 		HARDWARE_TEST_PAGE,
 		TEXT_INPUT_PAGE,
+
 		NUM_PAGES
 	};
 
 	void init(Settings *settings, Engine *engine, Canvas *canvas, Leds *leds);
-	void open(PageId id);
-	void close(PageId id);
+	void open(int id);
+	void close(int id);
 	void close_all();
 	void on_button(int id, int state);
 	void on_encoder(int id, int state);
