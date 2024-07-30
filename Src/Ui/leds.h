@@ -60,10 +60,8 @@ private:
 	uint8_t data_[kNumOfCollumns];
 
 	void set(int x, int y, Color color) {
-		//int y_ = y + 4;
-		int y_ = y;
-		uint8_t value = data_[x] & ~(1 << y_);
-		data_[x] = value | (color << y_);
+		uint8_t value = data_[x] & ~(1 << y);
+		data_[x] = value | (color << y);
 	}
 
 	struct Map {
