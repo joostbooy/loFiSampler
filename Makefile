@@ -12,7 +12,7 @@
 
 
 TARGET = LoFiSampler
-OPT = -O2
+OPT = -O2	#-Og
 
 BUILD_DIR = Build
 
@@ -156,7 +156,8 @@ C_INCLUDES = \
 # FLAGS
 #######################################
 # mcu
-MCU = $(CPU) -mthumb $(FPU) $(FLOAT_ABI) -mthumb-interwork
+MCU = $(CPU) -mthumb $(FPU) $(FLOAT_ABI)
+# -mthumb-interwork
 
 # ASM flags
 ASFLAGS = \
@@ -164,9 +165,10 @@ $(MCU) \
 $(AS_DEFS) \
 $(AS_INCLUDES) \
 $(OPT) \
--g -Wall -Wdouble-promotion -Wno-strict-aliasing \
+-g -Wall -Wdouble-promotion \
 -fdata-sections \
--ffunction-sections
+-ffunction-sections \
+-Wno-strict-aliasing
 
 # C flags
 CFLAGS = \
@@ -186,6 +188,7 @@ $(OPT) \
 -MMD -MP -MF"$(@:%.o=%.d)"
 #-fasm
 #-flto
+#-gdwarf-2
 
 # CPP flags
 CPPFLAGS = \
@@ -197,12 +200,15 @@ $(CFLAGS) \
 LDFLAGS = \
 $(MCU) \
 -specs=nano.specs \
--T$(LDSCRIPT) -lc -lm -lrdimon -lnosys \
+-T$(LDSCRIPT) -lc -lm -lnosys \
 -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref \
 -Wl,--gc-sections \
 -Wl,--print-memory-usage \
--lstdc++
+#-lstdc++
 #-flto
+# lrdimon
+
+
 
 #######################################
 # build the application
