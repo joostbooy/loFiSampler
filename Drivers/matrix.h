@@ -10,11 +10,6 @@ class Matrix {
 
 public:
 
-	enum LedColor {
-		BLACK	= 0x00,
-		RED		= 0x01,
-	};
-
 	void init();
 
 	void set_leds(uint8_t *led_data) {
@@ -46,7 +41,9 @@ public:
 		}
 
 		// latch led rows & collumn
-		GPIOB->BSRR = (GPIO_PIN_4 << 16) | (GPIO_PIN_5 << 16);
+		GPIOB->BSRR = GPIO_PIN_4 << 16;
+		GPIOB->BSRR = GPIO_PIN_5 << 16;
+		Micros::delay(4);
 		GPIOB->BSRR = GPIO_PIN_4 | GPIO_PIN_5;
 	}
 
@@ -63,21 +60,20 @@ private:
 		coll & 0x02 ? reg |= GPIO_PIN_7 : reg |= GPIO_PIN_7 << 16;
 		coll & 0x04 ? reg |= GPIO_PIN_8 : reg |= GPIO_PIN_8 << 16;
 		GPIOB->BSRR = reg;
-		Micros::delay(1);
+		Micros::delay(4);
 	}
 
 	uint8_t spi_transfer(uint8_t send = 0xff) {
 		volatile uint8_t recv;
 
 		while (!(SPI4->SR & SPI_FLAG_TXE));
-		SPI4->DR = send;
+		*(volatile uint8_t*)&SPI4->DR = send;
 
 		while (!(SPI4->SR & SPI_FLAG_RXNE));
-		recv = SPI4->DR;
+		recv = *(volatile uint8_t*)&SPI4->DR;
 
 		return recv;
 	}
-
 };
 
 #endif
