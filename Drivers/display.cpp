@@ -28,7 +28,7 @@ void Display::init() {
     GPIO_InitStruct.Pin = GPIO_PIN_7|GPIO_PIN_8|GPIO_PIN_9;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF5_SPI5;
     HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
 
@@ -44,11 +44,8 @@ void Display::init() {
     hspi5.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
     hspi5.Init.FirstBit = SPI_FIRSTBIT_MSB;
     hspi5.Init.TIMode = SPI_TIMODE_DISABLE;
-    hspi5.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
-    hspi5.Init.CRCPolynomial = 7;
-	//hspi5.Init.CRCPolynomial = 7;
-    // hspi5.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
-    // hspi5.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
+	hspi5.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+	hspi5.Init.CRCPolynomial = 10;
     HAL_SPI_Init(&hspi5);
 	__HAL_SPI_ENABLE(&hspi5);
 

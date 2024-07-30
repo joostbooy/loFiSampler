@@ -98,10 +98,10 @@ private:
 
 	void spi_write(uint8_t data) {
 		while (!(SPI5->SR & SPI_FLAG_TXE));
-		SPI5->DR = data;
+		*(volatile uint8_t*)&SPI5->DR = data;
 
 		while (!(SPI5->SR & SPI_FLAG_RXNE));
-		dummy = SPI5->DR;
+		dummy = *(volatile uint8_t*)&SPI5->DR;
 	}
 };
 
