@@ -12,7 +12,7 @@ public:
         GPIOG->BSRR = state ? GPIO_PIN_13 : GPIO_PIN_13 << 16;
     }
 
-    inline void toggle() {
+    static inline void toggle() {
 		(toggle_state ^= 1) ? write(1) : write(0);
     }
 
