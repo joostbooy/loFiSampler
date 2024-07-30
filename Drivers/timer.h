@@ -6,8 +6,8 @@
 class Timer {
 
 public:
+	void start_2(uint32_t freq);
 	void start_3(uint32_t freq);
-	void start_7(uint32_t freq);
 
 private:
 
