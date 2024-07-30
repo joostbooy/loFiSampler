@@ -11,27 +11,17 @@ public:
 	};
 
 	void init() {
-		clear();
+		set_all(BLACK);
 	}
 
 	uint8_t* data() {
 		return &data_[0];
 	}
 
-	void clear() {
-		for (size_t i = 0; i < kNumOfCollumns; ++i) {
-			data_[i] = 0;
-		}
-	}
-
 	void set_all(Color color) {
-		for (int i = 0; i < 4; ++i) {
-			set_footer_button(i, color);
-			set_footer_encoder(i, color);
-		}
-		
-		for (int i = 0; i < 6; ++i) {
-			set(chapter_leds_[i].x, chapter_leds_[i].y, color);
+		uint8_t value = color == RED ? 0xFF : 0x00;
+		for (size_t i = 0; i < kNumOfCollumns; ++i) {
+			data_[i] = value;
 		}
 	}
 
@@ -70,8 +60,10 @@ private:
 	uint8_t data_[kNumOfCollumns];
 
 	void set(int x, int y, Color color) {
-		uint8_t value = data_[x] & ~(1 << y);
-		data_[x] = value | (color << y);
+		//int y_ = y + 4;
+		int y_ = y;
+		uint8_t value = data_[x] & ~(1 << y_);
+		data_[x] = value | (color << y_);
 	}
 
 	struct Map {
