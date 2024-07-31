@@ -38,12 +38,12 @@ void Sdmmc::init() {
 	HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 
 	// Enable dma interrupt
-	HAL_NVIC_EnableIRQ(DMA2_Stream3_IRQn);
+	HAL_NVIC_EnableIRQ(DMA2_Stream0_IRQn);
 }
 
 
 // DMA2 steam 0 Channel 4
-const uint32_t kChannel4				= (4 << 25);
+const uint32_t kChannel11				= (11 << 25);
 const uint32_t kMemoryBurst_inc4		= (1 << 23);
 const uint32_t kPeripheralBurst_inc4	= (1 << 21);
 const uint32_t kPriorityVeryHigh		= (3 << 16);
@@ -67,7 +67,7 @@ void Sdmmc::init_dma(uint32_t buffer, DmaType dmaType) {
 	}
 
 	DMA2_Stream0->CR = 0;
-	DMA2_Stream0->CR = (kChannel4 | kMemoryBurst_inc4 | kPeripheralBurst_inc4 | kPriorityVeryHigh | kMemorySize_32bit | kPeripheralSize_32bit | kEnableMemoryIncrement | kPeripheralFlowControl | direction | kEnable_TC_interupt);
+	DMA2_Stream0->CR = (kChannel11 | kMemoryBurst_inc4 | kPeripheralBurst_inc4 | kPriorityVeryHigh | kMemorySize_32bit | kPeripheralSize_32bit | kEnableMemoryIncrement | kPeripheralFlowControl | direction | kEnable_TC_interupt);
 
 	DMA2_Stream0->FCR |= DMA_SxFCR_DMDIS;	// disable direct mode (enables fifo mode)
 	DMA2_Stream0->FCR |= (3 << 0); 			// fifo treshold full
