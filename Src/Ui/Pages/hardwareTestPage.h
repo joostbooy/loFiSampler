@@ -11,6 +11,8 @@ namespace HardwareTestPage {
 	using TopPage::leds_;
 	using TopPage::pages_;
 
+	using TopPage::canvas_;
+
 	const char *id_text(int id) {
 		switch (id)
 		{
@@ -97,11 +99,7 @@ namespace HardwareTestPage {
 			{
 			case TOGGLE_LEDS:
 				if (state) {
-					if (led_toggle_state_ ^= 1) {
-						leds_->set_all(Leds::BLACK);
-					} else {
-						leds_->set_all(Leds::RED);
-					}
+					led_toggle_state_ ^= 1;
 				}
 				break;
 			case TEST_RAM:
@@ -125,7 +123,11 @@ namespace HardwareTestPage {
 	}
 
 	void refresh_leds() {
-
+		if (led_toggle_state_) {
+			leds_->set_all(Leds::BLACK);
+		} else {
+			leds_->set_all(Leds::RED);
+		}
 	}
 
 	void draw() {
