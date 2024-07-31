@@ -28,7 +28,7 @@ void Ui::init(Settings *settings, Engine *engine, Matrix *matrix, Display *displ
 	canvas_.init();
 	leds_.init();
 	pages_.init(settings, engine, &canvas_, &leds_);
-	
+
 	ui_que.clear();
 }
 
@@ -59,11 +59,12 @@ void Ui::poll() {
 		uint8_t a = enc_a_row + x;
 		uint8_t b = enc_b_row + x;
 		if ((sw_raw[b] & 0x03) == 0x02 && (sw_raw[a] & 0x03) == 0x00) {
-			addEvent(Ui::ENCODER, a, 1);
-		} else if ((sw_raw[a] & 0x03) == 0x02 && (sw_raw[b] & 0x03) == 0x00) {
 			addEvent(Ui::ENCODER, a, -1);
+		} else if ((sw_raw[a] & 0x03) == 0x02 && (sw_raw[b] & 0x03) == 0x00) {
+			addEvent(Ui::ENCODER, a, 1);
 		}
 	}
+
 }
 
 void Ui::process() {
@@ -86,7 +87,7 @@ void Ui::process() {
 
 	if (interval >= 1) {
 		last_interval += interval;
-		leds_.clear();
+		leds_.set_all(Leds::BLACK);
 		pages_.refresh_leds();
 		matrix_->set_leds(leds_.data());
 	}
