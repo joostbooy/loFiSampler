@@ -25,7 +25,7 @@ public:
 
 			// latch switch rows
 			GPIOB->BSRR = GPIO_PIN_3 << 16;
-			asm("NOP");
+			Micros::delay(1);
 			GPIOB->BSRR = GPIO_PIN_3;
 
 			*sw_buffer++ = spi_transfer();
@@ -43,7 +43,7 @@ public:
 		// latch led rows & collumn
 		GPIOB->BSRR = GPIO_PIN_4 << 16;
 		GPIOB->BSRR = GPIO_PIN_5 << 16;
-		Micros::delay(4);
+		Micros::delay(1);
 		GPIOB->BSRR = GPIO_PIN_4 | GPIO_PIN_5;
 	}
 
@@ -60,7 +60,7 @@ private:
 		coll & 0x02 ? reg |= GPIO_PIN_7 : reg |= GPIO_PIN_7 << 16;
 		coll & 0x04 ? reg |= GPIO_PIN_8 : reg |= GPIO_PIN_8 << 16;
 		GPIOB->BSRR = reg;
-		Micros::delay(4);
+		Micros::delay(1);
 	}
 
 	uint8_t spi_transfer(uint8_t send = 0xff) {
