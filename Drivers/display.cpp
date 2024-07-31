@@ -16,42 +16,42 @@ void Display::init() {
 	GPIO_InitStruct.Pin = GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
 	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
 
 	/**SPI2 GPIO Configuration
-    PF7     ------> SPI5_SCK
-    PF8     ------> SPI5_MISO
-    PF9     ------> SPI5_MOSI
-    */
-    GPIO_InitStruct.Pin = GPIO_PIN_7|GPIO_PIN_8|GPIO_PIN_9;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-    GPIO_InitStruct.Alternate = GPIO_AF5_SPI5;
-    HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+	PF7     ------> SPI5_SCK
+	PF8     ------> SPI5_MISO
+	PF9     ------> SPI5_MOSI
+	*/
+	GPIO_InitStruct.Pin = GPIO_PIN_7|GPIO_PIN_8|GPIO_PIN_9;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+	GPIO_InitStruct.Alternate = GPIO_AF5_SPI5;
+	HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
 
 	// SPI 5
 	SPI_HandleTypeDef hspi5;
 	hspi5.Instance = SPI5;
-    hspi5.Init.Mode = SPI_MODE_MASTER;
-    hspi5.Init.Direction = SPI_DIRECTION_2LINES;
-    hspi5.Init.DataSize = SPI_DATASIZE_8BIT;
-    hspi5.Init.CLKPolarity = SPI_POLARITY_HIGH;
-    hspi5.Init.CLKPhase = SPI_PHASE_2EDGE;
-    hspi5.Init.NSS = SPI_NSS_SOFT;
-    hspi5.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
-    hspi5.Init.FirstBit = SPI_FIRSTBIT_MSB;
-    hspi5.Init.TIMode = SPI_TIMODE_DISABLE;
+	hspi5.Init.Mode = SPI_MODE_MASTER;
+	hspi5.Init.Direction = SPI_DIRECTION_2LINES;
+	hspi5.Init.DataSize = SPI_DATASIZE_8BIT;
+	hspi5.Init.CLKPolarity = SPI_POLARITY_HIGH;
+	hspi5.Init.CLKPhase = SPI_PHASE_2EDGE;
+	hspi5.Init.NSS = SPI_NSS_SOFT;
+	hspi5.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
+	hspi5.Init.FirstBit = SPI_FIRSTBIT_MSB;
+	hspi5.Init.TIMode = SPI_TIMODE_DISABLE;
 	hspi5.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
 	hspi5.Init.CRCPolynomial = 10;
-    HAL_SPI_Init(&hspi5);
+	HAL_SPI_Init(&hspi5);
 	__HAL_SPI_ENABLE(&hspi5);
 
 	//DMA
 	DMA2_Stream4->CR &= ~DMA_SxCR_EN;	// disable stream & wait
-	while ((DMA2_Stream4->CR) & DMA_SxCR_EN);
+	while (DMA2_Stream4->CR & DMA_SxCR_EN);
 
 	DMA2_Stream4->CR = (2 << 25) | DMA_SxCR_MINC | DMA_SxCR_DIR_0 | DMA_SxCR_TCIE | DMA_SxCR_DMEIE;
 	DMA2_Stream4->FCR &= ~DMA_SxFCR_DMDIS;

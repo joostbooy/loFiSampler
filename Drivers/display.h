@@ -74,14 +74,16 @@ public:
 
 	void sendBuffer(uint8_t* data, uint32_t size) {
 		while (dma_busy_) {};
-		dummy = SPI5->DR;
+		dummy = *(volatile uint8_t*)&SPI5->DR;
+		dummy = *(volatile uint8_t*)&SPI5->DR;
+		dummy = *(volatile uint8_t*)&SPI5->DR;
+		dummy = *(volatile uint8_t*)&SPI5->DR;
 
 		set_col_address(0x1C, 0x5B);
 		set_row_address(0x00, 0x3F);
 		enable_write();
 
 		cd_high();
-
 		DMA2->HIFCR |= DMA_HIFCR_CTCIF4 | DMA_HIFCR_CHTIF4 | DMA_HIFCR_CTEIF4 | DMA_HIFCR_CDMEIF4 | DMA_HIFCR_CFEIF4;
 		DMA2_Stream4->PAR = reinterpret_cast<uint32_t>(&SPI5->DR);
 		DMA2_Stream4->M0AR = reinterpret_cast<uint32_t>(&data[0]);
