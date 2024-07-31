@@ -36,6 +36,7 @@ public:
 			num_options = kMaxFooterOptions;
 		}
 
+		canvas_->fill(0, y, canvas_->width(), h, Canvas::WHITE);
 		canvas_->horizontal_line(0, y, canvas_->width(), Canvas::BLACK);
 
 		for (int i = 0; i < kMaxFooterOptions; ++i) {
