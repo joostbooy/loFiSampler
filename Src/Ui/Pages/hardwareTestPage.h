@@ -52,10 +52,11 @@ namespace HardwareTestPage {
 	enum FooterOptions {
 		TOGGLE_LEDS,
 		TEST_RAM,
+		TEST_SD_CARD,
 		NUM_OPTIONS
 	};
 
-	const char* const footer_option_text[NUM_OPTIONS] = { "TOGGLE LEDS", "TEST RAM" };
+	const char* const footer_option_text[NUM_OPTIONS] = { "TOGGLE LEDS", "TEST RAM", "TEST SD CARD" };
 
 	bool led_toggle_state_;
 
@@ -110,6 +111,15 @@ namespace HardwareTestPage {
 						}
 					});
 					pages_->open(Pages::CONFIRMATION_PAGE);
+				}
+				break;
+			case TEST_SD_CARD:
+				if (state) {
+					if (settings_->disk()->mount()) {
+						MessagePainter::show("SD MOUNTED");
+					} else {
+						MessagePainter::show("ERROR");
+					}
 				}
 				break;
 			default:
