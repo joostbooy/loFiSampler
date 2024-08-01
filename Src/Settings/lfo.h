@@ -147,7 +147,7 @@ public:
 		return retrigger_port_;
 	}
 
-	void set_retrigger_port(uint8_t value) {
+	void set_retrigger_port(int value) {
 		retrigger_port_ = SettingsUtils::clip(0, Midi::NUM_PORTS - 1, value);
 	}
 
