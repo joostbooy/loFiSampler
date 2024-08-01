@@ -73,9 +73,9 @@ namespace LfoPage {
 		lfo.set_randomise(false);
 		lfoEngine.init(&lfo);
 
-		const int x = 128;
+		const int x = 64;
 		const int y = 5;
-		const int w = 32;
+		const int w = 128;
 		const int h = 32;
 
 		for (int x2 = 0; x2 < 255; ++x2) {
