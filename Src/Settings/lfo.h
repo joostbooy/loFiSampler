@@ -139,7 +139,7 @@ public:
 	}
 
 	const char *randomise_text() {
-		return SettingsText::bool_to_on_off(clock_sync());
+		return SettingsText::bool_to_on_off(randomise());
 	}
 
 	// Retrigger port
@@ -232,7 +232,7 @@ private:
 	float sync_phase_;
 	bool randomise_;
 	bool clock_sync_;
-	uint8_t retrigger_port_;
+	int retrigger_port_;
 	int retrigger_channel_;
 };
 
