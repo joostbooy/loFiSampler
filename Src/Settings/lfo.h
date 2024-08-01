@@ -92,7 +92,7 @@ public:
 
 	// Max
 	float max() {
-		return min_;
+		return max_;
 	}
 
 	void set_max(float value) {
