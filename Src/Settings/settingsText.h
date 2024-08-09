@@ -35,7 +35,7 @@ public:
 
 	static const char* hertz_to_text(float hertz) {
 		uint32_t intergral = hertz;
-		uint32_t fractional = float(hertz - intergral) * 1000.f;
+		uint32_t fractional = (hertz - intergral) * 100.f;
 		return str.write(intergral, ".", fractional, " HZ");
 	}
 
