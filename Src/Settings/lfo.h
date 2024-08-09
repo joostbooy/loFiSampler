@@ -39,7 +39,7 @@ public:
 		if (clock_sync()) {
 			return MidiSync::tempo_text(speed() * (MidiSync::NUM_TEMPOS - 1));
 		} else {
-			return nullptr;
+			return SettingsText::float_to_text(speed(), 0, 100);
 		}
 	}
 

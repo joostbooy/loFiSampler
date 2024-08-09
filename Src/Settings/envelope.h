@@ -81,7 +81,7 @@ public:
 		if (clock_sync()) {
 			return MidiSync::tempo_text(attack_time() * (MidiSync::NUM_TEMPOS - 1));
 		} else {
-			return nullptr;
+			return SettingsText::float_to_text(attack_time(), 0, 100);
 		}
 	}
 
@@ -119,7 +119,7 @@ public:
 		if (clock_sync()) {
 			return MidiSync::tempo_text(decay_time() * (MidiSync::NUM_TEMPOS - 1));
 		} else {
-			return nullptr;
+			return SettingsText::float_to_text(decay_time(), 0, 100);
 		}
 	}
 
@@ -161,7 +161,7 @@ public:
 		} else if (clock_sync()) {
 			return MidiSync::tempo_text(hold_time() * (MidiSync::NUM_TEMPOS - 1));
 		} else {
-			return nullptr;
+			return SettingsText::float_to_text(hold_time(), 0, 100);
 		}
 	}
 
@@ -200,7 +200,7 @@ public:
 		if (clock_sync()) {
 			return MidiSync::tempo_text(release_time() * (MidiSync::NUM_TEMPOS - 1));
 		} else {
-			return nullptr;
+			return SettingsText::float_to_text(release_time(), 0, 100);
 		}
 	}
 
