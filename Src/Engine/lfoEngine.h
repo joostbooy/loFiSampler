@@ -21,6 +21,8 @@ public:
 
 	void reset() {
 		phase_ = lfo_->sync_phase();
+		stage_ = FALLING;
+		set_stage(RISING);
 	}
 
 	void retrigger(MidiEngine::Event &e) {
@@ -33,21 +35,18 @@ public:
 	float value() { return value_; }
 
 	float next() {
-		float shape;
 		float skew_phase;
 		float skew_amount = lfo_->skew();
 
 		if (phase_ < skew_amount) {
 			set_stage(RISING);
 			skew_phase = phase_ * (1.0f / skew_amount);
-			shape = lfo_->shape();
 		} else {
 			set_stage(FALLING);
 			skew_phase = (phase_ - skew_amount) * (1.0f / (1.0f - skew_amount));
-			shape = 1.f - lfo_->shape();
 		}
 
-		value_ = Dsp::cross_fade(last_value_, target_value_, Curve::read(skew_phase, shape));
+		value_ = Dsp::cross_fade(last_value_, target_value_, Curve::read(skew_phase, lfo_->shape()));
 
 		phase_ += lfo_->inc();
 		if (phase_ >= 1.f) {
