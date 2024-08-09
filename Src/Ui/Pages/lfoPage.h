@@ -71,6 +71,8 @@ namespace LfoPage {
 		lfo.paste(&settings_->selected_lfo());
 		lfo.set_clock_sync(false);
 		lfo.set_randomise(false);
+		// 0.152f results in 7.8hz (control_rate / w = 7.8 hz)
+		lfo.set_speed(0.152f);
 		lfoEngine.init(&lfo);
 
 		const int x = 64;
@@ -78,7 +80,7 @@ namespace LfoPage {
 		const int w = 128;
 		const int h = 32;
 
-		for (int x2 = 0; x2 < 255; ++x2) {
+		for (int x2 = 0; x2 < w; ++x2) {
 			int y2 = h * (1.f - lfoEngine.next());
 			canvas_->draw_pixel(x + x2, y + y2, Canvas::BLACK);
 		}
