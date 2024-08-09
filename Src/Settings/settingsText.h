@@ -33,6 +33,12 @@ public:
 		return str.write(static_cast<int>(percentage), "%");
 	}
 
+	static const char* hertz_to_text(float hertz) {
+		uint32_t intergral = hertz;
+		uint32_t fractional = float(hertz - intergral) * 1000.f;
+		return str.write(intergral, ".", fractional, " HZ");
+	}
+
 	static const char* audio_channel_to_text(int channel) {
 		int channel_ = channel * 2;
 		return str.write(channel_ + 1, " & ", channel_ + 2);
