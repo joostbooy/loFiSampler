@@ -17,12 +17,17 @@ public:
 	void init(Lfo *lfo) {
 		lfo_ = lfo;
 		reset();
+
+		if (stage_ == RISING) {
+			last_value_ = lfo_->min();
+		} else {
+			last_value_ = lfo_->max();
+		}
 	}
 
 	void reset() {
 		phase_ = lfo_->sync_phase();
-		stage_ = FALLING;
-		set_stage(RISING);
+		set_stage(phase_ < lfo_->skew() ? RISING : FALLING, true);
 	}
 
 	void retrigger(MidiEngine::Event &e) {
@@ -62,10 +67,10 @@ private:
 	float phase_ = 0.f;
 	float value_ = 0.f;
 	float last_value_ = 0.f;
-	float target_value_ = 0.f;
+	float target_value_ = 1.f;
 
-	inline void set_stage(Stage stage) {
-		if (stage_ != stage) {
+	inline void set_stage(Stage stage, bool force = false) {
+		if (stage_ != stage || force == true) {
 			stage_ = stage;
 
 			last_value_ = value_;
