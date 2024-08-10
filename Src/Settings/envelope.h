@@ -37,7 +37,7 @@ public:
 		set_decay_time(0);
 		set_decay_shape(0);
 		set_hold_time(0);
-		set_sustain_level(0);
+		set_sustain_level(0.5f);
 		set_release_time(0);
 		set_release_shape(0);
 	}
@@ -56,12 +56,12 @@ public:
 	}
 
 	// Mode
-	uint8_t mode() {
-		return clock_sync_;
+	int mode() {
+		return mode_;
 	}
 
-	void set_mode(uint8_t value) {
-		mode_ = value;
+	void set_mode(int value) {
+		mode_ = SettingsUtils::clip(0, NUM_MODES - 1, value);
 	}
 
 	const char *mode_text() {
@@ -267,7 +267,7 @@ public:
 
 private:
 	bool clock_sync_;
-	uint8_t mode_;
+	int mode_;
 	float attack_time_;
 	float attack_shape_;
 	float decay_time_;
