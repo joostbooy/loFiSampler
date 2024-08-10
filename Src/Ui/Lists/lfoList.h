@@ -11,13 +11,13 @@ public:
 	enum Item {
 		LFO,
 		SPEED,
+		CLOCK_SYNC,
 		SHAPE,
 		SKEW,
 		MIN,
 		MAX,
 		SYNC_PHASE,
 		RANDOMISE,
-		CLOCK_SYNC,
 		RETRIGGER_PORT,
 		RETRIGGER_CHANNEL,
 
@@ -34,13 +34,13 @@ public:
 		{
 		case LFO:				return "LFO";
 		case SPEED:				return "SPEED";
+		case CLOCK_SYNC:		return "CLOCK SYNC";
 		case SHAPE:				return "SHAPE";
 		case SKEW:				return "SKEW";
 		case MIN:				return "MIN";
 		case MAX:				return "MAX";
 		case SYNC_PHASE:		return "SYNC PHASE";
 		case RANDOMISE:			return "RANDOMISE";
-		case CLOCK_SYNC:		return "CLOCK SYNC";
 		case RETRIGGER_PORT:	return "RETRIGGER PORT";
 		case RETRIGGER_CHANNEL:	return "RETRIGGER CHANNEL";
 		default:
@@ -56,13 +56,13 @@ public:
 		{
 		case LFO:				return SettingsText::int_to_text(settings_->selected_lfo_index() + 1);
 		case SPEED:				return lfo.speed_text();
+		case CLOCK_SYNC:		return lfo.clock_sync_text();
 		case SHAPE:				return lfo.shape_text();
 		case SKEW:				return lfo.skew_text();
 		case MIN:				return lfo.min_text();
 		case MAX:				return lfo.max_text();
 		case SYNC_PHASE:		return lfo.sync_phase_text();
 		case RANDOMISE:			return lfo.randomise_text();
-		case CLOCK_SYNC:		return lfo.clock_sync_text();
 		case RETRIGGER_PORT:	return lfo.retrigger_port_text();
 		case RETRIGGER_CHANNEL:	return lfo.retrigger_channel_text();
 		default:
@@ -82,6 +82,9 @@ public:
 		case SPEED:
 			lfo.set_speed(lfo.speed() + SettingsUtils::f_inc(inc, shifted));
 			break;
+		case CLOCK_SYNC:
+			lfo.set_clock_sync(inc > 0);
+			break;
 		case SHAPE:
 			lfo.set_shape(lfo.shape() + SettingsUtils::f_inc(inc, shifted));
 			break;
@@ -99,9 +102,6 @@ public:
 			break;
 		case RANDOMISE:
 			lfo.set_randomise(inc > 0);
-			break;
-		case CLOCK_SYNC:
-			lfo.set_clock_sync(inc > 0);
 			break;
 		case RETRIGGER_PORT:
 			lfo.set_retrigger_port(lfo.retrigger_port() + inc);
