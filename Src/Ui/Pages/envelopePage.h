@@ -69,15 +69,32 @@ namespace EnvelopePage {
 		EnvelopeEngine envelopeEngine;
 
 		envelope.paste(&settings_->selected_envelope());
-		envelope.set_clock_sync(false);
-		envelopeEngine.init(&envelope);
 
-		const int x = 128;
+		// 0.623f results in 32.25 hz (control rate / (w / 4) = 31.25 hz)
+		envelope.set_attack_time(Dsp::cross_fade(0.623f, 1.0f, envelope.attack_time()));
+		envelope.set_decay_time(Dsp::cross_fade(0.623f, 1.0f, envelope.decay_time()));
+		envelope.set_release_time(Dsp::cross_fade(0.623f, 1.0f, envelope.release_time()));
+
+		int mode = envelope.mode();
+		envelope.set_mode(Envelope::TRIGGER);
+
+		if (mode == Envelope::TRIGGER) {
+			envelope.set_hold_time(Dsp::cross_fade(0.623f, 1.0f, envelope.hold_time()));
+		} else {
+			envelope.set_hold_time(0.623f);
+		}
+
+		envelope.set_clock_sync(false);
+
+		envelopeEngine.init(&envelope);
+		envelopeEngine.attack();
+
+		const int x = 64;
 		const int y = 5;
-		const int w = 32;
+		const int w = 128;
 		const int h = 32;
 
-		for (int x2 = 0; x2 < 255; ++x2) {
+		for (int x2 = 0; x2 < w; ++x2) {
 			int y2 = h * (1.f - envelopeEngine.next());
 			canvas_->draw_pixel(x + x2, y + y2, Canvas::BLACK);
 		}
