@@ -43,27 +43,20 @@ void Engine::tick() {
 		}
 	}
 	midiEngine_.poll();
-
-	//	for (size_t i = 0; i < Modulation::kNumGatesToNote; ++i) {
-	//		bool current = gate_->read(i);
-
-	//		if (current != last_gate_[i]) {
-	//			last_gate_[i] = current;
-	//			e = settings_->modulation().gate_to_midi(i);
-	//			current ? e.message |= MidiEngine::NOTE_ON : e.message |= MidiEngine::NOTE_OFF;
-	//			midiEngine_.write_input(e);
-	//		}
-	//	}
 }
 
 void Engine::note_on(MidiEngine::Event &e) {
 	size_t num_written = sampleQue_.note_on(e);
 	if (num_written >= 1) {
+	//	set_num_note_on(num_written);
+	//	add_request_blocking(NOTE_ON);
 		voiceEngine_.request_voices(num_written);
 	}
 }
 
 void Engine::note_off(MidiEngine::Event &e) {
+//	set_note_off(e);
+//	add_request_blocking(NOTE_OFF);
 	voiceEngine_.note_off(e.port, e.message & 0x0F, e.data[0]);
 }
 
@@ -138,6 +131,16 @@ void Engine::process_requests() {
 		clear_request(KILL_MIDI_CHANNEL);
 		voiceEngine_.kill_midi_channel(port_to_kill_, channel_to_kill_);
 	}
+
+//	if (requests_ & NOTE_ON) {
+//		clear_request(NOTE_ON);
+//		voiceEngine_.request_voices(num_note_on_);
+//	}
+
+//	if (requests_ & NOTE_OFF) {
+//		clear_request(NOTE_OFF);
+//		voiceEngine_.note_off(off_event.port, off_event.message & 0x0F, off_event.data[0]);
+//	}
 }
 
 void Engine::fill(Dac::Channel *channel, const size_t size) {
@@ -153,7 +156,7 @@ void Engine::fill(Dac::Channel *channel, const size_t size) {
 	modulationEngine_.tick_lfos();
 
 	std::fill(&channel[0].left[0], &channel[Dac::kNumStereoChannels].left[0], 0);
-	
+
 	voiceEngine_.fill(channel, size);
 	delayEngine_.fill(channel, size);
 	limiter_.fill(channel, size);
