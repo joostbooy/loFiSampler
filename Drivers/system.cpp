@@ -59,10 +59,9 @@ void Sys::init() {
 	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
 	HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_7);
 
-	// RCC_PERIPHCLK_DFSDMADVar ?
 	PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_DFSDM1 | RCC_PERIPHCLK_SDMMC1
 	|RCC_PERIPHCLK_CLK48 | RCC_PERIPHCLK_I2S;
-	PeriphClkInitStruct.PLLI2S.PLLI2SN = 192;
+	PeriphClkInitStruct.PLLI2S.PLLI2SN = 192; //96
 	PeriphClkInitStruct.PLLI2S.PLLI2SP = RCC_PLLP_DIV2;
 	PeriphClkInitStruct.PLLI2S.PLLI2SR = 2;
 	PeriphClkInitStruct.PLLI2S.PLLI2SQ = 2;
@@ -78,6 +77,6 @@ void Sys::init() {
 	HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 0, 0);	// DAC
 	//	HAL_NVIC_SetPriority(TIM3_IRQn, 1, 0);			// Engine tick
 	HAL_NVIC_SetPriority(TIM2_IRQn, 1, 0);			// Ui Poll
-	HAL_NVIC_SetPriority(DMA2_Stream0_IRQn, 2, 0);	// SDIO
+//	HAL_NVIC_SetPriority(DMA2_Stream0_IRQn, 2, 0);	// SDIO
 	HAL_NVIC_SetPriority(DMA2_Stream4_IRQn, 3, 0);	// LCD
 }
