@@ -8,7 +8,7 @@ import lutCompiler
 #table variables
 tables = []
 
-block_size = 8
+block_size = 16
 sample_rate = 16000
 control_rate = sample_rate / block_size
 
@@ -34,12 +34,20 @@ tables.append(values.astype(int))
 '''____________________
         PHASE INC
 ________________________'''
-name = 'phase_inc'
-
 phase_table_size = 256
-freq_min = 1.0 / (control_rate * 10.0)
-freq_max = 1.0 / (control_rate / 10.0)
+
+name = 'phase_length'
+freq_min = 0.1
+freq_max = 50.0
 steps = numpy.linspace(freq_min, freq_max, phase_table_size)
+
+tables.append('float ' + name)
+tables.append(steps.astype('float32'))
+
+name = 'phase_inc'
+freq_inc_min = freq_min / control_rate
+freq_inc_max = freq_max / control_rate
+steps = numpy.linspace(freq_inc_min, freq_inc_max, phase_table_size)
 
 tables.append('float ' + name)
 tables.append(steps.astype('float32'))
