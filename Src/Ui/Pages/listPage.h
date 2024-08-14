@@ -128,7 +128,7 @@ namespace ListPage {
 			}
 		}
 
-		const int bar_w = 8;
+		const int bar_w = 6;
 		const int bar_x = canvas_->width() - bar_w;
 		WindowPainter::draw_vertical_scollbar(bar_x, y, bar_w, h, list_->top_item(), list_->num_items(), list_->collumns());
 	}
