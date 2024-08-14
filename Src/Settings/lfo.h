@@ -39,7 +39,8 @@ public:
 		if (clock_sync()) {
 			return MidiSync::tempo_text(speed() * (MidiSync::NUM_TEMPOS - 1));
 		} else {
-			return SettingsText::float_to_text(speed(), 0, 100);
+			size_t index = speed() * PHASE_TABLE_SIZE;
+			return SettingsText::hertz_to_text(lut_phase_length[index]);
 		}
 	}
 
