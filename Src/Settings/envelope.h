@@ -33,13 +33,13 @@ public:
 		set_clock_sync(false);
 		set_mode(GATE);
 		set_attack_time(0);
-		set_attack_shape(0);
+		set_attack_shape(0.5f);
 		set_decay_time(0);
-		set_decay_shape(0);
+		set_decay_shape(0.5f);
 		set_hold_time(0);
 		set_sustain_level(0.5f);
 		set_release_time(0);
-		set_release_shape(0);
+		set_release_shape(0.5f);
 	}
 
 	// Clock sync
@@ -161,7 +161,8 @@ public:
 		} else if (clock_sync()) {
 			return MidiSync::tempo_text(hold_time() * (MidiSync::NUM_TEMPOS - 1));
 		} else {
-			return SettingsText::float_to_text(hold_time(), 0, 100);
+			size_t index = hold_time() * PHASE_TABLE_SIZE;
+			return SettingsText::hertz_to_text(lut_phase_length[index]);
 		}
 	}
 
