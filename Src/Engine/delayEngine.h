@@ -36,7 +36,7 @@ public:
 			if (++pos_ >= num_samples) {
 				pos_ = 0;
 			}
-		}
+		}	
 	}
 
 private:
