@@ -12,7 +12,7 @@ public:
 	static const size_t kMaxPathLength = 64;
 
 	struct Entry {
-		size_t size;
+		size_t size;	// in samples
 		uint8_t num_channels;
 		int16_t *data;
 		char path[kMaxPathLength];
