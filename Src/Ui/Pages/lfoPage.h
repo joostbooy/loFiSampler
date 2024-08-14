@@ -71,8 +71,7 @@ namespace LfoPage {
 		lfo.paste(&settings_->selected_lfo());
 		lfo.set_clock_sync(false);
 		lfo.set_randomise(false);
-		// 0.152f results in 7.8hz (control_rate / w = 7.8 hz)
-		lfo.set_speed(0.152f);
+		lfo.set_speed(0.152f);	// 0.152f results in 7.8hz (control_rate / w = 7.8 hz)
 		lfoEngine.init(&lfo);
 
 		const int x = 64;
