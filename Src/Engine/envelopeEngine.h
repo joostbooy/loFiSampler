@@ -22,6 +22,7 @@ public:
 		stage_ = IDLE;
 		phase_ = 0.0f;
 		sample_ = 0.0f;
+		mode_ = 0;
 	}
 
 	void attack() {
