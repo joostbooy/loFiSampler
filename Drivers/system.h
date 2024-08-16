@@ -1,9 +1,9 @@
-#ifndef system_h
-#define system_h
+#ifndef System_h
+#define System_h
 
 #include "stm32f7xx.h"
 
-class Sys{
+class Sys {
 
 public:
     void init();
