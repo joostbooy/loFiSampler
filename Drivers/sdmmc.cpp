@@ -67,7 +67,8 @@ void Sdmmc::init_dma(uint32_t buffer, DmaType dmaType) {
 	}
 
 	DMA2_Stream0->CR = 0;
-	DMA2_Stream0->CR = (kChannel11 | kMemoryBurst_inc4 | kPeripheralBurst_inc4 | kPriorityVeryHigh | kMemorySize_32bit | kPeripheralSize_32bit | kEnableMemoryIncrement | kPeripheralFlowControl | direction | kEnable_TC_interupt);
+	DMA2_Stream0->CR = (kChannel11 | kMemoryBurst_inc4 | kPeripheralBurst_inc4 | kPriorityVeryHigh | \
+	kMemorySize_32bit | kPeripheralSize_32bit | kEnableMemoryIncrement | kPeripheralFlowControl | direction | kEnable_TC_interupt);
 
 	DMA2_Stream0->FCR |= DMA_SxFCR_DMDIS;	// disable direct mode (enables fifo mode)
 	DMA2_Stream0->FCR |= (3 << 0); 			// fifo treshold full
