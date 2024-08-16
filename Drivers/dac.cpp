@@ -27,9 +27,6 @@ const uint32_t kMemoryToPeripheral		= (1 << 6);
 const uint32_t kEnable_TC_interupt		= (1 << 4);
 const uint32_t kEnable_HTC_interupt		= (1 << 3);
 const uint32_t kPeripheralSize_16bit	= (1 << 11);
-//const uint32_t kMemorySize_16bit		= (1 << 13);
-
-//volatile uint8_t dummy;
 
 void Dac::init() {
 
@@ -45,14 +42,14 @@ void Dac::init() {
 	GPIO_InitStruct.Pin = GPIO_PIN_15;
 	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
 	GPIO_InitStruct.Alternate = GPIO_AF6_SPI3;
 	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 	GPIO_InitStruct.Pin = GPIO_PIN_10|GPIO_PIN_12;
 	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
 	GPIO_InitStruct.Alternate = GPIO_AF6_SPI3;
 	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 

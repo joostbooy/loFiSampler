@@ -23,8 +23,7 @@ public:
 
 private:
 	void(*callback_)(Channel*, const size_t);
-	//static const uint32_t kDmaBufferSize = BLOCK_SIZE * (kNumStereoChannels * 2) * 4 * 2; // x4 words x2 size
-	static const uint32_t kDmaBufferSize = 512;
+	static const uint32_t kDmaBufferSize = BLOCK_SIZE * (kNumStereoChannels * 2) * 4 * 2; // x4 words x2 size
 
 	uint16_t dma_buffer_[kDmaBufferSize];
 
