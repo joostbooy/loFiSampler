@@ -1,59 +1,53 @@
 #include "dac.h"
+#include "debug.h"
 
 Dac* Dac::dac_;
+bool Dac::first_frame_;
 
-void Dac::spi_write(uint8_t command, uint8_t address, uint16_t data, uint8_t function) {
-	GPIOA->BSRR = GPIO_PIN_15 << 16;
-	asm("NOP");
+uint16_t Dac::left_channel_bits_[kNumStereoChannels] = {
+	0x0300 | (0 << 4),
+	0x0300 | (2 << 4),
+	0x0300 | (4 << 4),
+	0x0300 | (6 << 4)
+};
 
-	spi_write(command);
-	spi_write((address << 4) | (data >> 12));
-	spi_write(data >> 4);
-	spi_write((data & 0xF) << 4 | function);
-	asm("NOP");
+uint16_t Dac::right_channel_bits_[kNumStereoChannels] = {
+	0x0300 | (1 << 4),
+	0x0300 | (3 << 4),
+	0x0300 | (5 << 4),
+	0x0300 | (7 << 4)
+};
 
-	GPIOA->BSRR = GPIO_PIN_15;
-	asm("NOP");
+// DMA1 stream 5 Channel 0
+const uint32_t kChannel0				= (0 << 25);
+const uint32_t kPriorityVeryHigh		= (3 << 16);
+const uint32_t kEnableMemoryIncrement	= (1 << 10);
+const uint32_t kEnableCircularMode		= (1 << 8);
+const uint32_t kMemoryToPeripheral		= (1 << 6);
+const uint32_t kEnable_TC_interupt		= (1 << 4);
+const uint32_t kEnable_HTC_interupt		= (1 << 3);
+const uint32_t kPeripheralSize_16bit	= (1 << 11);
+//const uint32_t kMemorySize_16bit		= (1 << 13);
 
-	//	Micros::delay(50);
-}
-
-volatile uint8_t dummy;
-
-void Dac::spi_write(uint8_t data) {
-	while (!(SPI3->SR & SPI_FLAG_TXE));
-	SPI3->DR = data;
-
-	while (!(SPI3->SR & SPI_FLAG_RXNE));
-	dummy = SPI3->DR;
-}
+//volatile uint8_t dummy;
 
 void Dac::init() {
-	dac_ = this;
 
-	GPIO_InitTypeDef GPIO_InitStruct = {0};
+	dac_ = this;
 
 	/**I2S3 GPIO Configuration
 	PA15     ------> I2S3_WS
 	PC10     ------> I2S3_CK
 	PC12     ------> I2S3_SD
 	*/
+	GPIO_InitTypeDef GPIO_InitStruct = {0};
 
-
-	/*
-	GPIO_InitStruct.Pin = GPIO_PIN_15;
-	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-	*/
 	GPIO_InitStruct.Pin = GPIO_PIN_15;
 	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 	GPIO_InitStruct.Alternate = GPIO_AF6_SPI3;
 	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
 
 	GPIO_InitStruct.Pin = GPIO_PIN_10|GPIO_PIN_12;
 	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
@@ -62,50 +56,10 @@ void Dac::init() {
 	GPIO_InitStruct.Alternate = GPIO_AF6_SPI3;
 	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-	SPI_HandleTypeDef hspi3;
-	hspi3.Instance = SPI3;
-	hspi3.Init.Mode = SPI_MODE_MASTER;
-	hspi3.Init.Direction = SPI_DIRECTION_2LINES;
-	hspi3.Init.DataSize = SPI_DATASIZE_8BIT;
-	hspi3.Init.CLKPolarity = SPI_POLARITY_HIGH;
-	hspi3.Init.CLKPhase = SPI_PHASE_1EDGE;
-	hspi3.Init.NSS = SPI_NSS_SOFT;
-	hspi3.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
-	hspi3.Init.FirstBit = SPI_FIRSTBIT_MSB;
-	hspi3.Init.TIMode = SPI_TIMODE_DISABLE;
-	hspi3.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
-	hspi3.Init.CRCPolynomial = 10;
-	HAL_SPI_Init(&hspi3);
-	__HAL_SPI_ENABLE(&hspi3);
-
-	// sync_pin HIGH
-	GPIOA->BSRR = GPIO_PIN_15;
-	// reset
-	spi_write(7, 0, 0, 0);
-	// load clear code register
-	spi_write(5, 0, 0, 3);
-	// enable internal reference
-	spi_write(8, 0, 0, 1);
-	// power up
-	spi_write(4, 0, 0, 0xFF);
-
-	// Stop SPI
-	//	HAL_SPI_DeInit(&hspi3);
-	//	__HAL_SPI_DISABLE(&hspi3);
-
-	// Start I2S setup
-	/*
-	GPIO_InitStruct.Pin = GPIO_PIN_15;
-	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-	GPIO_InitStruct.Alternate = GPIO_AF6_SPI3;
-	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
 	I2S_HandleTypeDef hi2s3;
 	hi2s3.Instance = SPI3;
 	hi2s3.Init.Mode = I2S_MODE_MASTER_TX;
-	hi2s3.Init.Standard = I2S_STANDARD_PCM_SHORT;
+	hi2s3.Init.Standard = I2S_STANDARD_PHILLIPS;
 	hi2s3.Init.DataFormat = I2S_DATAFORMAT_32B;
 	hi2s3.Init.MCLKOutput = I2S_MCLKOUTPUT_DISABLE;
 	hi2s3.Init.AudioFreq = SAMPLE_RATE * (kNumStereoChannels * 2);
@@ -114,28 +68,62 @@ void Dac::init() {
 	HAL_I2S_Init(&hi2s3);
 	__HAL_I2S_ENABLE(&hi2s3);
 
+	// Init DMA
+	DMA1_Stream5->CR &= ~DMA_SxCR_EN;
+	while (DMA1_Stream5->CR & DMA_SxCR_EN);
 
-	// Channel 0, stream 5
-	DMA_HandleTypeDef hdma_spi3_tx;
-	hdma_spi3_tx.Instance = DMA1_Stream5;
-	hdma_spi3_tx.Init.Direction = DMA_MEMORY_TO_PERIPH;
-	hdma_spi3_tx.Init.PeriphInc = DMA_PINC_DISABLE;
-	hdma_spi3_tx.Init.MemInc = DMA_MINC_ENABLE;
-	hdma_spi3_tx.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
-	hdma_spi3_tx.Init.MemDataAlignment = DMA_PDATAALIGN_HALFWORD;
-	hdma_spi3_tx.Init.Mode = DMA_CIRCULAR;
-	hdma_spi3_tx.Init.Priority = DMA_PRIORITY_VERY_HIGH;
-	HAL_DMA_Init(&hdma_spi3_tx);
-	__HAL_LINKDMA(&hi2s3, hdmatx, hdma_spi3_tx);
-	HAL_I2S_Transmit_DMA(&hi2s3, (uint16_t*)dma_buffer_, kDmaBufferSize);
-	*/
+	DMA1_Stream5->CR = kChannel0 | kPriorityVeryHigh | kEnableMemoryIncrement | kEnableCircularMode | kMemoryToPeripheral | \
+	kEnable_TC_interupt | kEnable_HTC_interupt | kPeripheralSize_16bit;
+
+	DMA1_Stream5->FCR &= ~DMA_SxFCR_DMDIS;
+
+	DMA1->HIFCR |= DMA_HIFCR_CTCIF5 | DMA_HIFCR_CHTIF5 | DMA_HIFCR_CTEIF5 | DMA_HIFCR_CDMEIF5 | DMA_HIFCR_CFEIF5;
+	DMA1_Stream5->PAR = reinterpret_cast<uint32_t>(&SPI3->DR);
+	DMA1_Stream5->M0AR = reinterpret_cast<uint32_t>(&dma_buffer_[0]);
+	DMA1_Stream5->NDTR = kDmaBufferSize;
+	DMA1_Stream5->CR |= DMA_SxCR_EN;
+	SPI3->CR2 |= SPI_CR2_TXDMAEN;
 }
 
 void Dac::start(void (*callback)(Channel*, size_t)) {
 	callback_ = callback;
-	HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_2);
-	HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 0, 0);
+	first_frame_ = true;
 	HAL_NVIC_EnableIRQ(DMA1_Stream5_IRQn);
+}
+
+void Dac::fill(const size_t offset) {
+	callback_(channel_, BLOCK_SIZE);
+
+	uint16_t *ptr = &dma_buffer_[offset * (kDmaBufferSize / 2)];
+
+	if (first_frame_) {
+		for (size_t i = 0; i < BLOCK_SIZE; ++i) {
+			for (size_t chn = 0; chn < kNumStereoChannels * 2; ++chn) {
+				*ptr++ = 0x090A;
+				*ptr++ = 0x0000;
+				*ptr++ = 0x0000;
+				*ptr++ = 0x0000;
+			}
+		}
+		first_frame_ = false;
+	} else {
+		for (size_t i = 0; i < BLOCK_SIZE; ++i) {
+			for (size_t chn = 0; chn < kNumStereoChannels; ++chn) {
+				uint16_t left = channel_[chn].left[i] + 32768;
+				uint16_t right = channel_[chn].right[i] + 32768;
+
+				*ptr++ = left_channel_bits_[chn] | (left >> 12);
+				*ptr++ = left << 4;
+				*ptr++ = 0;
+				*ptr++ = 0;
+
+				*ptr++ = right_channel_bits_[chn] | (right >> 12);
+				*ptr++ = right << 4;
+				*ptr++ = 0;
+				*ptr++ = 0;
+			}
+		}
+	}
 }
 
 extern "C" {

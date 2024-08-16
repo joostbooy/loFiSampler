@@ -19,50 +19,18 @@ public:
 
 	void init();
 	void start(void(*callback)(Channel*, const size_t));
-
-	void fill(const size_t offset) {
-		callback_(channel_, BLOCK_SIZE);
-
-		uint16_t *ptr = reinterpret_cast<uint16_t*>(&dma_buffer_[offset * (kDmaBufferSize / 2)]);
-
-		for (size_t i = 0; i < BLOCK_SIZE; ++i) {
-			for (size_t chn = 0; chn < kNumStereoChannels; ++chn) {
-				uint16_t left = channel_[chn].left[i] + 32768;
-				uint16_t right = channel_[chn].right[i] + 32768;
-				*ptr++ = left_channel_bits_[chn] | (left >> 8);
-				*ptr++ = left << 8;
-				*ptr++ = right_channel_bits_[chn] | (right >> 8);
-				*ptr++ = right << 8;
-			}
-		}
-	}
-
-	// TEMP !
-	void write(int channel, int value) {
-		spi_write(3, channel, value, 15);
-	}
+	void fill(const size_t offset);
 
 private:
 	void(*callback_)(Channel*, const size_t);
-	static const uint32_t kDmaBufferSize = BLOCK_SIZE * (kNumStereoChannels * 2) * 2;
-	uint32_t dma_buffer_[kDmaBufferSize];
+	//static const uint32_t kDmaBufferSize = BLOCK_SIZE * (kNumStereoChannels * 2) * 4 * 2; // x4 words x2 size
+	static const uint32_t kDmaBufferSize = 512;
 
-	void spi_write(uint8_t data);
-	void spi_write(uint8_t command, uint8_t address, uint16_t data, uint8_t function);
+	uint16_t dma_buffer_[kDmaBufferSize];
 
-	static constexpr uint16_t left_channel_bits_[kNumStereoChannels] = {
-		0x1000 | (0 << 9),
-		0x1000 | (2 << 9),
-		0x1000 | (4 << 9),
-		0x1000 | (6 << 9)
-	};
-
-	static constexpr uint16_t right_channel_bits_[kNumStereoChannels] = {
-		0x1000 | (1 << 9),
-		0x1000 | (3 << 9),
-		0x1000 | (5 << 9),
-		0x1000 | (7 << 9)
-	};
+	static bool first_frame_;
+	static uint16_t left_channel_bits_[kNumStereoChannels];
+	static uint16_t right_channel_bits_[kNumStereoChannels];
 };
 
 #endif
