@@ -2,13 +2,16 @@
 #define FrameBuffer_h
 
 #include <stdint.h>
-
+#include <array>
 // 4 bit grayscale buffer
 
-template <const uint16_t kWidth, const uint16_t kHeight>
 class FrameBuffer {
 
 public:
+	static const int kWidth = 256;
+	static const int kHeight = 64;
+//	inline int width() { return kWidth; }
+//	inline int height() { return kHeight; }
 
 	inline bool inside(int x, int y) {
 		return (x >= 0 && x < kWidth) && (y >= 0 && y < kHeight);
@@ -47,9 +50,8 @@ public:
 	uint8_t *data() { return data_; }
 
 private:
-	static const int size_ = (kWidth * kHeight) / 2;
-	uint8_t data_[size_];
+	static const size_t size_ = (kWidth * kHeight) / 2;
+	static uint8_t data_[size_] __attribute__((section(".dtcm")));
 };
-
 
 #endif

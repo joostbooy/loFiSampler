@@ -30,8 +30,8 @@ public:
 	};
 
 	// frameBuffer
-	static constexpr size_t width() { return kWidth; }
-	static constexpr size_t height() { return kHeight; }
+	static constexpr size_t width() { return FrameBuffer::kWidth; }
+	static constexpr size_t height() { return FrameBuffer::kHeight; }
 	const size_t size() { return frameBuffer_.size(); }
 	uint8_t *data() { return frameBuffer_.data(); }
 
@@ -207,9 +207,8 @@ private:
 	Color font_color = BLACK;
 	Color bitmap_color = BLACK;
 
-	static const size_t kWidth = 256;
-	static const size_t kHeight = 64;
-	FrameBuffer <kWidth, kHeight> frameBuffer_;
+	FrameBuffer frameBuffer_;
+	//FrameBuffer <kWidth, kHeight> frameBuffer_;
 
 	Font font_;
 	Bitmap bitmap_;
