@@ -5,6 +5,7 @@
 
 #include "file.h"
 #include "hash.h"
+#include "fileBuffer.h"
 
 class FileReader {
 
