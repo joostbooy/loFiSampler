@@ -68,9 +68,6 @@ public:
 	}
 
 private:
-	static const int kBufferSize = 512;
-	uint8_t buffer[kBufferSize];
-
 	File *file_;
 	bool read_ok_;
 	uint32_t num_read = 0;
@@ -84,7 +81,7 @@ private:
 
 		while (read_ok_ && (size > 0)) {
 			if (num_read < num_readable) {
-				*data_++ = buffer[num_read++];
+				*data_++ = *FileBuffer::data(num_read++);
 				--size;
 			} else {
 				read_ok_ = fill_buffer(size);
@@ -94,8 +91,8 @@ private:
 
 	bool fill_buffer(uint32_t requested_size) {
 		num_read = 0;
-		if (file_->read(buffer, kBufferSize, &num_readable)) {
-			return (num_readable >= requested_size) || (num_readable >= kBufferSize);
+		if (file_->read(FileBuffer::data(), FileBuffer::size(), &num_readable)) {
+			return (num_readable >= requested_size) || (num_readable >= FileBuffer::size());
 		}
 		return false;
 	}

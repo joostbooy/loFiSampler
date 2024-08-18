@@ -5,6 +5,7 @@
 
 #include "file.h"
 #include "hash.h"
+#include "fileBuffer.h"
 
 class FileWriter {
 
@@ -53,8 +54,6 @@ public:
 	}
 
 private:
-	static const int kBufferSize = 512;
-	uint8_t buffer[kBufferSize];
 	uint32_t buff_pos;
 
 	File *file_;
@@ -66,8 +65,8 @@ private:
 		uint8_t *data_ = reinterpret_cast<uint8_t *>(data);
 
 		while (write_ok_ && (size > 0)) {
-			if (buff_pos < kBufferSize) {
-				buffer[buff_pos++] = *data_++;
+			if (buff_pos < FileBuffer::size()) {
+				*FileBuffer::data(buff_pos++) = *data_++;
 				--size;
 			} else {
 				write_ok_ = send_buffer();
@@ -78,7 +77,7 @@ private:
 	bool send_buffer() {
 		uint32_t size = buff_pos;
 		buff_pos = 0;
-		return file_->write(buffer, size);
+		return file_->write(FileBuffer::data(), size);
 	}
 
 };
