@@ -3,8 +3,9 @@
 
 #include <stdint.h>
 
-#define BLOCK_SIZE 16
+#define BLOCK_SIZE 8
 #define SAMPLE_RATE 16000
+#define CONTROL_RATE 2000
 #define MIN_BPM 30
 #define MAX_BPM 300
 #define CLOCK_ISR_FREQ 4000

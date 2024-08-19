@@ -222,7 +222,7 @@ private:
 
 		if (stop_requested_) {
 			if (fade_phase_ > 0.0f) {
-				fade_phase_ -= ((Dac::kUpdateRate / 1000) * 4);
+				fade_phase_ -= 1000.f / (CONTROL_RATE * 4.f);
 			} else {
 				stop_requested_ = false;
 				state_ = IDLE;

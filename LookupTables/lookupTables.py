@@ -8,7 +8,7 @@ import lutCompiler
 #table variables
 tables = []
 
-block_size = 16
+block_size = 8
 sample_rate = 16000
 control_rate = sample_rate / block_size
 
@@ -112,6 +112,7 @@ ________________________'''
 defines = [
 'BLOCK_SIZE '				+ str(block_size),
 'SAMPLE_RATE '				+ str(sample_rate),
+'CONTROL_RATE '				+ str(int(control_rate)),
 'MIN_BPM '					+ str(min_bpm),
 'MAX_BPM '					+ str(max_bpm),
 'CLOCK_ISR_FREQ '			+ str(clock_isr_freq),
