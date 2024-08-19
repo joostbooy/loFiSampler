@@ -4,6 +4,8 @@
 Dac* Dac::dac_;
 bool Dac::first_frame_;
 
+uint16_t Dac::dma_buffer_[Dac::kDmaBufferSize]__attribute__((section(".dtcm")));
+
 uint16_t Dac::left_channel_bits_[kNumStereoChannels] = {
 	0x0300 | (0 << 4),
 	0x0300 | (2 << 4),
@@ -46,7 +48,7 @@ void Dac::init() {
 	GPIO_InitStruct.Alternate = GPIO_AF6_SPI3;
 	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-	GPIO_InitStruct.Pin = GPIO_PIN_10|GPIO_PIN_12;
+	GPIO_InitStruct.Pin = GPIO_PIN_10 | GPIO_PIN_12;
 	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
@@ -83,8 +85,8 @@ void Dac::init() {
 }
 
 void Dac::start(void (*callback)(Channel*, size_t)) {
-	callback_ = callback;
 	first_frame_ = true;
+	callback_ = callback;
 	HAL_NVIC_EnableIRQ(DMA1_Stream5_IRQn);
 }
 
