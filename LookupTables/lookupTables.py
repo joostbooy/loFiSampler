@@ -110,14 +110,14 @@ tables.append(values.astype('float32'))
 ________________________'''
 
 defines = [
-'BLOCK_SIZE '				+ str(block_size),
-'SAMPLE_RATE '				+ str(sample_rate),
-'CONTROL_RATE '				+ str(int(control_rate)),
-'MIN_BPM '					+ str(min_bpm),
-'MAX_BPM '					+ str(max_bpm),
-'CLOCK_ISR_FREQ '			+ str(clock_isr_freq),
-'EXP_TABLE_SIZE '			+ str(exp_table_size),
-'PHASE_TABLE_SIZE '			+ str(phase_table_size),
+'BLOCK_SIZE '		+ str(int(block_size)),
+'SAMPLE_RATE '		+ str(int(sample_rate)),
+'CONTROL_RATE '		+ str(int(control_rate)),
+'MIN_BPM '			+ str(int(min_bpm)),
+'MAX_BPM '			+ str(int(max_bpm)),
+'CLOCK_ISR_FREQ '	+ str(int(clock_isr_freq)),
+'EXP_TABLE_SIZE '	+ str(int(exp_table_size)),
+'PHASE_TABLE_SIZE '	+ str(int(phase_table_size)),
 ]
 
 
