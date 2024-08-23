@@ -49,9 +49,9 @@ public:
 		// these need to be initialised without setters,
 		// because they depend on eachother
 		start_ = 0;
-		end_ = 1;
+		end_ = 100;
 		loop_start_ = 0;
-		loop_end_ = 1;
+		loop_end_ = 100;
 		key_range_low_ = 0;
 		key_range_high_ = 127;
 	}
@@ -97,7 +97,7 @@ public:
 
 
 	// start
-	void set_start(size_t value) {
+	void set_start(int value) {
 		start_ = SettingsUtils::clip(0, end() - 1, value);
 	}
 
@@ -110,7 +110,7 @@ public:
 	}
 
 	// end
-	void set_end(size_t value) {
+	void set_end(int value) {
 		end_ = SettingsUtils::clip(start() + 1, size(), value);
 	}
 
@@ -123,7 +123,7 @@ public:
 	}
 
 	// loop start
-	void set_loop_start(size_t value) {
+	void set_loop_start(int value) {
 		loop_start_ = SettingsUtils::clip(1, loop_end(), value);
 	}
 
@@ -136,7 +136,7 @@ public:
 	}
 
 	// loop end
-	void set_loop_end(size_t value) {
+	void set_loop_end(int value) {
 		loop_end_ = SettingsUtils::clip(loop_start(), size() - 1, value);
 	}
 
@@ -175,7 +175,7 @@ public:
 	}
 
 	// Root note
-	void set_root_note(uint8_t value) {
+	void set_root_note(int value) {
 		root_note_ = SettingsUtils::clip(0, 127, value);
 	}
 
@@ -188,7 +188,7 @@ public:
 	}
 
 	// Key range low
-	void set_key_range_low(uint8_t value) {
+	void set_key_range_low(int value) {
 		key_range_low_ = SettingsUtils::clip(0, key_range_high(), value);
 	}
 
@@ -201,7 +201,7 @@ public:
 	}
 
 	// Key range high
-	void set_key_range_high(uint8_t value) {
+	void set_key_range_high(int value) {
 		key_range_low_ = SettingsUtils::clip(key_range_low(), 127, value);
 	}
 
@@ -218,7 +218,7 @@ public:
 	}
 
 	// Play mode
-	void set_play_mode(uint8_t value) {
+	void set_play_mode(int value) {
 		play_mode_ = SettingsUtils::clip(0, NUM_PLAY_MODES - 1, value);
 	}
 
