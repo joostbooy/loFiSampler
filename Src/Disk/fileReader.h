@@ -74,7 +74,6 @@ private:
 	uint32_t num_read = 0;
 	uint32_t num_readable = 0;
 	uint32_t version_ = 0;
-
 	Hash hash_;
 
 	void read_buffer(void *data, uint32_t size) {
