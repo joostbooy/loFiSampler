@@ -30,7 +30,7 @@ public:
 
 	void stop() {
 		// send remaing buffer data
-		if (write_ok_) {
+		if (write_ok_ == true && buff_pos > 0) {
 			write_ok_ = send_buffer();
 		}
 
