@@ -68,8 +68,9 @@ bool Settings::load(const char* new_path) {
 		instrument(i).load(fileReader);
 	}
 
+	fileReader.stop();
+
 	if (!fileReader.read_ok()) {
-		fileReader.stop();
 		init();
 		return false;
 	}
