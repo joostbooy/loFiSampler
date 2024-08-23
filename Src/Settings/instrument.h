@@ -159,10 +159,6 @@ public:
 		return SettingsText::str.write(bit_depth(), " BIT");
 	}
 
-	uint8_t bit_shifts() {
-		return 16 - bit_depth();
-	}
-
 	// Sample rate divider
 	int sample_rate_divider() {
 		return sample_rate_divider_;
