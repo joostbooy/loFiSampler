@@ -14,8 +14,8 @@ public:
 
 	static Sdmmc *sdmmc_;
 
-	Directory &dir() {
-		return dir_;
+	Directory &directory() {
+		return directory_;
 	}
 
 	Entry &entry() {
@@ -31,16 +31,16 @@ public:
 
 		const int root = 0;
 
-		dir_.init(&fdir, root, &result);
-		entry_.init(&fdir, &fil_info, dir_.path_ptr());
-		file_.init(&fil, dir_.path_ptr(), &result);
+		directory_.init(&fdir, root, &result);
+		entry_.init(&fdir, &fil_info, directory_.path_ptr());
+		file_.init(&fil, directory_.path_ptr(), &result);
 
 		mount();
 	}
 
 	bool mount() {
 		if (!mounted()) {
-			return f_mount(&fs, dir_.root(), 1) == FR_OK;
+			return f_mount(&fs, directory_.root(), 1) == FR_OK;
 		} else {
 			return true;
 		}
@@ -55,8 +55,8 @@ public:
 	}
 
 	void reset() {
-		dir_.reset();
-		dir_.close();
+		directory_.reset();
+		directory_.close();
 		entry_.reset();
 		file_.close();
 	}
@@ -65,7 +65,7 @@ public:
 		FATFS* fs_ptr = &fs;
 		uint32_t free_clusters;
 
-		result = f_getfree(dir_.root(), &free_clusters, &fs_ptr);
+		result = f_getfree(directory_.root(), &free_clusters, &fs_ptr);
 		if (result == FR_OK) {
 			*total_blocks = ((fs_ptr->n_fatent - 2) * fs_ptr->csize) / 2;
 			*free_blocks = (free_clusters * fs_ptr->csize) / 2;
@@ -79,7 +79,7 @@ private:
 	FILINFO fil_info;
 	FRESULT result;
 
-	Directory dir_;
+	Directory directory_;
 	Entry entry_;
 	File file_;
 };
