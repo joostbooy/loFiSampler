@@ -115,6 +115,7 @@ public:
 	void paste(Midi *midi) {
 		bpm_ = midi->bpm();
 		clock_source_ = midi->clock_source();
+		
 		for (int i = 0; i < NUM_PORTS; ++i) {
 			send_clock_[i] = midi->send_clock(i);
 		}
