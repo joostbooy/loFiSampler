@@ -24,19 +24,19 @@ public:
 		size_t num_samples = delay_->num_samples();
 
 		while (size--) {
-			int16_t l = *left;
-			int16_t r = *right;
+			int16_t l_in = *left;
+			int16_t r_in = *right;
 
-			delay_l_[pos_] = l + (delay_l_[pos_] * feedback);
-			delay_r_[pos_] = r + (delay_r_[pos_] * feedback);
+			delay_l_[pos_] = l_in + (delay_l_[pos_] * feedback);
+			delay_r_[pos_] = r_in + (delay_r_[pos_] * feedback);
 
-			*left++ = Dsp::cross_fade(l, delay_l_[pos_], mix);
-			*right++ = Dsp::cross_fade(r, delay_r_[pos_], mix);
+			*left++ = Dsp::cross_fade(l_in, delay_l_[pos_], mix);
+			*right++ = Dsp::cross_fade(r_in, delay_r_[pos_], mix);
 
 			if (++pos_ >= num_samples) {
 				pos_ = 0;
 			}
-		}	
+		}
 	}
 
 private:
