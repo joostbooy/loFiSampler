@@ -94,7 +94,7 @@ public:
 			uint32_t intergral = static_cast<uint32_t>(phase_);
 			float fractional = phase_ - intergral;
 
-			phase_ += inc;
+			phase_ += (inc * state_);
 
 			int16_t l, r;
 			int16_t l_next, r_next;
@@ -203,7 +203,7 @@ private:
 		float a = lut_semitone_ratio[SettingsUtils::clip_min(0, semitone - bend_range)];
 		float b = lut_semitone_ratio[semitone];
 		float c = lut_semitone_ratio[SettingsUtils::clip_max(255, semitone + bend_range)];
-		return Dsp::cross_fade(a, b, c, bend) * lut_cent_ratio[cents + 99] * state_;
+		return Dsp::cross_fade(a, b, c, bend) * lut_cent_ratio[cents + 99];
 	}
 
 	inline void apply_modulation() {
