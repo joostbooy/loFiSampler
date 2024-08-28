@@ -35,12 +35,12 @@ public:
 	struct Data_chunk {
 		uint32_t size;
 		uint32_t offset;
-	}data_chunk;
+	}data;
 
 	struct Riff_chunk {
 		uint32_t size;
 		uint32_t format;
-	}riff_chunk;
+	}riff;
 
 	struct Fmt_chunk {
 		uint16_t audio_format;
@@ -49,25 +49,29 @@ public:
 		uint32_t byte_rate;
 		uint16_t block_allign;
 		uint16_t bit_depth;
-	}fmt_chunk;
+	}format;
 
 	Result result() {
 		return result_;
 	}
 
-	Result parse(File *file) {
+	Result open(File *file, const char *path) {
 		uint32_t chunk_id;
 		uint32_t chunk_size;
 		file_ = file;
+
+		if (!file_->open(path)) {
+			return SD_ERROR;
+		}
 
 		chunk_id = read_u32();
 		if (chunk_id != RIFF_CHUNK_ID){
 			return NOT_RIFF;
 		}
 
-		riff_chunk.size = read_u32();
-		riff_chunk.format = read_u32();
-		if (riff_chunk.format != RIFF_FORMAT_WAVE) {
+		riff.size = read_u32();
+		riff.format = read_u32();
+		if (riff.format != RIFF_FORMAT_WAVE) {
 			return NOT_WAV;
 		}
 
@@ -86,6 +90,18 @@ public:
 		}
 
 		return WAV_OK;
+	}
+
+	bool read(uint8_t *data, size_t *size) {
+		if (file_->read(FileBuffer::data(), FileBuffer::size(), size)) {
+			data = FileBuffer::data();
+			return true;
+		}
+		return false;
+	}
+
+	void close() {
+		file_->close();
 	}
 
 private:
@@ -108,7 +124,7 @@ private:
 		switch (chunk_id)
 		{
 		case FMT_CHUNK_ID:
-			if (file_->read(&fmt_chunk, 16) == false) {
+			if (file_->read(&format, 16) == false) {
 				return SD_ERROR;
 			}
 
@@ -116,21 +132,25 @@ private:
 				file_->advance(chunk_size - 16);
 			}
 
-			if (fmt_chunk.audio_format != WAVE_FORMAT_PCM) {
+			if (format.audio_format != WAVE_FORMAT_PCM) {
 				return UNSUPPORTED_WAV_FORMAT;
 			}
 
-			if (fmt_chunk.bit_depth < 16) {
+			if ((format.sample_rate % SAMPLE_RATE) != 0) {
 				return UNSUPPORTED_WAV_FORMAT;
 			}
 
-			if ((fmt_chunk.num_of_channels < 1) || (fmt_chunk.num_of_channels > 2)) {
+			if (format.bit_depth < 16) {
+				return UNSUPPORTED_WAV_FORMAT;
+			}
+
+			if ((format.num_of_channels < 1) || (format.num_of_channels > 2)) {
 				return UNSUPPORTED_WAV_FORMAT;
 			}
 			break;
 		case DATA_CHUNK_ID:
-			data_chunk.size = chunk_size;
-			data_chunk.offset = file_->position();
+			data.size = chunk_size;
+			data.offset = file_->position();
 			break;
 		default:
 			file_->advance(chunk_size);
