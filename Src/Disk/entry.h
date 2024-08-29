@@ -13,7 +13,7 @@ public:
 	enum Filter {
 		NONE,
 		PROJECT,
-		CALIBRATION,
+		WAV,
 		FOLDER
 	};
 
@@ -78,8 +78,8 @@ public:
 			return is_dir();
 		case PROJECT:
 			return is_dir() || has_extension(".PRJ");
-		case CALIBRATION:
-			return is_dir() || has_extension(".CAL");
+		case WAV:
+			return is_dir() || has_extension(".WAV");
 		default:
 			break;
 		}
