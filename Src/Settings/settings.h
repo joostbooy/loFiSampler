@@ -11,6 +11,7 @@
 #include "stringBuilder.h"
 #include "settingsUtils.h"
 #include "disk.h"
+#include "wavImporter.h"
 
 class Settings {
 
@@ -36,7 +37,10 @@ public:
 		midi().init();
 		delay().init();
 		modulation().init();
+		sampleData().init(sdram);
+		wavImporter().init(&sampleData_);
 		ModulationMatrix::init(&modulation_);
+
 		Sample::init(sdram_);
 
 		for (size_t i = 0; i < kNumLfos; ++i) {
@@ -169,14 +173,20 @@ public:
 		return 0;
 	}
 
-	// Sdram
 	Sdram *sdram() {
 		return sdram_;
 	}
 
-	// Disk
 	Disk *disk() {
 		return disk_;
+	}
+
+	WavImporter &wavImporter() {
+		return wavImporter_;
+	}
+
+	SampleData &sampleData() {
+		return sampleData_;
 	}
 
 private:
@@ -189,6 +199,9 @@ private:
 	Sample sample_[kMaxSamples];
 	Envelope envelope_[kNumEnvelopes];
 	Instrument instrument_[kNumInstruments];
+
+	WavImporter wavImporter_;
+	SampleData sampleData_;
 
 	FileWriter fileWriter;
 	FileReader fileReader;
