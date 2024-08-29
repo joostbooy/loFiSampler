@@ -1,15 +1,19 @@
 #ifndef WavImporter_h
 #define WavImporter_h
 
-#include "wavReader.h"
-#include "sample.h"
+#include "wavFile.h"
+#include "sampleData.h"
 
 class WavImporter {
 
 public:
 
-	bool import(const char* path, bool as_mono) {
-		if (wavFile_.open(path) != WaveFile::WAV_OK) {
+	void init(SampleData *sampleData) {
+		sampleData_ = sampleData;
+	}
+
+	bool import(File *file, const char* path, bool as_mono) {
+		if (!wavFile_.open(file, path)) {
 			wavFile_.close();
 			return false;
 		}
@@ -41,7 +45,7 @@ public:
 		}
 
 		// allocate ram
-		sdram_ptr_ = sample.allocate(nullptr, path, num_channels, requested_size);
+		sdram_ptr_ = sampleData_->allocate(path, num_channels, requested_size);
 
 		if (sdram_ptr_ == nullptr) {
 			wavFile_.close();
@@ -49,8 +53,8 @@ public:
 		}
 
 		// read from file & write to ram
-		uint8_t *data;
-		size_t *size;
+		uint8_t *data = nullptr;
+		uint32_t *size = nullptr;
 
 		while (wavFile_.read(data, size)) {
 			if (!write(data, *size)) {
@@ -58,13 +62,14 @@ public:
 				return false;
 			}
 		}
-
 		wavFile_.close();
-		return true;
+
+		return bytes_received_ == wavFile_.data.size;
 	}
 
 private:
 	WavFile wavFile_;
+	SampleData *sampleData_;
 
 	bool as_mono_;
 
@@ -77,11 +82,11 @@ private:
 	int curr_chn_;
 	int bytes_per_sample_;
 	int sample_bytes_read_;
-	int sample_rate_prescaler_;
 
 	size_t sample_raw_;
 	size_t bytes_received_;
 	size_t samples_received_;
+	size_t sample_rate_prescaler_;
 
 	bool mono_sample_received(uint8_t data) {
 		sample_raw_ >>= 8;
