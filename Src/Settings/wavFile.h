@@ -1,36 +1,12 @@
-#ifndef WaveFile_h
-#define WaveFile_h
+#ifndef WavFile_h
+#define WavFile_h
 
 #include "file.h"
 #include "wavFile.h"
 
-class WaveFile {
+class WavFile {
 
 public:
-
-	enum Result {
-		SD_ERROR,
-		NOT_RIFF,
-		NOT_WAV,
-		UNSUPPORTED_WAV_FORMAT,
-		PARSE_CHUNK_FAIL,
-		WAV_OK
-	};
-
-	const char* result_text(Result result_) {
-		switch (result_)
-		{
-		case SD_ERROR:					return "SD ERROR";
-		case NOT_RIFF:					return "NOT RIFF";
-		case NOT_WAV:					return "NOT WAV";
-		case UNSUPPORTED_WAV_FORMAT:	return "UNSUPPORTED WAV FORMAT";
-		case PARSE_CHUNK_FAIL:			return "PARSE CHUNK FAIL";
-		case WAV_OK:					return "WAV OK";
-		default:
-			break;
-		}
-		return "UNKNOW";
-	}
 
 	struct Data_chunk {
 		uint32_t size;
@@ -51,62 +27,56 @@ public:
 		uint16_t bit_depth;
 	}format;
 
-	Result result() {
-		return result_;
-	}
-
-	Result open(File *file, const char *path) {
+	bool open(File *file, const char *path) {
 		uint32_t chunk_id;
 		uint32_t chunk_size;
 		file_ = file;
 
 		if (!file_->open(path)) {
-			return SD_ERROR;
+			return false;
 		}
 
 		chunk_id = read_u32();
 		if (chunk_id != RIFF_CHUNK_ID){
-			return NOT_RIFF;
+			return false;
 		}
 
 		riff.size = read_u32();
 		riff.format = read_u32();
 		if (riff.format != RIFF_FORMAT_WAVE) {
-			return NOT_WAV;
+			return false;
 		}
 
 		while (chunk_id != DATA_CHUNK_ID) {
 			if (file_->end()) {
-				return PARSE_CHUNK_FAIL;
+				return false;
 			}
 
 			chunk_id = read_u32();
 			chunk_size = read_u32();
 
-			result_ = parse_chunk(chunk_id, chunk_size);
-			if (result_ != WAV_OK) {
-				return result_;
+			if (!parse_chunk(chunk_id, chunk_size)) {
+				return false;
 			}
 		}
 
-		return WAV_OK;
+		return true;
 	}
 
-	bool read(uint8_t *data, size_t *size) {
-		if (file_->read(FileBuffer::data(), FileBuffer::size(), size)) {
+	bool read(uint8_t *data, uint32_t *num_read) {
+		if (file_->read(FileBuffer::data(), FileBuffer::size(), num_read)) {
 			data = FileBuffer::data();
 			return true;
 		}
 		return false;
 	}
 
-	void close() {
-		file_->close();
+	bool close() {
+		return file_->close();
 	}
 
 private:
 	File *file_;
-	Result result_;
 
 	static const uint32_t RIFF_CHUNK_ID		= 0x46464952;
 	static const uint32_t FMT_CHUNK_ID		= 0x20746D66;
@@ -120,12 +90,12 @@ private:
 		return data[0] | (data[1] << 8) | (data[2] << 16) | (data[3] << 24);
 	}
 
-	Result parse_chunk(uint32_t chunk_id, uint32_t chunk_size) {
+	bool parse_chunk(uint32_t chunk_id, uint32_t chunk_size) {
 		switch (chunk_id)
 		{
 		case FMT_CHUNK_ID:
 			if (file_->read(&format, 16) == false) {
-				return SD_ERROR;
+				return false;
 			}
 
 			if (chunk_size > 16) {
@@ -133,19 +103,19 @@ private:
 			}
 
 			if (format.audio_format != WAVE_FORMAT_PCM) {
-				return UNSUPPORTED_WAV_FORMAT;
+				return false;
 			}
 
 			if ((format.sample_rate % SAMPLE_RATE) != 0) {
-				return UNSUPPORTED_WAV_FORMAT;
+				return false;
 			}
 
-			if (format.bit_depth < 16) {
-				return UNSUPPORTED_WAV_FORMAT;
+			if (format.bit_depth < 16 || format.bit_depth > 32) {
+				return false;
 			}
 
 			if ((format.num_of_channels < 1) || (format.num_of_channels > 2)) {
-				return UNSUPPORTED_WAV_FORMAT;
+				return false;
 			}
 			break;
 		case DATA_CHUNK_ID:
@@ -156,7 +126,7 @@ private:
 			file_->advance(chunk_size);
 			break;
 		}
-		return WAV_OK;
+		return true;
 	}
 
 };
