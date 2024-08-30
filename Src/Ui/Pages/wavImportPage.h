@@ -45,6 +45,7 @@ namespace WavImportPage {
 		OptionListPage::set_text(option_text);
 		OptionListPage::set_callback(import_callback);
 		OptionListPage::set_count(NUM_OPTIONS);
+		pages_->open(Pages::OPTION_LIST_PAGE);
 	}
 
 	void init() {
