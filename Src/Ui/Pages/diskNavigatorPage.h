@@ -79,13 +79,13 @@ namespace DiskNavigatorPage {
 
 	void enter() {
 		selected_ = 0;
-		disk_->directory().reopen();
+		//disk_->directory().reopen();
 		scroll_to_row(0, true);
 	}
 
 	void exit()  {
 		callback_ = nullptr;
-		disk_->directory().close();
+		//disk_->directory().close();
 	}
 
 	void on_encoder(int id, int state) {
@@ -122,6 +122,11 @@ namespace DiskNavigatorPage {
 					callback_();
 				}
 				break;
+		//	case Controller::XXX:
+		//		DiskUtilPages::set_entry(e);
+		//		DiskUtilPages::set_callback(refresh_dir);
+		//		pages_->open(Pages::DISK_UTIL_PAGE);
+		//		break;
 			default:
 				break;
 			}
@@ -140,7 +145,7 @@ namespace DiskNavigatorPage {
 		const int x = (canvas_->width() - w) / 2;
 		const int y = (canvas_->height() - h) / 2;
 
-		canvas_->fill(x, y, w, h, Canvas::WHITE);
+		canvas_->draw_text(0, 0, w, row_h, curr_path(), Canvas::LEFT, Canvas::CENTER);
 
 		for (int i = 0; i < kMaxVisibleRows; ++i) {
 			int row = i + top_row_;
