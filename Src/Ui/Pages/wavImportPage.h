@@ -25,7 +25,7 @@ namespace WavImportPage {
 		int wavs_total_ = 0;
 		int wavs_imported_ = 0;
 		Disk *disk_ = settings_->disk();
-		bool as_mono = option == IMPORT_ALL || option == IMPORT_ALL_AS_MONO;
+		bool as_mono = option == IMPORT_AS_MONO || option == IMPORT_ALL_AS_MONO;
 
 		switch (option)
 		{
