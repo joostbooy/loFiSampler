@@ -9,7 +9,7 @@
 #include "fileReader.h"
 #include "fileWriter.h"
 #include "sample.h"
-//#include "wavImporter.h"
+#include "stack.h"
 
 class SampleAllocator {
 
@@ -23,18 +23,15 @@ public:
 		buffer_ = sdram->pointer();
 		max_ram_ = sdram->size_bytes() / 2; // bytes to 16 bit samples
 		available_ram_ = max_ram_;
-
-		num_samples_ = 0;
-
-	//	for (uint8_t i = 0; i < kMaxEntries; ++i) {
-	//		sample_[i].data = nullptr;
-	//		sample_[i].size = 0;
-	//		sample_[i].path[0] = '\0';
-	//	}
+		stack_.clear();
 	}
 
 	uint8_t num_samples() {
-		return num_samples_;
+		return stack_.size();
+	}
+
+	Sample* read_list(size_t index) {
+		return stack_.read(index);
 	}
 
 	size_t available_ram() {
@@ -51,56 +48,48 @@ public:
 	bool convert_to_mono(size_t slot);
 	bool duplicate(size_t slot);
 
-	void load(FileReader &fileReader) {
-		//	fileReader.read(num_samples_);
-		//	fileReader.read(available_ram_);
-		//	fileReader.read(name_);
-		//	fileReader.read(sample_);
-
-		for (size_t i = 0; i < kMaxEntries; ++i) {
-			// wavImporter_->import(sample_[i].path, sample_[i].num_channels == 1);
-		}
-	}
-
 private:
-	//WavImporter *wavImporter_;
 	Sample *sample_;
 	int16_t *buffer_;
 	size_t max_ram_;
 	size_t available_ram_;
-	size_t num_samples_ = 0;
 	static const size_t kMaxSamples = 128;
+	Stack<Sample*, kMaxSamples>stack_;
 
 	int16_t* block_tail() {
-		if (num_samples_ == 0) {
+		if (stack_.size() == 0) {
 			return &buffer_[0];
 		} else {
-			return sample_[num_samples_ - 1].data() + sample_[num_samples_ - 1].size();
+			Sample *sample = stack_.read(stack_.size() - 1);
+			return sample->data() + sample->size();
 		}
 	}
 
-	void reallign_ram_left(uint8_t slot) {
-		if (slot >= num_samples_) {
+	void reallign_ram_left(size_t index) {
+		if (index >= stack_.size()) {
 			return;
 		}
 
-		uint32_t size;
+		size_t size;
 		int16_t* write_ptr;
-		int16_t* read_ptr = sample_[slot].data();
+		int16_t* read_ptr = stack_.read(index)->data();
 
-		if (slot == 0) {
+		if (index == 0) {
 			write_ptr = &buffer_[0];
 		} else {
-			write_ptr = sample_[slot - 1].data() + sample_[slot - 1].size();
+			Sample *sample = stack_.read(index - 1);
+			write_ptr = sample->data() + sample->size();
 		}
 
 		if (write_ptr >= read_ptr) {
 			return;
 		}
 
-		for (uint8_t i = slot; i < num_samples_; ++i) {
-			sample_[i].set_data(write_ptr);
-			size = sample_[i].size();
+		for (size_t i = index; i < stack_.size(); ++i) {
+			Sample *sample = stack_.read(i);
+
+			sample->set_data(write_ptr);
+			size = sample->size();
 			while (size--) {
 				*write_ptr++ = *read_ptr++;
 			}
