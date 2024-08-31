@@ -3,11 +3,9 @@
 
 #include "settingsText.h"
 #include "settingsUtils.h"
-#include "sampleData.h"
 #include "stringUtils.h"
 #include "fileWriter.h"
 #include "fileReader.h"
-#include "sdram.h"
 
 class Sample {
 
@@ -31,10 +29,6 @@ public:
 		return nullptr;
 	}
 
-	static void init(Sdram *sdram) {
-		sdram_ = sdram;
-	}
-
 	void init() {
 		// set_data(nullptr);
 
@@ -54,45 +48,79 @@ public:
 		loop_end_ = 100;
 		key_range_low_ = 0;
 		key_range_high_ = 127;
+
+		path_[0] = '\0';
+		size_ = 0;
+		num_channels_ = 0;
+		data_ = nullptr;
 	}
 
 	// data
-	void set_data(SampleData::Entry *entry) {
-		entry_ = entry;
+	int16_t *data() {
+		return data_;
+	}
+
+	void set_data(int16_t *data) {
+		data_ = data;
 	}
 
 	void read(size_t index, int16_t *left, int16_t *right) {
 		if (is_stereo()) {
 			size_t i = index * 2;
-			*left = entry_->data[i];
-			*right = entry_->data[i + 1];
+			*left = data_[i];
+			*right = data_[i + 1];
 		} else {
-			*left = entry_->data[index];
+			*left = data_[index];
 			*right = *left;
 		}
 	}
 
 	bool has_data() {
-		return entry_ != nullptr;
+		return data_ != nullptr;
+	}
+
+	// path
+	const char *path() {
+		return path_;
+	}
+
+	void set_path(const char *new_path) {
+		StringUtils::copy(path_, const_cast<char*>(new_path), kMaxPathLength);
+	}
+
+	const char *name() {
+		StringUtils::get_file_name_from_path(path_, name_);
+		return name_;
 	}
 
 	// size
 	size_t size() {
-		return is_stereo() ? entry_->size / 2 : entry_->size;
+		return size_;
+	}
+
+	void set_size(size_t size) {
+		size_ = size;
 	}
 
 	const char *size_text() {
-		return SettingsText::samples_to_time(size());
+		return SettingsText::samples_to_time(size_samples());
 	}
 
+	size_t size_samples() {
+		return is_stereo() ? size_ / 2 : size_;
+	}
 
 	// channels
 	int num_channels() {
-		return entry_->num_channels;
+		return num_channels_;
+	}
+
+	void set_num_channels(int num_channels) {
+		num_channels_ = num_channels;
 	}
 
 	bool is_stereo() {
-		return entry_->num_channels == 2;
+		return num_channels_ == 2;
 	}
 
 
@@ -111,7 +139,7 @@ public:
 
 	// end
 	void set_end(int value) {
-		end_ = SettingsUtils::clip(start() + 1, size(), value);
+		end_ = SettingsUtils::clip(start() + 1, size_samples(), value);
 	}
 
 	size_t end() {
@@ -137,7 +165,7 @@ public:
 
 	// loop end
 	void set_loop_end(int value) {
-		loop_end_ = SettingsUtils::clip(loop_start(), size() - 1, value);
+		loop_end_ = SettingsUtils::clip(loop_start(), size_samples() - 1, value);
 	}
 
 	size_t loop_end() {
@@ -282,7 +310,6 @@ public:
 
 	// Storage
 	void save(FileWriter &fileWriter) {
-		fileWriter.write(entry_);
 		fileWriter.write(start_);
 		fileWriter.write(end_);
 		fileWriter.write(loop_);
@@ -299,7 +326,6 @@ public:
 	}
 
 	void load(FileReader &fileReader) {
-		fileReader.read(entry_);
 		fileReader.read(start_);
 		fileReader.read(end_);
 		fileReader.read(loop_);
@@ -329,12 +355,24 @@ public:
 		key_range_high_ = sample->key_range_high();
 		gain_ = sample->gain();
 		pan_ = sample->gain();
+		//	num_channels_ = sample->num_channels();
+
+		//	size_ = sample_->size_samples();
+		//	if (sample->is_stereo()) {
+		//		size_ *= 2;
+		//	}
+
+		//	StringUtils::copy(path_, sample_->path(), kMaxPathLength);
 	}
 
 private:
-	static Sdram *sdram_;
+	static const size_t kMaxPathLength = 64;
 
-	SampleData::Entry *entry_;
+	int16_t *data_;
+	char path_[kMaxPathLength];
+	size_t size_;
+	int num_channels_;
+
 	size_t start_;
 	size_t end_;
 	bool loop_;
@@ -352,6 +390,7 @@ private:
 	static bool name_to_midi_note(const char *name, uint8_t *note);
 	static constexpr const uint8_t char_to_note_[7] = { 9, 11, 0, 2, 4, 5, 7 };
 	static constexpr const bool has_seminote_[12] = { 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0 };
+	static char name_[kMaxPathLength];
 };
 
 #endif
