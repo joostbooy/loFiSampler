@@ -30,7 +30,7 @@ public:
 	}
 
 	void init() {
-		clear_path();
+		set_path("");
 		set_size(0);
 		set_num_channels(0);
 		set_data(nullptr);
@@ -83,10 +83,6 @@ public:
 
 	void set_path(const char *new_path) {
 		StringUtils::copy(path_, const_cast<char*>(new_path), kMaxPathLength);
-	}
-
-	void clear_path() {
-		path_[0] = '\0';
 	}
 
 	const char *name() {
