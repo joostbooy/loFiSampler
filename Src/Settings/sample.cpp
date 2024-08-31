@@ -1,7 +1,6 @@
 #include "sample.h"
 
-Sdram* Sample::sdram_;
-
+char Sample::name_[kMaxPathLength];
 
  bool Sample::name_to_midi_note(const char *name, uint8_t *note) {
 	int oct_ = -1;

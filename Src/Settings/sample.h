@@ -30,8 +30,10 @@ public:
 	}
 
 	void init() {
-		// set_data(nullptr);
-
+		clear_path();
+		set_size(0);
+		set_num_channels(0);
+		set_data(nullptr);
 		set_loop(false);
 		set_u_turn(false);
 		set_play_mode(FORWARD);
@@ -48,11 +50,6 @@ public:
 		loop_end_ = 100;
 		key_range_low_ = 0;
 		key_range_high_ = 127;
-
-		path_[0] = '\0';
-		size_ = 0;
-		num_channels_ = 0;
-		data_ = nullptr;
 	}
 
 	// data
@@ -86,6 +83,10 @@ public:
 
 	void set_path(const char *new_path) {
 		StringUtils::copy(path_, const_cast<char*>(new_path), kMaxPathLength);
+	}
+
+	void clear_path() {
+		path_[0] = '\0';
 	}
 
 	const char *name() {
