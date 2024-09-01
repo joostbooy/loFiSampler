@@ -32,18 +32,9 @@ bool SampleAllocator::remove(size_t index) {
 
 	Sample *sample = read_map(index);
 	available_ram_ += sample->size();
-
 	sample->init();
 
 	sampleMap_.remove_by_index(index);
-
-	for (size_t i = index; i < num_samples(); ++i) {
-		Sample *a = read_map(i);
-		Sample *b = read_map(i + 1);
-		a->set_data(b->data());
-	}
-
-	// needs to be last after all the indexes & pointers are updated!
 	reallign_ram_left(index);
 
 	return true;
