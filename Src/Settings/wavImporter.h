@@ -2,17 +2,18 @@
 #define WavImporter_h
 
 #include "wavFile.h"
-#include "sampleData.h"
+#include "sampleAllocator.h"
 
 class WavImporter {
 
 public:
 
-	void init(SampleData *sampleData) {
-		sampleData_ = sampleData;
+	void init(SampleAllocator *sampleAllocator) {
+		sampleAllocator_ = sampleAllocator;
 	}
 
 	bool import(File *file, const char* path, bool as_mono) {
+		// open the wav
 		if (!wavFile_.open(file, path)) {
 			wavFile_.close();
 			return false;
@@ -45,7 +46,7 @@ public:
 		}
 
 		// allocate ram
-		sdram_ptr_ = sampleData_->allocate(path, num_channels, requested_size);
+		sdram_ptr_ = sampleAllocator_->allocate(path, num_channels, requested_size);
 
 		if (sdram_ptr_ == nullptr) {
 			wavFile_.close();
@@ -58,18 +59,24 @@ public:
 
 		while (wavFile_.read(data, size)) {
 			if (!write(data, *size)) {
+				cancel();
 				wavFile_.close();
 				return false;
 			}
 		}
 		wavFile_.close();
 
-		return bytes_received_ == wavFile_.data.size;
+		if (bytes_received_ != wavFile_.data.size) {
+			cancel();
+			return false;
+		}
+		return true;
+
 	}
 
 private:
 	WavFile wavFile_;
-	SampleData *sampleData_;
+	SampleAllocator *sampleAllocator_;
 
 	bool as_mono_;
 
@@ -87,6 +94,13 @@ private:
 	size_t bytes_received_;
 	size_t samples_received_;
 	size_t sample_rate_prescaler_;
+
+	void cancel() {
+		int slot = sampleAllocator_->num_samples() - 1;
+		if (slot >= 0) {
+			sampleAllocator_->remove(slot);
+		}
+	}
 
 	bool mono_sample_received(uint8_t data) {
 		sample_raw_ >>= 8;
