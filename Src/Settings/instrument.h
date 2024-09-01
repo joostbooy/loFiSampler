@@ -52,15 +52,6 @@ public:
 		num_samples_ = 0;
 	}
 
-	bool sample_excists(Sample *sample) {
-		for (size_t i = 0; i < num_samples_; ++i) {
-			if (sample_[i] == sample) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	bool add_sample(Sample *sample) {
 		if (num_samples_ < kMaxNumSamples && sample_excists(sample) == false) {
 			sample_[num_samples_] = sample;
@@ -311,6 +302,15 @@ private:
 	Sample *sample_[kMaxNumSamples];
 
 	ModulationMatrix modulationMatrix_;
+	
+	bool sample_excists(Sample *sample) {
+		for (size_t i = 0; i < num_samples_; ++i) {
+			if (sample_[i] == sample) {
+				return true;
+			}
+		}
+		return false;
+	}
 };
 
 #endif
