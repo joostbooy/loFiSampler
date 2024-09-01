@@ -1,6 +1,6 @@
 #include "pages.h"
 #include "topPage.h"
-#include "chapterPage.h"
+//#include "chapterPage.h"
 #include "lfoPage.h"
 #include "envelopePage.h"
 #include "instrumentPage.h"
@@ -13,34 +13,40 @@
 #include "optionListPage.h"
 #include "hardwareTestPage.h"
 #include "textInputPage.h"
+#include "wavImportPage.h"
+#include "diskRetryPage.h"
+#include "instrumentSampleListPage.h"
 
 Pages::Page* page_[Pages::NUM_PAGES] = {
-	[Pages::TOP_PAGE]			= &TopPage::page,
-	[Pages::CHAPTER_PAGE]		= &ChapterPage::page,
-	[Pages::LIST_PAGE]			= &ListPage::page,
-	[Pages::LFO_PAGE]			= &LfoPage::page,
-	[Pages::ENVELOPE_PAGE]		= &EnvelopePage::page,
-	[Pages::INSTRUMENT_PAGE]	= &InstrumentPage::page,
-	[Pages::MIDI_PAGE]			= &MidiPage::page,
-	[Pages::MODULATION_PAGE]	= &ModulationPage::page,
-	[Pages::SAMPLE_PAGE]		= &SamplePage::page,
-	[Pages::DELAY_PAGE]			= &DelayPage::page,
-	[Pages::CONFIRMATION_PAGE]	= &ConfirmationPage::page,
-	[Pages::OPTION_LIST_PAGE]	= &OptionListPage::page,
-	[Pages::HARDWARE_TEST_PAGE]	= &HardwareTestPage::page,
-	[Pages::TEXT_INPUT_PAGE]	= &TextInputPage::page,
+	[Pages::TOP_PAGE]						= &TopPage::page,
+//	[Pages::CHAPTER_PAGE]					= &ChapterPage::page,
+	[Pages::LIST_PAGE]						= &ListPage::page,
+	[Pages::LFO_PAGE]						= &LfoPage::page,
+	[Pages::ENVELOPE_PAGE]					= &EnvelopePage::page,
+	[Pages::INSTRUMENT_PAGE]				= &InstrumentPage::page,
+	[Pages::MIDI_PAGE]						= &MidiPage::page,
+	[Pages::MODULATION_PAGE]				= &ModulationPage::page,
+	[Pages::SAMPLE_PAGE]					= &SamplePage::page,
+	[Pages::DELAY_PAGE]						= &DelayPage::page,
+	[Pages::CONFIRMATION_PAGE]				= &ConfirmationPage::page,
+	[Pages::OPTION_LIST_PAGE]				= &OptionListPage::page,
+	[Pages::HARDWARE_TEST_PAGE]				= &HardwareTestPage::page,
+	[Pages::TEXT_INPUT_PAGE]				= &TextInputPage::page,
+	[Pages::WAV_IMPORT_PAGE]				= &WavImportPage::page,
+	[Pages::DISK_RETRY_PAGE]				= &DiskRetryPage::page,
+	[Pages::INSTRUMENT_SAMPLE_LIST_PAGE]	= &InstrumentSampleListPage::page,
 };
 
 void Pages::init(Settings *settings, Engine *engine, Canvas *canvas, Leds *leds) {
-	curr_page_ = TOP_PAGE;
+	//curr_page_ = TOP_PAGE;
 	page_stack_.clear();
 	TopPage::init(settings, engine, canvas, leds, this);
 
-//	for (int i = 0; i < NUM_PAGES; ++i) {
-//		page_[i]->init();
-//	}
+	for (int i = 0; i < NUM_PAGES; ++i) {
+		page_[i]->init();
+	}
 
-	//open(DUMMY_PAGE);
+	open(ENVELOPE_PAGE);
 }
 
 void Pages::open(int id) {

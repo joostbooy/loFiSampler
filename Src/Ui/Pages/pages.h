@@ -12,7 +12,7 @@ public:
 
 	enum PageId {
 		TOP_PAGE,
-		CHAPTER_PAGE,
+		//CHAPTER_PAGE,
 		LIST_PAGE,
 		LFO_PAGE,
 		ENVELOPE_PAGE,
@@ -25,6 +25,9 @@ public:
 		OPTION_LIST_PAGE,
 		HARDWARE_TEST_PAGE,
 		TEXT_INPUT_PAGE,
+		WAV_IMPORT_PAGE,
+		DISK_RETRY_PAGE,
+		INSTRUMENT_SAMPLE_LIST_PAGE,
 
 		NUM_PAGES
 	};
@@ -53,7 +56,7 @@ public:
 private:
 	int curr_page_;
 	Stack<int, 8>page_stack_;
-	Page *page_[NUM_PAGES];
+	//Page *page_[NUM_PAGES];
 };
 
 #endif
