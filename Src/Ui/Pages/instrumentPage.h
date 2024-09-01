@@ -19,11 +19,12 @@ namespace InstrumentPage {
 
 	enum Options {
 		EDIT_NAME,
+		SAMPLE_LIST,
 		CANCEL,
 		NUM_OPTIONS
 	};
 
-	const char* const option_text[NUM_OPTIONS] = { "EDIT NAME", "CANCEL" };
+	const char* const option_text[NUM_OPTIONS] = { "EDIT NAME", "SAMPLE LIST", "CANCEL" };
 
 	void edit(int option) {
 		switch (option)
@@ -31,6 +32,9 @@ namespace InstrumentPage {
 		case EDIT_NAME:
 			TextInputPage::set(settings_->selected_instrument().name(), Instrument::kMaxNameLength, "SET INSTRUMENT NAME");
 			pages_->open(Pages::TEXT_INPUT_PAGE);
+			break;
+		case SAMPLE_LIST:
+			pages_->open(Pages::INSTRUMENT_SAMPLE_LIST_PAGE);
 			break;
 		default:
 			break;

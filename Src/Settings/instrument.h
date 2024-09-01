@@ -249,6 +249,10 @@ public:
 		fileWriter.write(num_samples_);
 		fileWriter.write(sample_rate_divider_);
 
+		for (size_t i = 0; i < kMaxNumSamples; ++i) {
+			fileWriter.write(sample_[i]);
+		}
+
 		modulationMatrix().save(fileWriter);
 	}
 
@@ -263,6 +267,10 @@ public:
 		fileReader.read(bend_range_);
 		fileReader.read(num_samples_);
 		fileReader.read(sample_rate_divider_);
+
+		for (size_t i = 0; i < kMaxNumSamples; ++i) {
+			fileReader.read(sample_[i]);
+		}
 
 		modulationMatrix().load(fileReader);
 	}
@@ -279,6 +287,10 @@ public:
 		bit_depth_ = instrument->bit_depth();
 		num_samples_ = instrument->num_samples();
 		sample_rate_divider_ = instrument->sample_rate_divider();
+
+	//	for (size_t i = 0; i < kMaxNumSamples; ++i) {
+	//		sample_[i] = instrument->sample(i);
+	//	}
 
 		modulationMatrix().paste(&instrument->modulationMatrix());
 	}
