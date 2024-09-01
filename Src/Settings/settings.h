@@ -37,7 +37,7 @@ public:
 		midi().init();
 		delay().init();
 		modulation().init();
-		sampleAllocator().init(sdram);
+		sampleAllocator().init(sdram, sample_);
 		wavImporter().init(&sampleAllocator_);
 		ModulationMatrix::init(&modulation_);
 
@@ -49,9 +49,9 @@ public:
 			envelope(i).init();
 		}
 
-		//	for (size_t i = 0; i < SampleAllocator::kMaxSamples; ++i) {
-		//		sample(i).init();
-		//	}
+		for (size_t i = 0; i < SampleAllocator::kMaxSamples; ++i) {
+			sample(i).init();
+		}
 
 		for (size_t i = 0; i < kNumInstruments; ++i) {
 			instrument(i).init();
@@ -76,7 +76,11 @@ public:
 		return modulation_;
 	}
 
-	// sample
+	// Sample
+	Sample &sample(size_t index) {
+		return sample_[index];
+	}
+
 	int selected_sample_index() {
 		return selected_sample_index_;
 	}
@@ -97,7 +101,6 @@ public:
 	size_t num_samples() {
 		return sampleAllocator_.num_samples();
 	}
-
 
 	// Envelope
 	Envelope &envelope(size_t index) {
@@ -222,6 +225,7 @@ private:
 	Delay delay_;
 	Modulation modulation_;
 	Lfo lfo_[kNumLfos];
+	Sample sample_[SampleAllocator::kMaxSamples];
 	Envelope envelope_[kNumEnvelopes];
 	Instrument instrument_[kNumInstruments];
 
