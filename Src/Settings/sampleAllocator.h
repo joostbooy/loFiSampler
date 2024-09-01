@@ -55,7 +55,7 @@ private:
 	size_t available_ram_;
 	Stack<Sample*, kMaxSamples>sampleMap_;
 
-	int16_t* block_tail() {
+	int16_t* buffer_tail() {
 		if (num_samples() == 0) {
 			return &buffer_[0];
 		} else {

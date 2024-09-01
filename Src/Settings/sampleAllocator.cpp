@@ -5,7 +5,7 @@ int16_t* SampleAllocator::allocate(const char* path, uint8_t num_channels, size_
 		return nullptr;
 	}
 
-	int16_t* data = block_tail();
+	int16_t* data = buffer_tail();
 
 	for (size_t i = 0; i < kMaxSamples; ++i) {
 		if (!sample_[i].has_data()) {
