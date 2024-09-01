@@ -40,7 +40,7 @@ public:
 	}
 
 	// Sample
-	Sample *sample(uint8_t index) {
+	Sample *sample(size_t index) {
 		return sample_[index];
 	}
 
@@ -52,8 +52,17 @@ public:
 		num_samples_ = 0;
 	}
 
+	bool sample_excists(Sample *sample) {
+		for (size_t i = 0; i < num_samples_; ++i) {
+			if (sample_[i] == sample) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	bool add_sample(Sample *sample) {
-		if (num_samples_ < kMaxNumSamples) {
+		if (num_samples_ < kMaxNumSamples && sample_excists(sample) == false) {
 			sample_[num_samples_] = sample;
 			++num_samples_;
 			return true;
@@ -73,26 +82,15 @@ public:
 		return true;
 	}
 
-	bool swap_sample_with_left(uint8_t index) {
-		int left = index - 1;
-		if (left >= 0 && index < num_samples()) {
-			swap_samples(left, index);
-			return true;
+	void refresh_sample_list() {
+		size_t index = 0;
+		while (index < num_samples_) {
+			if (sample_[index]->has_data()) {
+				++index;
+			} else {
+				remove_sample(index);
+			}
 		}
-
-		return false;
-	}
-
-	bool swap_sample_with_right(uint8_t index) {
-		int right = index + 1;
-		int far_right = num_samples() - 1;
-
-		if (far_right > 0 && index < far_right) {
-			swap_samples(index, right);
-			return true;
-		}
-
-		return false;
 	}
 
 	// pan
@@ -301,12 +299,6 @@ private:
 	Sample *sample_[kMaxNumSamples];
 
 	ModulationMatrix modulationMatrix_;
-
-	void swap_samples(int a, int b) {
-		Sample *data = sample_[a];
-		sample_[a] = sample_[b];
-		sample_[b] = data;
-	}
 };
 
 #endif

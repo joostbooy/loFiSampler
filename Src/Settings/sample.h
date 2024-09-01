@@ -97,6 +97,13 @@ public:
 
 	void set_size(size_t size) {
 		size_ = size;
+		if (end() > size_) {
+			set_end(size_);
+		}
+
+		if (loop_end() > size_) {
+			set_loop_end(size_);
+		}
 	}
 
 	const char *size_text() {
@@ -134,6 +141,7 @@ public:
 		return SettingsText::samples_to_time(start());
 	}
 
+
 	// end
 	void set_end(int value) {
 		end_ = SettingsUtils::clip(start() + 1, size_samples(), value);
@@ -160,6 +168,7 @@ public:
 		return SettingsText::samples_to_time(loop_start());
 	}
 
+
 	// loop end
 	void set_loop_end(int value) {
 		loop_end_ = SettingsUtils::clip(loop_start(), size_samples() - 1, value);
@@ -173,6 +182,7 @@ public:
 		return SettingsText::samples_to_time(loop_end());
 	}
 
+
 	// loop
 	void set_loop(bool value) {
 		loop_ = value;
@@ -185,6 +195,7 @@ public:
 	const char *loop_text() {
 		return SettingsText::bool_to_on_off(loop());
 	}
+
 
 	// Cents
 	void set_cents(int value) {
@@ -338,6 +349,7 @@ public:
 		fileReader.read(pan_);
 	}
 
+	// only call through sampleAllocator
 	void paste(Sample *sample) {
 		start_ = sample->start();
 		end_ = sample->end();
@@ -352,14 +364,8 @@ public:
 		key_range_high_ = sample->key_range_high();
 		gain_ = sample->gain();
 		pan_ = sample->gain();
-		//	num_channels_ = sample->num_channels();
-
-		//	size_ = sample_->size_samples();
-		//	if (sample->is_stereo()) {
-		//		size_ *= 2;
-		//	}
-
-		//	StringUtils::copy(path_, sample_->path(), kMaxPathLength);
+		// Dont paste : data, path, size or num_channels
+		// thats handled by the sample sampleAllocator
 	}
 
 private:

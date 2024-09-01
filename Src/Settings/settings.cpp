@@ -27,7 +27,7 @@ bool Settings::save() {
 		envelope(i).save(fileWriter);
 	}
 
-	for (size_t i = 0; i < kMaxSamples; ++i) {
+	for (size_t i = 0; i < SampleAllocator::kMaxSamples; ++i) {
 		sample(i).save(fileWriter);
 	}
 
@@ -60,8 +60,18 @@ bool Settings::load(const char* new_path) {
 		envelope(i).load(fileReader);
 	}
 
-	for (size_t i = 0; i < kMaxSamples; ++i) {
+	for (size_t i = 0; i < SampleAllocator::kMaxSamples; ++i) {
 		sample(i).load(fileReader);
+
+		// FIX ME !
+		// This wont work because wavImporter will allocate the data to a free sample slot,
+		// and we want to keep the orignal slot
+
+		//	if (wavImporter().import(&disk()->file(), sample(i).path(), sample(i).num_channels() == 1)) {
+		//		int index = sampleAllocator.num_samples() - 1;
+		//		int16_t *data = sampleAllocator().read(index)->data();
+		//		sample(i).set_data(data);
+		//	}
 	}
 
 	for (size_t i = 0; i < kNumInstruments; ++i) {
