@@ -56,24 +56,24 @@ public:
 	}
 
 	const char* value_text(int item) override {
-		Sample &sample = settings_->selected_sample();
+		Sample *sample = settings_->selected_sample();
 
 		switch (item)
 		{
-		case SAMPLE:			return nullptr; //sample.name();
-		case GAIN:				return sample.gain_text();
-		case PAN:				return sample.pan_text();
-		case START:				return sample.start_text();
-		case END:				return sample.end_text();
-		case LOOP:				return sample.loop_text();
-		case LOOP_END:			return sample.loop_end_text();
-		case LOOP_START:		return sample.loop_start_text();
-		case U_TURN:			return sample.u_turn_text();
-		case PLAY_MODE:			return sample.play_mode_text();
-		case CENTS:				return sample.cents_text();
-		case ROOT_NOTE:			return sample.root_note_text();
-		case KEY_RANGE_LOW:		return sample.key_range_low_text();
-		case KEY_RANGE_HIGH:	return sample.key_range_high_text();
+		case SAMPLE:			return sample->name();
+		case GAIN:				return sample->gain_text();
+		case PAN:				return sample->pan_text();
+		case START:				return sample->start_text();
+		case END:				return sample->end_text();
+		case LOOP:				return sample->loop_text();
+		case LOOP_END:			return sample->loop_end_text();
+		case LOOP_START:		return sample->loop_start_text();
+		case U_TURN:			return sample->u_turn_text();
+		case PLAY_MODE:			return sample->play_mode_text();
+		case CENTS:				return sample->cents_text();
+		case ROOT_NOTE:			return sample->root_note_text();
+		case KEY_RANGE_LOW:		return sample->key_range_low_text();
+		case KEY_RANGE_HIGH:	return sample->key_range_high_text();
 		default:
 			break;
 		}
@@ -81,7 +81,7 @@ public:
 	}
 
 	void edit(int item, int inc, bool shifted) override {
-		Sample &sample = settings_->selected_sample();
+		Sample *sample = settings_->selected_sample();
 
 		switch (item)
 		{
@@ -89,43 +89,43 @@ public:
 			settings_->select_sample_index(settings_->selected_sample_index() + inc);
 			break;
 		case GAIN:
-			sample.set_gain(sample.gain() + SettingsUtils::f_inc(inc, shifted));
+			sample->set_gain(sample->gain() + SettingsUtils::f_inc(inc, shifted));
 			break;
 		case PAN:
-			sample.set_pan(sample.pan() + SettingsUtils::f_inc(inc, shifted));
+			sample->set_pan(sample->pan() + SettingsUtils::f_inc(inc, shifted));
 			break;
 		case START:
-			sample.set_start(sample.start() + (inc * (shifted ? kQuarterSecond : kMillisecond)));
+			sample->set_start(sample->start() + (inc * (shifted ? kQuarterSecond : kMillisecond)));
 			break;
 		case END:
-			sample.set_end(sample.end() + (inc * (shifted ? kQuarterSecond : kMillisecond)));
+			sample->set_end(sample->end() + (inc * (shifted ? kQuarterSecond : kMillisecond)));
 			break;
 		case LOOP:
-			sample.set_loop(inc > 0);
+			sample->set_loop(inc > 0);
 			break;
 		case LOOP_START:
-			sample.set_loop_start(sample.loop_start() + (inc * (shifted ? kQuarterSecond : kMillisecond)));
+			sample->set_loop_start(sample->loop_start() + (inc * (shifted ? kQuarterSecond : kMillisecond)));
 			break;
 		case LOOP_END:
-			sample.set_loop_end(sample.loop_end() + (inc * (shifted ? kQuarterSecond : kMillisecond)));
+			sample->set_loop_end(sample->loop_end() + (inc * (shifted ? kQuarterSecond : kMillisecond)));
 			break;
 		case U_TURN:
-			sample.set_u_turn(inc > 0);
+			sample->set_u_turn(inc > 0);
 			break;
 		case PLAY_MODE:
-			sample.set_play_mode(sample.play_mode() + inc);
+			sample->set_play_mode(sample->play_mode() + inc);
 			break;
 		case CENTS:
-			sample.set_cents(sample.cents() + (inc * (shifted ? 10 : 1)));
+			sample->set_cents(sample->cents() + (inc * (shifted ? 10 : 1)));
 			break;
 		case ROOT_NOTE:
-			sample.set_root_note(sample.root_note() + (inc * (shifted ? 12 : 1)));
+			sample->set_root_note(sample->root_note() + (inc * (shifted ? 12 : 1)));
 			break;
 		case KEY_RANGE_LOW:
-			sample.set_key_range_low(sample.key_range_low() + (inc * (shifted ? 12 : 1)));
+			sample->set_key_range_low(sample->key_range_low() + (inc * (shifted ? 12 : 1)));
 			break;
 		case KEY_RANGE_HIGH:
-			sample.set_key_range_high(sample.key_range_high() + (inc * (shifted ? 12 : 1)));
+			sample->set_key_range_high(sample->key_range_high() + (inc * (shifted ? 12 : 1)));
 			break;
 		default:
 			break;
