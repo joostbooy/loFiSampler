@@ -307,9 +307,9 @@ public:
 
 
 	// name to note
-	bool map_name_to_root_note(const char *name) {
+	bool map_name_to_root_note() {
 		uint8_t note;
-		if (name_to_midi_note(name, &note)) {
+		if (name_to_midi_note(name(), &note)) {
 			root_note_ = note;
 			return true;
 		}
