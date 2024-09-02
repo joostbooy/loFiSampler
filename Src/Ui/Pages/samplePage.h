@@ -96,7 +96,12 @@ namespace SamplePage {
 		switch (option)
 		{
 		case CONVERT_TO_MONO:
-			convert_to_mono(settings_->selected_sample_index());
+			ConfirmationPage::set("CONVERT TO MONO ?", [](int option) {
+				if (option == ConfirmationPage::CONFIRM) {
+					convert_to_mono(settings_->selected_sample_index());
+				}
+			});
+			pages_->open(Pages::CONFIRMATION_PAGE);
 			break;
 		case MAP_NAME_TO_ROOT_NOTE:
 			map_name_to_root_note(settings_->selected_sample_index());
