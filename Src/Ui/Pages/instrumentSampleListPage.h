@@ -49,6 +49,19 @@ namespace InstrumentSampleListPage {
 
 	void on_button(int id, int state) {
 		if (state) {
+			bool shifted = Controller::is_pressed(Controller::SHIFT_BUTTON);
+			int enc_id = shifted ? Controller::FUNCTION_ENC_D : Controller::FUNCTION_ENC_A;
+
+			if (id == Controller::UP_BUTTON) {
+				on_encoder(enc_id, -1);
+				return;
+			}
+
+			if (id == Controller::DOWN_BUTTON) {
+				on_encoder(enc_id, 1);
+				return;
+			}
+
 			switch (Controller::button_to_function(id))
 			{
 			case ADD:
