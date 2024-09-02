@@ -53,7 +53,7 @@ public:
 	}
 
 	bool add_sample(Sample *sample) {
-		if (num_samples_ < kMaxNumSamples && sample_excists(sample) == false) {
+		if (num_samples_ < kMaxNumSamples && sample != nullptr && sample_excists(sample) == false) {
 			sample_[num_samples_] = sample;
 			++num_samples_;
 			return true;
@@ -276,12 +276,12 @@ public:
 		bit_depth_ = instrument->bit_depth();
 		bend_range_ = instrument->bend_range();
 		bit_depth_ = instrument->bit_depth();
-		num_samples_ = instrument->num_samples();
 		sample_rate_divider_ = instrument->sample_rate_divider();
 
-	//	for (size_t i = 0; i < kMaxNumSamples; ++i) {
-	//		sample_[i] = instrument->sample(i);
-	//	}
+		// num_samples_ = instrument->num_samples();
+		//	for (size_t i = 0; i < kMaxNumSamples; ++i) {
+		//		sample_[i] = instrument->sample(i);
+		//	}
 
 		modulationMatrix().paste(&instrument->modulationMatrix());
 	}
@@ -302,7 +302,7 @@ private:
 	Sample *sample_[kMaxNumSamples];
 
 	ModulationMatrix modulationMatrix_;
-	
+
 	bool sample_excists(Sample *sample) {
 		for (size_t i = 0; i < num_samples_; ++i) {
 			if (sample_[i] == sample) {
