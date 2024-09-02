@@ -61,7 +61,7 @@ bool Settings::load(const char* new_path) {
 	}
 
 	// the wavImporter will assign the data to a free sample slot,
-	// so we first load the sample into some temp memory,
+	// so we first load the sample into some temp memory so we can read the path,
 	// then we paste the temp memory into that assigned slot
 	Sample sample;
 
@@ -69,8 +69,8 @@ bool Settings::load(const char* new_path) {
 		sample.load(fileReader);
 
 		if (wavImporter().import(sample.path(), sample.num_channels() == 1)) {
-			int index = sampleAllocator().num_samples() - 1;
-			sampleAllocator().read_map(index)->paste(&sample);
+			int latest = sampleAllocator().num_samples() - 1;
+			sampleAllocator().read_map(latest)->paste(&sample);
 		}
 	}
 

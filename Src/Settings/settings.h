@@ -56,6 +56,7 @@ public:
 		for (size_t i = 0; i < kNumInstruments; ++i) {
 			instrument(i).init();
 		}
+
 	}
 
 	void init() {
