@@ -20,4 +20,5 @@ private:
 	static constexpr size_t kSize = 512;
 	static uint8_t data_[kSize] __attribute__((section(".dtcm")));
 };
+
 #endif
