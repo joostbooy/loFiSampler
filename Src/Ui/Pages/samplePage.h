@@ -16,15 +16,33 @@ namespace SamplePage {
 	Sample sample_;
 	SampleList sampleList_;
 
+
 	enum FooterOptions {
 		IMPORT,
 		REMOVE,
-		CONVERT_TO_MONO,
-
-		NUM_OPTIONS
+		NUM_FOOTER_OPTIONS
 	};
 
-	const char* const footer_option_text[NUM_OPTIONS] = { "IMPORT", "REMOVE", "CONVERT TO MONO" };
+	const char* const footer_option_text[NUM_FOOTER_OPTIONS] = {
+		"IMPORT",
+		"REMOVE",
+	};
+
+	enum ListOptions {
+		CONVERT_TO_MONO,
+		MAP_NAME_TO_ROOT_NOTE,
+		MAP_KEY_RANGE_TO_ROOT_NOTE,
+		CANCEL,
+
+		NUM_LIST_OPTIONS
+	};
+
+	const char* const list_option_text[NUM_LIST_OPTIONS] = {
+		"CONVERT TO MONO",
+		"MAP NAME TO ROOT NOTE",
+		"MAP KEY RANGE TO ROOT NOTE",
+		"CANCEL"
+	};
 
 	void clear() {
 		settings_->selected_sample()->init();
@@ -60,6 +78,38 @@ namespace SamplePage {
 		}
 	}
 
+	void map_name_to_root_note() {
+		Sample *sample = settings_->selected_sample();
+		if (sample->map_name_to_root_note()) {
+			MessagePainter::show("SUCCES");
+		}
+	}
+
+	void map_key_range_to_root_note() {
+		Sample *sample = settings_->selected_sample();
+		sample->set_key_range_low(sample->root_note());
+		sample->set_key_range_high(sample->root_note());
+	}
+
+	void edit(int option) {
+		switch (option)
+		{
+		case CONVERT_TO_MONO:
+			convert_to_mono(settings_->selected_sample_index());
+			break;
+		case MAP_NAME_TO_ROOT_NOTE:
+			convert_to_mono(settings_->selected_sample_index());
+			break;
+		case MAP_KEY_RANGE_TO_ROOT_NOTE:
+			convert_to_mono(settings_->selected_sample_index());
+			break;
+		case CANCEL:
+			break;
+		default:
+			break;
+		}
+	}
+
 	void init() {
 		pasteable_ = false;
 		sample_.init();
@@ -72,6 +122,10 @@ namespace SamplePage {
 		ListPage::set_copy_callback(&copy);
 		ListPage::set_paste_callback(&paste);
 		ListPage::enter();
+
+		OptionListPage::set_text(list_option_text);
+		OptionListPage::set_callback(edit);
+		OptionListPage::set_count(NUM_LIST_OPTIONS);
 	}
 
 	void exit()  {
@@ -82,16 +136,23 @@ namespace SamplePage {
 		ListPage::on_button(id, state);
 
 		if (state) {
+			if (id == Controller::MENU_BUTTON) {
+				pages_->open(Pages::OPTION_LIST_PAGE);
+				return;
+			}
+
 			switch (Controller::button_to_function(id))
 			{
 			case IMPORT:
 				pages_->open(Pages::WAV_IMPORT_PAGE);
 				break;
 			case REMOVE:
-				remove(settings_->selected_sample_index());
-				break;
-			case CONVERT_TO_MONO:
-				convert_to_mono(settings_->selected_sample_index());
+				ConfirmationPage::set("REMOVE SAMPLE ?", [](int option) {
+					if (option == ConfirmationPage::CONFIRM) {
+						remove(settings_->selected_sample_index());
+					}
+				});
+				pages_->open(Pages::CONFIRMATION_PAGE);
 				break;
 			default:
 				break;
@@ -134,7 +195,7 @@ namespace SamplePage {
 			index += inc;
 		}
 
-		WindowPainter::draw_footer(footer_option_text, NUM_OPTIONS);
+		WindowPainter::draw_footer(footer_option_text, NUM_FOOTER_OPTIONS);
 	}
 
 	const size_t target_fps() {
