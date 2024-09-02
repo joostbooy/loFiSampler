@@ -327,16 +327,16 @@ public:
 		return false;
 	}
 
+	// name to key range
 	bool map_name_to_key_range() {
 		uint8_t note;
 		if (name_to_midi_note(name(), &note)) {
 			key_range_low_ = note;
-			key_range_high_= note;
+			key_range_high_ = note;
 			return true;
 		}
 		return false;
 	}
-
 
 	// Storage
 	void save(FileWriter &fileWriter) {

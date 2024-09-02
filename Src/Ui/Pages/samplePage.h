@@ -31,7 +31,7 @@ namespace SamplePage {
 	enum ListOptions {
 		CONVERT_TO_MONO,
 		MAP_NAME_TO_ROOT_NOTE,
-		MAP_KEY_RANGE_TO_ROOT_NOTE,
+		MAP_NAME_TO_KEY_RANGE,
 		CANCEL,
 
 		NUM_LIST_OPTIONS
@@ -40,7 +40,7 @@ namespace SamplePage {
 	const char* const list_option_text[NUM_LIST_OPTIONS] = {
 		"CONVERT TO MONO",
 		"MAP NAME TO ROOT NOTE",
-		"MAP KEY RANGE TO ROOT NOTE",
+		"MAP NAME TO KEY RANGE",
 		"CANCEL"
 	};
 
@@ -78,17 +78,18 @@ namespace SamplePage {
 		}
 	}
 
-	void map_name_to_root_note() {
-		Sample *sample = settings_->selected_sample();
+	void map_name_to_root_note(int index) {
+		Sample *sample = settings_->sampleAllocator().read_map(index);
 		if (sample->map_name_to_root_note()) {
 			MessagePainter::show("SUCCES");
 		}
 	}
 
-	void map_key_range_to_root_note() {
-		Sample *sample = settings_->selected_sample();
-		sample->set_key_range_low(sample->root_note());
-		sample->set_key_range_high(sample->root_note());
+	void map_name_to_key_range(int index) {
+		Sample *sample = settings_->sampleAllocator().read_map(index);
+		if (sample->map_name_to_key_range()) {
+			MessagePainter::show("SUCCES");
+		}
 	}
 
 	void edit(int option) {
@@ -98,10 +99,10 @@ namespace SamplePage {
 			convert_to_mono(settings_->selected_sample_index());
 			break;
 		case MAP_NAME_TO_ROOT_NOTE:
-			convert_to_mono(settings_->selected_sample_index());
+			map_name_to_root_note(settings_->selected_sample_index());
 			break;
-		case MAP_KEY_RANGE_TO_ROOT_NOTE:
-			convert_to_mono(settings_->selected_sample_index());
+		case MAP_NAME_TO_KEY_RANGE:
+			map_name_to_key_range(settings_->selected_sample_index());
 			break;
 		case CANCEL:
 			break;
