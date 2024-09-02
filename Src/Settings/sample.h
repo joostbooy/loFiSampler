@@ -97,13 +97,6 @@ public:
 
 	void set_size(size_t size) {
 		size_ = size;
-		if (end() > size_) {
-			set_end(size_);
-		}
-
-		if (loop_end() > size_) {
-			set_loop_end(size_);
-		}
 	}
 
 	const char *size_text() {
@@ -112,6 +105,24 @@ public:
 
 	size_t size_samples() {
 		return is_stereo() ? size_ / 2 : size_;
+	}
+
+	void refresh_points() {
+		if (end_ >= size_samples()) {
+			end_ = size_samples();
+		}
+
+		if (loop_end_ >= size_samples()) {
+			loop_end_ = size_samples();
+		}
+
+		if (start_ >= end_) {
+			start_ = end_ - 1;
+		}
+
+		if (loop_start_ >= loop_end_) {
+			loop_start_ = loop_end_ - 1;
+		}
 	}
 
 	// channels
@@ -316,6 +327,17 @@ public:
 		return false;
 	}
 
+	bool map_name_to_key_range() {
+		uint8_t note;
+		if (name_to_midi_note(name(), &note)) {
+			key_range_low_ = note;
+			key_range_high_= note;
+			return true;
+		}
+		return false;
+	}
+
+
 	// Storage
 	void save(FileWriter &fileWriter) {
 		fileWriter.write(start_);
@@ -331,6 +353,14 @@ public:
 		fileWriter.write(key_range_high_);
 		fileWriter.write(gain_);
 		fileWriter.write(pan_);
+		fileWriter.write(num_channels_);
+
+		for (size_t i = 0; i < kMaxPathLength; ++i) {
+			fileWriter.write(path_[i]);
+		}
+
+		// dont save the size or data
+		// thats handled by the sampleAllocator
 	}
 
 	void load(FileReader &fileReader) {
@@ -347,9 +377,16 @@ public:
 		fileReader.read(key_range_high_);
 		fileReader.read(gain_);
 		fileReader.read(pan_);
+		fileReader.read(num_channels_);
+
+		for (size_t i = 0; i < kMaxPathLength; ++i) {
+			fileReader.read(path_[i]);
+		}
+
+		// dont load the size or data
+		// thats handled by the sampleAllocator
 	}
 
-	// only call through sampleAllocator
 	void paste(Sample *sample) {
 		start_ = sample->start();
 		end_ = sample->end();
@@ -364,18 +401,21 @@ public:
 		key_range_high_ = sample->key_range_high();
 		gain_ = sample->gain();
 		pan_ = sample->gain();
-		// Dont paste : data, path, size or num_channels
-		// thats handled by the sample sampleAllocator
+
+		refresh_points();
+
+		// dont paste data, path, size or num_channels
+		// thats handled by the sampleAllocator
 	}
 
 private:
 	static const size_t kMaxPathLength = 64;
 
 	int16_t *data_;
-	char path_[kMaxPathLength];
 	size_t size_;
-	int num_channels_;
 
+	char path_[kMaxPathLength];
+	int num_channels_;
 	size_t start_;
 	size_t end_;
 	bool loop_;
