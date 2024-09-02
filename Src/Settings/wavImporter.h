@@ -10,11 +10,12 @@ public:
 
 	void init(SampleAllocator *sampleAllocator) {
 		sampleAllocator_ = sampleAllocator;
+		wavFile_.init();
 	}
 
-	bool import(File *file, const char* path, bool as_mono) {
+	bool import(const char* path, bool as_mono) {
 		// open the wav
-		if (!wavFile_.open(file, path)) {
+		if (!wavFile_.open(path)) {
 			wavFile_.close();
 			return false;
 		}
@@ -70,8 +71,8 @@ public:
 			cancel();
 			return false;
 		}
-		return true;
 
+		return true;
 	}
 
 private:

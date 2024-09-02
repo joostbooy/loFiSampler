@@ -1,6 +1,7 @@
 #ifndef WavFile_h
 #define WavFile_h
 
+//#include "ff.h"
 #include "file.h"
 #include "wavFile.h"
 
@@ -27,12 +28,15 @@ public:
 		uint16_t bit_depth;
 	}format;
 
-	bool open(File *file, const char *path) {
+	void init() {
+		file_.init(&fil);
+	}
+
+	bool open(const char *path) {
 		uint32_t chunk_id;
 		uint32_t chunk_size;
-		file_ = file;
 
-		if (!file_->open(path)) {
+		if (!file_.open(path)) {
 			return false;
 		}
 
@@ -48,7 +52,7 @@ public:
 		}
 
 		while (chunk_id != DATA_CHUNK_ID) {
-			if (file_->end()) {
+			if (file_.end()) {
 				return false;
 			}
 
@@ -64,7 +68,7 @@ public:
 	}
 
 	bool read(uint8_t *data, uint32_t *num_read) {
-		if (file_->read(FileBuffer::data(), FileBuffer::size(), num_read)) {
+		if (file_.read(FileBuffer::data(), FileBuffer::size(), num_read)) {
 			data = FileBuffer::data();
 			return true;
 		}
@@ -72,11 +76,12 @@ public:
 	}
 
 	bool close() {
-		return file_->close();
+		return file_.close();
 	}
 
 private:
-	File *file_;
+	FIL fil;
+	File file_;
 
 	static const uint32_t RIFF_CHUNK_ID		= 0x46464952;
 	static const uint32_t FMT_CHUNK_ID		= 0x20746D66;
@@ -86,7 +91,7 @@ private:
 
 	uint32_t read_u32() {
 		uint8_t data[4];
-		file_->read(data, 4);
+		file_.read(data, 4);
 		return data[0] | (data[1] << 8) | (data[2] << 16) | (data[3] << 24);
 	}
 
@@ -94,12 +99,12 @@ private:
 		switch (chunk_id)
 		{
 		case FMT_CHUNK_ID:
-			if (file_->read(&format, 16) == false) {
+			if (file_.read(&format, 16) == false) {
 				return false;
 			}
 
 			if (chunk_size > 16) {
-				file_->advance(chunk_size - 16);
+				file_.advance(chunk_size - 16);
 			}
 
 			if (format.audio_format != WAVE_FORMAT_PCM) {
@@ -120,10 +125,10 @@ private:
 			break;
 		case DATA_CHUNK_ID:
 			data.size = chunk_size;
-			data.offset = file_->position();
+			data.offset = file_.position();
 			break;
 		default:
-			file_->advance(chunk_size);
+			file_.advance(chunk_size);
 			break;
 		}
 		return true;

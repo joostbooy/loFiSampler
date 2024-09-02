@@ -18,35 +18,29 @@ public:
 		OPEN_APPEND		= 0x30	// Same as OPEN_ALWAYS except the read/write pointer is set end of the file.
 	};
 
-	void init(FIL* fil_, StringBuilder* dir_path_, FRESULT* res_) {
-		fil = fil_;
-		dir_path = dir_path_;
+	void init(FIL* fil) {
+		fil_ = fil;
 	}
 
 	bool open(const char* path_, uint8_t mode = READ) {
-		return f_open(fil, path_, mode) == FR_OK;
+		return f_open(fil_, path_, mode) == FR_OK;
 	}
 
 	bool open(const char* dir, const char* name, uint8_t mode = READ) {
-		return f_open(fil, path.write(dir, "/", name), mode) == FR_OK;
-	}
-
-	bool open_in_curr_dir(const char* name, uint8_t mode = READ) {
-		path.write(dir_path->read(), "/", name);
-		return f_open(fil, path.read(), mode) == FR_OK;
+		return f_open(fil_, path.write(dir, "/", name), mode) == FR_OK;
 	}
 
 	bool close() {
-		return f_close(fil) == FR_OK;
+		return f_close(fil_) == FR_OK;
 	}
 
 	bool sync() {
-		return f_sync(fil) == FR_OK;
+		return f_sync(fil_) == FR_OK;
 	}
 
 	bool write(const void* data, uint32_t size, uint32_t* num_written = nullptr) {
 		UINT bw;
-		FRESULT res = f_write(fil, data, size, &bw);
+		FRESULT res = f_write(fil_, data, size, &bw);
 		if (num_written) {
 			*num_written = bw;
 		}
@@ -55,7 +49,7 @@ public:
 
 	bool read(void* data, uint32_t size, uint32_t* num_read = nullptr) {
 		UINT br;
-		FRESULT res = f_read(fil, data, size, &br);
+		FRESULT res = f_read(fil_, data, size, &br);
 		if (num_read) {
 			*num_read = br;
 		}
@@ -63,29 +57,28 @@ public:
 	}
 
 	bool end() {
-		return f_eof(fil);
+		return f_eof(fil_);
 	}
 
 	uint32_t position() {
-		return f_tell(fil);
+		return f_tell(fil_);
 	}
 
 	bool seek(uint32_t offset) {
-		return f_lseek(fil, offset) == FR_OK;
+		return f_lseek(fil_, offset) == FR_OK;
 	}
 
 	bool advance(uint32_t num_bytes) {
-		uint32_t pos = f_tell(fil) + num_bytes;
-		return f_lseek(fil, pos) == FR_OK;
+		uint32_t pos = f_tell(fil_) + num_bytes;
+		return f_lseek(fil_, pos) == FR_OK;
 	}
 
 	bool rewind() {
-		return f_rewind(fil) == FR_OK;
+		return f_rewind(fil_) == FR_OK;
 	}
 
 private:
-	FIL* fil;
-	StringBuilder* dir_path;
+	FIL* fil_;
 	StringBuilderBase<64>path;
 };
 

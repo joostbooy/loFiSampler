@@ -33,7 +33,7 @@ public:
 
 		directory_.init(&fdir, root, &result);
 		entry_.init(&fdir, &fil_info, directory_.path_ptr());
-		file_.init(&fil, directory_.path_ptr(), &result);
+		file_.init(&fil);
 
 		mount();
 	}

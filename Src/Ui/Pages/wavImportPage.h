@@ -31,7 +31,7 @@ namespace WavImportPage {
 		{
 		case IMPORT:
 		case IMPORT_AS_MONO:
-			if (settings_->wavImporter().import(&disk_->file(), DiskNavigatorPage::curr_entry_path(), as_mono)) {
+			if (settings_->wavImporter().import(DiskNavigatorPage::curr_entry_path(), as_mono)) {
 				MessagePainter::show("FINISHED");
 			} else {
 				MessagePainter::show("FAILED");
@@ -45,7 +45,7 @@ namespace WavImportPage {
 				if (disk_->entry().is_dir() == false) {
 					++wavs_total_;
 					str_.write(DiskNavigatorPage::curr_path(), "/", disk_->entry().name());
-					if (settings_->wavImporter().import(&disk_->file(), str_.read(), as_mono)) {
+					if (settings_->wavImporter().import(str_.read(), as_mono)) {
 						++wavs_imported_;
 					}
 				}
