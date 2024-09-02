@@ -1,7 +1,7 @@
 #include "sampleAllocator.h"
 
 int16_t* SampleAllocator::allocate(const char* path, uint8_t num_channels, size_t size) {
-	if ((available_ram_ < size) || (num_samples() >= kMaxSamples)) {
+	if ((available_ram_ < size) || (num_samples() >= kMaxSamples) || (path_excists(path) == true)) {
 		return nullptr;
 	}
 
@@ -9,7 +9,7 @@ int16_t* SampleAllocator::allocate(const char* path, uint8_t num_channels, size_
 
 	for (size_t i = 0; i < kMaxSamples; ++i) {
 		if (!sample_[i].has_data()) {
-			sampleMap_.push(&sample_[i]);
+			sampleList_.push(&sample_[i]);
 
 			sample_[i].set_data(data);
 			sample_[i].set_size(size);
@@ -26,22 +26,22 @@ int16_t* SampleAllocator::allocate(const char* path, uint8_t num_channels, size_
 }
 
 bool SampleAllocator::remove(size_t index) {
+	Sample *sample = read_list(index);
+
 	if (index >= num_samples()) {
 		return false;
 	}
 
-	Sample *sample = read_map(index);
 	available_ram_ += sample->size();
 	sample->init();
-
-	sampleMap_.remove_by_index(index);
+	sampleList_.remove_by_index(index);
 	reallign_ram_left(index);
 
 	return true;
 }
 
 bool SampleAllocator::truncate(size_t index, size_t start, size_t end) {
-	Sample *sample = read_map(index);
+	Sample *sample = read_list(index);
 
 	if ((index >= num_samples()) || (start >= end) || (start + (end - start) > sample->size())) {
 		return false;
@@ -64,7 +64,7 @@ bool SampleAllocator::truncate(size_t index, size_t start, size_t end) {
 }
 
 bool SampleAllocator::convert_to_mono(size_t index) {
-	Sample *sample = read_map(index);
+	Sample *sample = read_list(index);
 
 	if ((index >= num_samples()) || (sample->num_channels() != 2) || (sample->size() < 4)) {
 		return false;
@@ -85,27 +85,6 @@ bool SampleAllocator::convert_to_mono(size_t index) {
 	}
 
 	reallign_ram_left(index + 1);
-
-	return true;
-}
-
-bool SampleAllocator::duplicate(size_t index) {
-	Sample *sample = read_map(index);
-
-	if (index >= num_samples() || available_ram_ < sample->size()) {
-		return false;
-	}
-
-	size_t size = sample->size();
-	int16_t *src = sample->data();
-	int16_t *dest = allocate(sample->path(), sample->num_channels(), size);
-
-	while (size--) {
-		*dest++ = *src++;
-	}
-
-	Sample *new_sample = read_map(num_samples() - 1);
-	sample->paste(new_sample);
 
 	return true;
 }

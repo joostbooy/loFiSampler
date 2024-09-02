@@ -79,14 +79,14 @@ namespace SamplePage {
 	}
 
 	void map_name_to_root_note(int index) {
-		Sample *sample = settings_->sampleAllocator().read_map(index);
+		Sample *sample = settings_->sampleAllocator().read_list(index);
 		if (sample->map_name_to_root_note()) {
 			MessagePainter::show("SUCCES");
 		}
 	}
 
 	void map_name_to_key_range(int index) {
-		Sample *sample = settings_->sampleAllocator().read_map(index);
+		Sample *sample = settings_->sampleAllocator().read_list(index);
 		if (sample->map_name_to_key_range()) {
 			MessagePainter::show("SUCCES");
 		}

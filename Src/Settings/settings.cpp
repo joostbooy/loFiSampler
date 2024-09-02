@@ -70,7 +70,7 @@ bool Settings::load(const char* new_path) {
 
 		if (wavImporter().import(sample.path(), sample.num_channels() == 1)) {
 			int latest = sampleAllocator().num_samples() - 1;
-			sampleAllocator().read_map(latest)->paste(&sample);
+			sampleAllocator().read_list(latest)->paste(&sample);
 		}
 	}
 

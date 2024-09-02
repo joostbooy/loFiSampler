@@ -96,7 +96,7 @@ public:
 	}
 
 	Sample *selected_sample() {
-		return sampleAllocator_.read_map(selected_sample_index_);
+		return sampleAllocator_.read_list(selected_sample_index_);
 	}
 
 	size_t num_samples() {
