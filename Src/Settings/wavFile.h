@@ -1,9 +1,8 @@
 #ifndef WavFile_h
 #define WavFile_h
 
-//#include "ff.h"
 #include "file.h"
-#include "wavFile.h"
+#include "lookupTables.h"
 
 class WavFile {
 
@@ -68,8 +67,8 @@ public:
 	}
 
 	bool read(uint8_t *data, uint32_t *num_read) {
-		if (file_.read(FileBuffer::data(), FileBuffer::size(), num_read)) {
-			data = FileBuffer::data();
+		if (file_.read(buffer_, kBufferSize, num_read)) {
+			data = buffer_;
 			return true;
 		}
 		return false;
@@ -82,6 +81,9 @@ public:
 private:
 	FIL fil;
 	File file_;
+
+	static const size_t kBufferSize = 512;
+	static uint8_t buffer_[kBufferSize];
 
 	static const uint32_t RIFF_CHUNK_ID		= 0x46464952;
 	static const uint32_t FMT_CHUNK_ID		= 0x20746D66;

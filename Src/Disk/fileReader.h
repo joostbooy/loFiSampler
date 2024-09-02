@@ -5,7 +5,6 @@
 
 #include "file.h"
 #include "hash.h"
-#include "fileBuffer.h"
 
 class FileReader {
 
@@ -76,12 +75,15 @@ private:
 	uint32_t version_ = 0;
 	Hash hash_;
 
+	static constexpr size_t kBufferSize = 512;
+	static uint8_t buffer_[kBufferSize];
+
 	void read_buffer(void *data, uint32_t size) {
 		uint8_t *data_ = reinterpret_cast<uint8_t *>(data);
 
 		while (read_ok_ && (size > 0)) {
 			if (num_read < num_readable) {
-				*data_++ = *FileBuffer::data(num_read++);
+				*data_++ = buffer_[num_read++];
 				--size;
 			} else {
 				read_ok_ = fill_buffer(size);
@@ -91,8 +93,8 @@ private:
 
 	bool fill_buffer(uint32_t requested_size) {
 		num_read = 0;
-		if (file_->read(FileBuffer::data(), FileBuffer::size(), &num_readable)) {
-			return (num_readable >= requested_size) || (num_readable >= FileBuffer::size());
+		if (file_->read(buffer_, kBufferSize, &num_readable)) {
+			return (num_readable >= requested_size) || (num_readable >= kBufferSize);
 		}
 		return false;
 	}
