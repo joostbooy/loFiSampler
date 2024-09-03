@@ -169,18 +169,18 @@ namespace SamplePage {
 		const int h = 32;
 
 		size_t index = 0;
-		int16_t *left = 0;
-		int16_t *right = 0;
+		int16_t left = 0;
+		int16_t right = 0;
 
 		Sample *sample = settings_->selected_sample();
 		size_t size = sample->size_samples();
 		size_t inc = size / w;
 
 		for (int x2 = 0; x2 < w; ++x2) {
-			sample->read(index, left, right);
+			sample->read(index, &left, &right);
 
-			float left_ = *left * (1.f / 32767.f);
-			float right_ = *right * (1.f / 32767.f);
+			float left_ = left * (1.f / 32767.f);
+			float right_ = right * (1.f / 32767.f);
 			float mix = (left_ +  right_) * 0.5f;
 			int y2 = h * (1.f - mix);
 
