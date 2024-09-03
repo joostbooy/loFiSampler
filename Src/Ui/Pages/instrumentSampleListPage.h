@@ -20,7 +20,7 @@ namespace InstrumentSampleListPage {
 
 	const char* const footer_option_text[NUM_OPTIONS] = { "ADD", "REMOVE", "CLEAR", "CLOSE" };
 
-	bool pasteable_;
+	bool pasteable_ = false;
 	Instrument instrument_;
 
 	int sample_top_row_ = 0;
