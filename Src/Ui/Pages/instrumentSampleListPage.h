@@ -20,6 +20,9 @@ namespace InstrumentSampleListPage {
 
 	const char* const footer_option_text[NUM_OPTIONS] = { "ADD", "REMOVE", "CLEAR", "CLOSE" };
 
+	bool pasteable_;
+	Instrument instrument_;
+
 	int sample_top_row_ = 0;
 	int instrument_sample_top_row_ = 0;
 	const int kMaxVisibleRows = 4;
@@ -40,6 +43,20 @@ namespace InstrumentSampleListPage {
 		scroll_to_row(settings_->selected_instrument_sample_index(), &instrument_sample_top_row_);
 	}
 
+	void copy() {
+		instrument_.paste_sample_list(&settings_->selected_instrument());
+		MessagePainter::show("LIST COPIED");
+		pasteable_ = true;
+	}
+
+	void paste() {
+		if (pasteable_) {
+			settings_->selected_instrument().paste_sample_list(&instrument_);
+			settings_->select_instrument_sample_index(settings_->selected_instrument_sample_index());
+			scroll_to_selected_instrument_sample();
+			MessagePainter::show("LIST PASTED");
+		}
+	}
 
 	void remove() {
 		if (settings_->selected_instrument().remove_sample(settings_->selected_instrument_sample_index())) {
@@ -120,28 +137,40 @@ namespace InstrumentSampleListPage {
 			bool shifted = Controller::is_pressed(Controller::SHIFT_BUTTON);
 			int enc_id = shifted ? Controller::FUNCTION_ENC_D : Controller::FUNCTION_ENC_A;
 
-			if (id == Controller::UP_BUTTON) {
+			switch (id)
+			{
+			case Controller::UP_BUTTON:
 				on_encoder(enc_id, -1);
-				return;
-			}
-
-			if (id == Controller::DOWN_BUTTON) {
+				break;
+			case Controller::DOWN_BUTTON:
 				on_encoder(enc_id, 1);
-				return;
-			}
-
-			if (id == Controller::RIGHT_BUTTON) {
+				break;
+			case Controller::RIGHT_BUTTON:
 				on_function_button(ADD);
-				return;
-			}
-
-			if (id == Controller::LEFT_BUTTON) {
+				break;
+			case Controller::LEFT_BUTTON:
 				on_function_button(REMOVE);
-				return;
+				break;
+			case Controller::CLEAR_BUTTON:
+				on_function_button(CLEAR);
+				break;
+			case Controller::COPY_BUTTON:
+				copy();
+				break;
+			case Controller::PASTE_BUTTON:
+				if (pasteable_) {
+					ConfirmationPage::set("PASTE LIST ?", [](int option) {
+						if (option == ConfirmationPage::CONFIRM) {
+							paste();
+						}
+					});
+				}
+				break;
+			default:
+				break;
 			}
 
-			int function = Controller::button_to_function(id);
-			on_function_button(function);
+			on_function_button(Controller::button_to_function(id));
 		}
 	}
 
