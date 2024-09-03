@@ -16,19 +16,9 @@ namespace SamplePage {
 	Sample sample_;
 	SampleList sampleList_;
 
-
-	enum FooterOptions {
+	enum ListOptions {
 		IMPORT,
 		REMOVE,
-		NUM_FOOTER_OPTIONS
-	};
-
-	const char* const footer_option_text[NUM_FOOTER_OPTIONS] = {
-		"IMPORT",
-		"REMOVE",
-	};
-
-	enum ListOptions {
 		CONVERT_TO_MONO,
 		MAP_NAME_TO_ROOT_NOTE,
 		MAP_NAME_TO_KEY_RANGE,
@@ -38,6 +28,8 @@ namespace SamplePage {
 	};
 
 	const char* const list_option_text[NUM_LIST_OPTIONS] = {
+		"IMPORT",
+		"REMOVE",
 		"CONVERT TO MONO",
 		"MAP NAME TO ROOT NOTE",
 		"MAP NAME TO KEY RANGE",
@@ -95,6 +87,17 @@ namespace SamplePage {
 	void edit(int option) {
 		switch (option)
 		{
+		case IMPORT:
+			pages_->open(Pages::WAV_IMPORT_PAGE);
+			break;
+		case REMOVE:
+			ConfirmationPage::set("REMOVE SAMPLE ?", [](int option) {
+				if (option == ConfirmationPage::CONFIRM) {
+					remove(settings_->selected_sample_index());
+				}
+			});
+			pages_->open(Pages::CONFIRMATION_PAGE);
+			break;
 		case CONVERT_TO_MONO:
 			ConfirmationPage::set("CONVERT TO MONO ?", [](int option) {
 				if (option == ConfirmationPage::CONFIRM) {
@@ -146,23 +149,6 @@ namespace SamplePage {
 				pages_->open(Pages::OPTION_LIST_PAGE);
 				return;
 			}
-
-			switch (Controller::button_to_function(id))
-			{
-			case IMPORT:
-				pages_->open(Pages::WAV_IMPORT_PAGE);
-				break;
-			case REMOVE:
-				ConfirmationPage::set("REMOVE SAMPLE ?", [](int option) {
-					if (option == ConfirmationPage::CONFIRM) {
-						remove(settings_->selected_sample_index());
-					}
-				});
-				pages_->open(Pages::CONFIRMATION_PAGE);
-				break;
-			default:
-				break;
-			}
 		}
 	}
 
@@ -213,9 +199,6 @@ namespace SamplePage {
 
 		float loop_end = sample->loop_end() / size;
 		canvas_->vertical_line(loop_end * w, y, h, Canvas::INVERTED);
-
-
-		WindowPainter::draw_footer(footer_option_text, NUM_FOOTER_OPTIONS);
 	}
 
 	const size_t target_fps() {
