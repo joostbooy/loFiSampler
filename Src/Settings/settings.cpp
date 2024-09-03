@@ -29,6 +29,7 @@ bool Settings::save() {
 
 	size_t num_samples_ = num_samples();
 	fileWriter.write(num_samples_);
+
 	for (size_t i = 0; i < num_samples_; ++i) {
 		sample(i)->save(fileWriter);
 	}
