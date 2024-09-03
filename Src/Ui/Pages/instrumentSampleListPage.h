@@ -20,25 +20,26 @@ namespace InstrumentSampleListPage {
 
 	const char* const footer_option_text[NUM_OPTIONS] = { "ADD", "REMOVE", "CLEAR", "CLOSE" };
 
-	int sample_top_row_;
-	int instrument_sample_top_row_;
+	int sample_top_row_ = 0;
+	int instrument_sample_top_row_ = 0;
 	const int kMaxVisibleRows = 4;
 
-	void scroll_to_row(int row, int max_rows, int *top_row) {
+	void scroll_to_row(int row, int *top_row) {
 		if (row < *top_row) {
 			*top_row = row;
-		} else if (row >= (*top_row + max_rows)) {
-			*top_row = row - (max_rows - 1);
+		} else if (row >= (*top_row + kMaxVisibleRows)) {
+			*top_row = row - (kMaxVisibleRows - 1);
 		}
 	}
 
 	void scroll_to_selected_sample() {
-		scroll_to_row(settings_->selected_sample_index(), settings_->sampleAllocator().num_samples(), &sample_top_row_);
+		scroll_to_row(settings_->selected_sample_index(), &sample_top_row_);
 	}
 
 	void scroll_to_selected_instrument_sample() {
-		scroll_to_row(settings_->selected_instrument_sample_index(), settings_->selected_instrument().num_samples(), &instrument_sample_top_row_);
+		scroll_to_row(settings_->selected_instrument_sample_index(), &instrument_sample_top_row_);
 	}
+
 
 	void remove() {
 		if (settings_->selected_instrument().remove_sample(settings_->selected_instrument_sample_index())) {
@@ -149,8 +150,8 @@ namespace InstrumentSampleListPage {
 		leds_->set_footer_encoder(1, Leds::BLACK);
 		leds_->set_footer_encoder(2, Leds::BLACK);
 		leds_->set_footer_encoder(3, Leds::RED);
+		leds_->set_footer_buttons(NUM_OPTIONS);
 	}
-
 
 	void draw() {
 		const int x = 0;
@@ -170,7 +171,8 @@ namespace InstrumentSampleListPage {
 			// sample list
 			int sample = i + sample_top_row_;
 			if (sample < sample_count) {
-				canvas_->draw_text(x + 4, row_y, w - 8, row_h, settings_->sampleAllocator().read_list(sample)->name(), Canvas::LEFT, Canvas::CENTER);
+				const char *text = settings_->sampleAllocator().read_list(sample)->name();
+				canvas_->draw_text(x + 4, row_y, w - 8, row_h, text, Canvas::LEFT, Canvas::CENTER);
 				if (sample == settings_->selected_sample_index()) {
 					canvas_->fill(x, row_y, w, row_h, Canvas::INVERTED);
 				}
@@ -179,7 +181,8 @@ namespace InstrumentSampleListPage {
 			// instrument sample list
 			int instrument_sample = i + instrument_sample_top_row_;
 			if (instrument_sample < instrument_sample_count) {
-				canvas_->draw_text(x + w + 4, row_y, w - 8, row_h, settings_->selected_instrument().sample(instrument_sample)->name(), Canvas::LEFT, Canvas::CENTER);
+				const char *text = settings_->selected_instrument().sample(instrument_sample)->name();
+				canvas_->draw_text(x + w + 4, row_y, w - 8, row_h, text, Canvas::LEFT, Canvas::CENTER);
 				if (instrument_sample == settings_->selected_instrument_sample_index()) {
 					canvas_->fill(x + w, row_y, w, row_h, Canvas::INVERTED);
 				}
