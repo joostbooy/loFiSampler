@@ -43,7 +43,7 @@ bool SampleAllocator::remove(size_t index) {
 bool SampleAllocator::truncate(size_t index, size_t start, size_t end) {
 	Sample *sample = read_list(index);
 
-	if ((index >= num_samples()) || (start >= end) || (start + (end - start) > sample->size())) {
+	if ((index >= num_samples()) || (start >= end) || (start + (end - start) > sample->size_samples())) {
 		return false;
 	}
 
@@ -66,7 +66,7 @@ bool SampleAllocator::truncate(size_t index, size_t start, size_t end) {
 bool SampleAllocator::convert_to_mono(size_t index) {
 	Sample *sample = read_list(index);
 
-	if ((index >= num_samples()) || (sample->num_channels() != 2) || (sample->size() < 4)) {
+	if ((index >= num_samples()) || (sample->num_channels() != 2) || (sample->size() < 2)) {
 		return false;
 	}
 
