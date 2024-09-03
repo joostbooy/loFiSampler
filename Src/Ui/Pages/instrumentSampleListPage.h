@@ -191,7 +191,7 @@ namespace InstrumentSampleListPage {
 
 		canvas_->fill(0, 0, canvas_->width(), canvas_->height(), Canvas::WHITE);
 
-		int sample_count = settings_->sampleAllocator().num_samples();
+		int sample_count = settings_->num_samples();
 		int instrument_sample_count = settings_->selected_instrument().num_samples();
 
 		for (int i = 0; i < kMaxVisibleRows; ++i) {
@@ -200,7 +200,7 @@ namespace InstrumentSampleListPage {
 			// sample list
 			int sample = i + sample_top_row_;
 			if (sample < sample_count) {
-				const char *text = settings_->sampleAllocator().read_list(sample)->name();
+				const char *text = settings_->sample(sample)->name();
 				canvas_->draw_text(x + 4, row_y, w - 8, row_h, text, Canvas::LEFT, Canvas::CENTER);
 				if (sample == settings_->selected_sample_index()) {
 					canvas_->fill(x, row_y, w, row_h, Canvas::INVERTED);

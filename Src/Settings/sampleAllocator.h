@@ -18,12 +18,15 @@ public:
 	static const size_t kMaxSamples = 128;
 	static const size_t kMaxPathLength = 64;
 
-	void init(Sdram *sdram, Sample *sample) {
-		sample_ = sample;
+	void init(Sdram *sdram) {
 		buffer_ = sdram->pointer();
 		max_ram_ = sdram->size_bytes() / 2; // bytes to 16 bit samples
 		available_ram_ = max_ram_;
 		sampleList_.clear();
+
+		for (size_t i = 0; i < kMaxSamples; ++i) {
+			sample_[i].init();
+		}
 	}
 
 	size_t num_samples() {
@@ -48,10 +51,10 @@ public:
 	bool convert_to_mono(size_t slot);
 
 private:
-	Sample *sample_;
 	int16_t *buffer_;
 	size_t max_ram_;
 	size_t available_ram_;
+	Sample sample_[kMaxSamples];
 	Stack<Sample*, kMaxSamples>sampleList_;
 
 	bool path_excists(const char *path) {

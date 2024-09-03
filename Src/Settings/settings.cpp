@@ -27,8 +27,10 @@ bool Settings::save() {
 		envelope(i).save(fileWriter);
 	}
 
-	for (size_t i = 0; i < SampleAllocator::kMaxSamples; ++i) {
-		sample(i).save(fileWriter);
+	size_t num_samples_ = num_samples();
+	fileWriter.write(num_samples_);
+	for (size_t i = 0; i < num_samples_; ++i) {
+		sample(i)->save(fileWriter);
 	}
 
 	for (size_t i = 0; i < kNumInstruments; ++i) {
@@ -65,7 +67,10 @@ bool Settings::load(const char* new_path) {
 	// then we paste the temp memory into that assigned slot
 	Sample sample;
 
-	for (size_t i = 0; i < SampleAllocator::kMaxSamples; ++i) {
+	size_t num_samples_;
+	fileReader.read(num_samples_);
+
+	for (size_t i = 0; i < num_samples_; ++i) {
 		sample.load(fileReader);
 
 		if (wavImporter().import(sample.path(), sample.num_channels() == 1)) {
