@@ -70,6 +70,7 @@ public:
 			sample_[i] = sample_[i + 1];
 		}
 		--num_samples_;
+
 		return true;
 	}
 
@@ -277,13 +278,17 @@ public:
 		bend_range_ = instrument->bend_range();
 		bit_depth_ = instrument->bit_depth();
 		sample_rate_divider_ = instrument->sample_rate_divider();
+	}
 
-		// num_samples_ = instrument->num_samples();
-		//	for (size_t i = 0; i < kMaxNumSamples; ++i) {
-		//		sample_[i] = instrument->sample(i);
-		//	}
+	void paste_sample_list(Instrument *instrument) {
+		num_samples_ = instrument->num_samples();
+		for (size_t i = 0; i < kMaxNumSamples; ++i) {
+			sample_[i] = instrument->sample(i);
+		}
+	}
 
-		modulationMatrix().paste(&instrument->modulationMatrix());
+	void paste_mod_matrix(ModulationMatrix *modulationMatrix) {
+		modulationMatrix_.paste(modulationMatrix);
 	}
 
 private:
