@@ -187,7 +187,8 @@ namespace SamplePage {
 		int16_t *right = 0;
 
 		Sample *sample = settings_->selected_sample();
-		size_t inc = sample->size_samples() / w;
+		size_t size = sample->size_samples();
+		size_t inc = size / w;
 
 		for (int x2 = 0; x2 < w; ++x2) {
 			sample->read(index, left, right);
@@ -200,6 +201,19 @@ namespace SamplePage {
 			canvas_->draw_pixel(x + x2, y + y2, Canvas::BLACK);
 			index += inc;
 		}
+
+		float start = sample->start() / size;
+		canvas_->vertical_line(start * w, y, h, Canvas::INVERTED);
+
+		float end = sample->end() / size;
+		canvas_->vertical_line(end * w, y, h, Canvas::INVERTED);
+
+		float loop_start = sample->loop_start() / size;
+		canvas_->vertical_line(loop_start * w, y, h, Canvas::INVERTED);
+
+		float loop_end = sample->loop_end() / size;
+		canvas_->vertical_line(loop_end * w, y, h, Canvas::INVERTED);
+
 
 		WindowPainter::draw_footer(footer_option_text, NUM_FOOTER_OPTIONS);
 	}
