@@ -163,6 +163,10 @@ namespace SamplePage {
 	void draw() {
 		ListPage::draw();
 
+		if (settings_->num_samples() == 0) {
+			return;
+		}
+		
 		const int x = 2;
 		const int y = 5;
 		const int w = 251;
