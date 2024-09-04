@@ -17,7 +17,7 @@ public:
 			int bar_h = (visible_items * h) / num_items;
 
 			canvas_->fill(x, y, w, h, Canvas::BLACK);
-			canvas_->fill(x + 2, y + bar_y, w - 4, bar_h, Canvas::WHITE);
+			canvas_->fill(x + 1, y + bar_y, w - 2, bar_h, Canvas::WHITE);
 		}
 	}
 
@@ -27,7 +27,7 @@ public:
 			int bar_w = (visible_items * w) / num_items;
 
 			canvas_->fill(x, y, w, h, Canvas::BLACK);
-			canvas_->fill(bar_x, y + 2, bar_w , h - 4, Canvas::WHITE);
+			canvas_->fill(bar_x, y + 1, bar_w, h - 2, Canvas::WHITE);
 		}
 	}
 
