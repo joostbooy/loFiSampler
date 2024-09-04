@@ -11,9 +11,6 @@ class Pages {
 public:
 
 	enum PageId {
-		TOP_PAGE,
-		//CHAPTER_PAGE,
-		LIST_PAGE,
 		LFO_PAGE,
 		ENVELOPE_PAGE,
 		INSTRUMENT_PAGE,
@@ -52,6 +49,10 @@ public:
 		void(*on_encoder)(int id, int state);
 		const size_t (*target_fps)();
 	};
+
+	int num_open() {
+		return page_stack_.size();
+	}
 
 private:
 	int curr_page_;

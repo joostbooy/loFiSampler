@@ -1,6 +1,5 @@
 #include "pages.h"
 #include "topPage.h"
-//#include "chapterPage.h"
 #include "lfoPage.h"
 #include "envelopePage.h"
 #include "instrumentPage.h"
@@ -18,9 +17,6 @@
 #include "instrumentSampleListPage.h"
 
 Pages::Page* page_[Pages::NUM_PAGES] = {
-	[Pages::TOP_PAGE]						= &TopPage::page,
-//	[Pages::CHAPTER_PAGE]					= &ChapterPage::page,
-	[Pages::LIST_PAGE]						= &ListPage::page,
 	[Pages::LFO_PAGE]						= &LfoPage::page,
 	[Pages::ENVELOPE_PAGE]					= &EnvelopePage::page,
 	[Pages::INSTRUMENT_PAGE]				= &InstrumentPage::page,
@@ -38,7 +34,7 @@ Pages::Page* page_[Pages::NUM_PAGES] = {
 };
 
 void Pages::init(Settings *settings, Engine *engine, Canvas *canvas, Leds *leds) {
-	//curr_page_ = TOP_PAGE;
+	curr_page_ = SAMPLE_PAGE;
 	page_stack_.clear();
 	TopPage::init(settings, engine, canvas, leds, this);
 
@@ -46,7 +42,7 @@ void Pages::init(Settings *settings, Engine *engine, Canvas *canvas, Leds *leds)
 		page_[i]->init();
 	}
 
-	open(ENVELOPE_PAGE);
+	open(curr_page_);
 }
 
 void Pages::open(int id) {
@@ -62,8 +58,6 @@ void Pages::close(int id) {
 		page_[id]->exit();
 		if (page_stack_.readable()) {
 			curr_page_ = page_stack_.read(page_stack_.size() - 1);
-		} else {
-			curr_page_ = TOP_PAGE;
 		}
 	}
 }
@@ -73,17 +67,16 @@ void Pages::close_all() {
 		int id = page_stack_.pop();
 		page_[id]->exit();
 	}
-	curr_page_ = TOP_PAGE;
 }
 
 void Pages::on_button(int id, int state) {
 	page_[curr_page_]->on_button(id, state);
-	page_[TOP_PAGE]->on_button(id, state);
+	TopPage::on_button(id, state);
 }
 
 void Pages::on_encoder(int id, int state) {
 	page_[curr_page_]->on_encoder(id, state);
-	page_[TOP_PAGE]->on_encoder(id, state);
+	TopPage::on_encoder(id, state);
 }
 
 void Pages::refresh_leds() {
@@ -91,7 +84,7 @@ void Pages::refresh_leds() {
 		int id = page_stack_.read(i);
 		page_[id]->refresh_leds();
 	}
-	page_[TOP_PAGE]->refresh_leds();
+	TopPage::refresh_leds();
 }
 
 void Pages::draw() {
@@ -99,7 +92,7 @@ void Pages::draw() {
 		int id = page_stack_.read(i);
 		page_[id]->draw();
 	}
-	page_[TOP_PAGE]->draw();
+	TopPage::draw();
 }
 
 const size_t Pages::target_fps() {
