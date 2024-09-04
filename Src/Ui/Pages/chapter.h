@@ -47,12 +47,12 @@ public:
 	};
 
 	enum Id {
-		MIDI,
-		MODULATION,
-		SYSTEM,
-		STORAGE,
 		INSTRUMENT,
 		SAMPLE,
+		SYSTEM,
+		MIDI,
+		MODULATION,
+		STORAGE,
 
 		NUM_CHAPTERS
 	};

@@ -1,6 +1,8 @@
 #ifndef Leds_h
 #define Leds_h
 
+#include "chapter.h"
+
 class Leds {
 
 public:
@@ -84,12 +86,12 @@ private:
 	};
 
 	Map chapter_leds_[6] = {
-		{ .x = 1, .y = 0 },	// Sample
 		{ .x = 0, .y = 0 },	// Instrument
-		{ .x = 1, .y = 1 },	// Modulation
+		{ .x = 1, .y = 0 },	// Sample
 		{ .x = 2, .y = 0 },	// System
-		{ .x = 2, .y = 1 },	// Storage
 		{ .x = 0, .y = 1 },	// Midi
+		{ .x = 1, .y = 1 },	// Modulation
+		{ .x = 2, .y = 1 },	// Storage
 	};
 
 };
