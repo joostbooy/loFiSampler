@@ -50,20 +50,31 @@ namespace OptionListPage {
 		callback_ = nullptr;
 	}
 
+	void on_encoder(int id, int state) {
+		selected_ = SettingsUtils::clip(0, count_ - 1, selected_ + state);
+		scroll_to_row(selected_);
+	}
+
 	void on_button(int id, int state) {
 		if (state) {
+			if (Controller::UP_BUTTON == id) {
+				on_encoder(0, -1);
+				return;
+			}
+
+			if (Controller::DOWN_BUTTON == id) {
+				on_encoder(0, 1);
+				return;
+			}
+
 			if (Controller::button_to_function(id) >= 0) {
 				if (callback_) {
 					callback_(selected_);
 				}
 				pages_->close(Pages::OPTION_LIST_PAGE);
+				return;
 			}
 		}
-	}
-
-	void on_encoder(int id, int state) {
-		selected_ = SettingsUtils::clip(0, count_ - 1, selected_ + state);
-		scroll_to_row(selected_);
 	}
 
 	void refresh_leds() {
@@ -73,7 +84,7 @@ namespace OptionListPage {
 
 	void draw() {
 		const int row_h = 8;
-		const int w = 64;
+		const int w = 128;
 		const int h = row_h * kMaxRows;
 		const int x = (canvas_->width() - w) / 2;
 		const int y = (canvas_->height() - h) / 2;
