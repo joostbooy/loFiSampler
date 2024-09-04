@@ -95,7 +95,7 @@ public:
 		{
 		case SAMPLE_CHAPTER_BUTTON:		return Chapter::SAMPLE;
 		case INSTRUMENT_CHAPTER_BUTTON:	return Chapter::INSTRUMENT;
-		case MODULATION_CHAPTER_BUTTON:	return Chapter::MOD;
+		case MODULATION_CHAPTER_BUTTON:	return Chapter::MODULATION;
 		case SYSTEM_CHAPTER_BUTTON:		return Chapter::SYSTEM;
 		case MIDI_CHAPTER_BUTTON:		return Chapter::MIDI;
 		case STORAGE_CHAPTER_BUTTON:	return Chapter::STORAGE;
