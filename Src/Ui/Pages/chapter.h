@@ -1,7 +1,7 @@
 #ifndef Chapter_h
 #define Chapter_h
 
-#define TABLE_SIZE(table) (sizeof(table) / sizeof(int))
+#define ENTRY_SIZE(entry) (sizeof(entry) / sizeof(int))
 
 #include "pages.h"
 
@@ -72,14 +72,7 @@ public:
 		return nullptr;
 	}
 
-	void init() {
-		modulation_.init(modulation_pages, mod_page_names, TABLE_SIZE(modulation_pages));
-		midi_.init(midi_pages, midi_page_names, TABLE_SIZE(midi_pages));
-		sample_.init(sample_pages, sample_page_names, TABLE_SIZE(sample_pages));
-		system_.init(system_pages, system_page_names, TABLE_SIZE(system_pages));
-		storage_.init(storage_pages, storage_page_names, TABLE_SIZE(storage_pages));
-		instrument_.init(instrument_pages, instrument_page_names, TABLE_SIZE(instrument_pages));
-	}
+	void init();
 
 	int selected() {
 		return selected_;
@@ -123,81 +116,33 @@ private:
 
 	// Midi
 	Entry midi_;
-
-	static constexpr int midi_pages[] = {
-		Pages::MIDI_PAGE,
-		Pages::HARDWARE_TEST_PAGE
-	};
-
-	static constexpr const char* const midi_page_names[] = {
-		"SETTINGS",
-		"TEST"
-	};
+	static const int midi_pages[];
+	static const char* const midi_page_names[];
 
 	// Modulation
 	Entry modulation_;
-
-	static constexpr int modulation_pages[] = {
-		Pages::MODULATION_PAGE,
-		Pages::LFO_PAGE,
-		Pages::ENVELOPE_PAGE,
-		Pages::DELAY_PAGE,
-	};
-
-	static constexpr const char* const mod_page_names[] = {
-		"SETTINGS",
-		"LFO",
-		"ENVELOPE",
-		"DELAY"
-	};
+	static const int modulation_pages[];
+	static const char* const mod_page_names[];
 
 	// System
 	Entry system_;
-
-	static constexpr int system_pages[] = {
-		Pages::MODULATION_PAGE,
-		Pages::HARDWARE_TEST_PAGE
-	};
-
-	static constexpr const char* const system_page_names[] = {
-		"SETTINGS",
-		"TEST"
-	};
+	static const int system_pages[];
+	static const char* const system_page_names[];
 
 	// Instrument
 	Entry instrument_;
-
-	static constexpr int instrument_pages[] = {
-		Pages::INSTRUMENT_PAGE
-	};
-
-	static constexpr const char* const instrument_page_names[] = {
-		"SETTINGS",
-	};
+	static const int instrument_pages[];
+	static const char* const instrument_page_names[];
 
 	// Sample
 	Entry sample_;
-
-	static constexpr int sample_pages[] = {
-		Pages::SAMPLE_PAGE,
-	};
-
-	static constexpr const char* const sample_page_names[] = {
-		"SETTINGS",
-	};
+	static const int sample_pages[];
+	static const char* const sample_page_names[];
 
 	// Storage
 	Entry storage_;
-
-	static constexpr int storage_pages[] = {
-		Pages::MODULATION_PAGE,
-		Pages::HARDWARE_TEST_PAGE
-	};
-
-	static constexpr const char* const storage_page_names[] = {
-		"SETTINGS",
-		"TEST"
-	};
+	static const int storage_pages[];
+	static const char* const storage_page_names[];
 };
 
 #endif
