@@ -35,10 +35,10 @@ Pages::Page* page_[Pages::NUM_PAGES] = {
 	[Pages::INSTRUMENT_SAMPLE_LIST_PAGE]	= &InstrumentSampleListPage::page,
 };
 
-void Pages::init(Settings *settings, Engine *engine, Canvas *canvas, Leds *leds) {
+void Pages::init(Settings *settings, Engine *engine, Ui *ui) {
 	curr_page_ = SAMPLE_PAGE;
 	page_stack_.clear();
-	TopPage::init(settings, engine, canvas, leds, this);
+	TopPage::init(settings, engine, ui);
 
 	for (int i = 0; i < NUM_PAGES; ++i) {
 		page_[i]->init();

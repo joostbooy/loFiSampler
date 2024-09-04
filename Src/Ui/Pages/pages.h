@@ -6,6 +6,8 @@
 #include "canvas.h"
 #include "leds.h"
 
+class Ui;
+
 class Pages {
 
 public:
@@ -30,7 +32,7 @@ public:
 		NUM_PAGES
 	};
 
-	void init(Settings *settings, Engine *engine, Canvas *canvas, Leds *leds);
+	void init(Settings *settings, Engine *engine, Ui *ui);
 	void open(int id);
 	void close(int id);
 	void close_all();

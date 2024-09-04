@@ -25,6 +25,10 @@ public:
 		int8_t value;
 	};
 
+	Leds &leds() { return leds_; }
+	Pages &pages() { return pages_; }
+	Canvas &canvas() { return canvas_; }
+
 	void init(Settings*, Engine*, Matrix*, Display*);
 	void poll();
 	void process();

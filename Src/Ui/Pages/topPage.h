@@ -18,6 +18,7 @@ namespace TopPage {
 	Canvas *canvas_;
 	Pages *pages_;
 	Leds *leds_;
+	Ui *ui_;
 
 	StringBuilderBase<63>str_;
 
@@ -36,12 +37,13 @@ namespace TopPage {
 		}
 	}
 
-	void init(Settings *settings, Engine *engine, Canvas *canvas, Leds *leds, Pages *pages) {
+	void init(Settings *settings, Engine *engine, Ui *ui) {
 		settings_ = settings;
 		engine_ = engine;
-		canvas_ = canvas;
-		leds_ = leds;
-		pages_ = pages;
+		ui_ = ui;
+		canvas_ = &ui->canvas();
+		leds_ = &ui->leds();
+		pages_ = &ui->pages();
 
 		Controller::init();
 		MessagePainter::init(canvas_);

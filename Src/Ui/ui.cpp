@@ -27,7 +27,7 @@ void Ui::init(Settings *settings, Engine *engine, Matrix *matrix, Display *displ
 
 	canvas_.init();
 	leds_.init();
-	pages_.init(settings, engine, &canvas_, &leds_);
+	pages_.init(settings, engine, this);
 
 	ui_que.clear();
 }
