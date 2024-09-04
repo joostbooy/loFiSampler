@@ -92,12 +92,12 @@ namespace TopPage {
 	void draw() {
 		if (pages_->num_open() == 0) {
 			const int row_h = 8;
-			const int w = 64;
+			const int w = 128;
 			const int h = row_h * kMaxPageRows;
 			const int x = (canvas_->width() - w) / 2;
 			const int y = (canvas_->height() - h) / 2;
 
-			canvas_->draw_text(0, 0, w, row_h, chapter_.name(), Canvas::CENTER, Canvas::CENTER);
+			canvas_->draw_text(x, 0, w, row_h, chapter_.name(), Canvas::CENTER, Canvas::CENTER);
 
 			for (int i = 0; i < kMaxPageRows; ++i) {
 				int page = i + chapter_top_page_;
@@ -110,7 +110,7 @@ namespace TopPage {
 					}
 				}
 			}
-			
+
 			const int bar_w = 8;
 			const int bar_x = x + (w - bar_w);
 			WindowPainter::draw_vertical_scollbar(bar_x, y, bar_w, h, chapter_top_page_, chapter_.entry()->size(), kMaxPageRows);
