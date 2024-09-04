@@ -76,6 +76,15 @@ public:
 		return data_ != nullptr;
 	}
 
+	// Hash
+	// void set_hash(uint32_t hash) {
+	//	hash_ = hash;
+	// }
+
+	//uint32_t hash() {
+	//	return hash_.read();
+	// }
+
 	// path
 	const char *path() {
 		return path_;
@@ -414,6 +423,8 @@ private:
 	int16_t *data_;
 	size_t size_;
 
+	// uint32_t hash_;
+
 	char path_[kMaxPathLength];
 	int num_channels_;
 	size_t start_;
@@ -429,6 +440,7 @@ private:
 	uint8_t key_range_high_;
 	float gain_;
 	float pan_;
+
 
 	static bool name_to_midi_note(const char *name, uint8_t *note);
 	static constexpr const uint8_t char_to_note_[7] = { 9, 11, 0, 2, 4, 5, 7 };

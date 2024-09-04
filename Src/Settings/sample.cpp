@@ -1,8 +1,10 @@
 #include "sample.h"
 
 char Sample::name_[kMaxPathLength];
+const uint8_t Sample::char_to_note_[7];
+const bool Sample::has_seminote_[12];
 
- bool Sample::name_to_midi_note(const char *name, uint8_t *note) {
+bool Sample::name_to_midi_note(const char *name, uint8_t *note) {
 	int oct_ = -1;
 	int note_ = -1;
 
