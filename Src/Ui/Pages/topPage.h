@@ -110,10 +110,10 @@ namespace TopPage {
 					}
 				}
 			}
-
-		//	const int bar_w = 8;
-		//	const int bar_x = x + (w - bar_w);
-		//	WindowPainter::draw_vertical_scollbar(bar_x, y, bar_w, h, chapter_top_page_, chapter_.entry()->size(), kMaxPageRows);
+			
+			const int bar_w = 8;
+			const int bar_x = x + (w - bar_w);
+			WindowPainter::draw_vertical_scollbar(bar_x, y, bar_w, h, chapter_top_page_, chapter_.entry()->size(), kMaxPageRows);
 		}
 
 		MessagePainter::draw(pages_->target_fps());
