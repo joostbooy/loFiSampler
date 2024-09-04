@@ -67,7 +67,12 @@ namespace OptionListPage {
 				return;
 			}
 
-			if (Controller::button_to_function(id) >= 0) {
+			if (Controller::MENU_BUTTON == id || Controller::LEFT_BUTTON == id) {
+				pages_->close(Pages::OPTION_LIST_PAGE);
+				return;
+			}
+
+			if (Controller::button_to_function(id) >= 0 || Controller::RIGHT_BUTTON == id) {
 				if (callback_) {
 					callback_(selected_);
 				}
