@@ -3,12 +3,10 @@
 // Midi
  constexpr const int Chapter::midi_pages[] = {
 	Pages::MIDI_PAGE,
-	Pages::HARDWARE_TEST_PAGE
 };
 
  constexpr const char* const Chapter::midi_page_names[] = {
 	"SETTINGS",
-	"HARDWARE TEST"
 };
 
 // Modulation
@@ -28,13 +26,11 @@ constexpr const char* const Chapter::modulation_page_names[] = {
 
 // System
 constexpr const int Chapter::system_pages[] = {
-	Pages::MODULATION_PAGE,
 	Pages::HARDWARE_TEST_PAGE
 };
 
 constexpr const char* const Chapter::system_page_names[] = {
-	"SETTINGS",
-	"TEST"
+	"HARDWARE TEST"
 };
 
 // Instrument
@@ -57,12 +53,10 @@ constexpr const char* const Chapter::sample_page_names[] = {
 
 // Storage
 constexpr const int Chapter::storage_pages[] = {
-	Pages::MODULATION_PAGE,
 	Pages::HARDWARE_TEST_PAGE
 };
 
 constexpr const char* const Chapter::storage_page_names[] = {
-	"SETTINGS",
 	"TEST"
 };
 
