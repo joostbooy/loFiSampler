@@ -3,6 +3,7 @@
 
 #include "topPage.h"
 #include "settingsUtils.h"
+//#include "diskUtilPage.h"
 
 namespace DiskNavigatorPage {
 
@@ -17,11 +18,21 @@ namespace DiskNavigatorPage {
 	int rowsTotal_;
 	int selected_;
 	int top_row_;
-	void (*callback_)();
-	const int kMaxVisibleRows = 4;
+	void (*footer_callback_)(int);
+	int num_footer_options_;
+	const char* const* footer_text_;
+	const int kMaxVisibleRows = 6;
 
-	void set_callback(void (*callback)()) {
-		callback_ = callback;
+	void set_num_footer_options(int value) {
+		num_footer_options_ = SettingsUtils::clip(0, 3, value);
+	}
+
+	void set_footer_text(const char* const* footer_text) {
+		footer_text_ = footer_text;
+	}
+
+	void set_footer_callback(void (*footer_callback)(int)) {
+		footer_callback_ = footer_callback;
 	}
 
 	void set_list_filter(Entry::Filter filter) {
@@ -73,7 +84,7 @@ namespace DiskNavigatorPage {
 	}
 
 	void init() {
-		callback_ = nullptr;
+		footer_callback_ = nullptr;
 		disk_ = settings_->disk();
 	}
 
@@ -84,7 +95,8 @@ namespace DiskNavigatorPage {
 	}
 
 	void exit()  {
-		callback_ = nullptr;
+		footer_callback_ = nullptr;
+		num_footer_options_ = 0;
 		//disk_->directory().close();
 	}
 
@@ -118,32 +130,34 @@ namespace DiskNavigatorPage {
 				}
 				break;
 			case Controller::MENU_BUTTON:
-				if (callback_) {
-					callback_();
-				}
-				break;
-		//	case Controller::XXX:
-		//		DiskUtilPages::set_entry(e);
-		//		DiskUtilPages::set_callback(refresh_dir);
-		//		pages_->open(Pages::DISK_UTIL_PAGE);
-		//		break;
+				//		DiskUtilPages::set_entry(e);
+				//		DiskUtilPages::set_callback(refresh_dir);
+				//		pages_->open(Pages::DISK_UTIL_PAGE);
+				//		break;
 			default:
 				break;
+			}
+
+			int function = Controller::button_to_function(id);
+			if (function >= 0 && function < num_footer_options_) {
+				if (footer_callback_) {
+					footer_callback_(function);
+				}
 			}
 		}
 	}
 
 	void refresh_leds() {
 		leds_->set_footer_encoders(4);
-		leds_->set_footer_buttons(4);
+		leds_->set_footer_buttons(num_footer_options_);
 	}
 
 	void draw() {
 		const int row_h = 8;
-		const int w = 64;
-		const int h = row_h * kMaxVisibleRows;
-		const int x = (canvas_->width() - w) / 2;
-		const int y = (canvas_->height() - h) / 2;
+		const int w = canvas_->width();
+		const int h = canvas_->height() - (row_h * kMaxVisibleRows);
+		const int x = 0;
+		const int y = 0;
 
 		canvas_->draw_text(0, 0, w, row_h, curr_path(), Canvas::LEFT, Canvas::CENTER);
 
@@ -167,9 +181,10 @@ namespace DiskNavigatorPage {
 			}
 		}
 
-		const int bar_w = 8;
+		const int bar_w = 6;
 		const int bar_x = x + (w - bar_w);
 		WindowPainter::draw_vertical_scollbar(bar_x, y, bar_w, h, top_row_, rowsTotal_, kMaxVisibleRows);
+		WindowPainter::draw_footer(footer_text_, num_footer_options_);
 	}
 
 	const size_t target_fps() {
