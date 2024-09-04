@@ -184,7 +184,7 @@ namespace TextInputPage {
 		return disk != nullptr && disk->entry().excists(char_stack.pointer());
 	}
 
-	void onButton(int id, int state) {
+	void on_button(int id, int state) {
 		if (!state) {
 			return;
 		}
@@ -280,6 +280,7 @@ namespace TextInputPage {
 
 
 	void refresh_leds() {
+		leds_->set_footer_encoders(4);
 		leds_->set_footer_buttons(NUM_FOOTER_OPTIONS);
 	}
 
@@ -352,8 +353,8 @@ namespace TextInputPage {
 		&exit,
 		&draw,
 		&refresh_leds,
+		&on_button,
 		&on_encoder,
-		&onButton,
 		&target_fps,
 	};
 };
