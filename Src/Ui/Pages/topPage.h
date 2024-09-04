@@ -22,7 +22,7 @@ namespace TopPage {
 	StringBuilderBase<63>str_;
 
 	int chapter_top_page_ = 0;
-	const int kMaxPageRows = 4;
+	const int kMaxPageRows = 6;
 	Chapter chapter_;
 
 
@@ -91,22 +91,19 @@ namespace TopPage {
 
 	void draw() {
 		if (pages_->num_open() == 0) {
-
 			const int row_h = 8;
 			const int w = 64;
 			const int h = row_h * kMaxPageRows;
 			const int x = (canvas_->width() - w) / 2;
 			const int y = (canvas_->height() - h) / 2;
 
-			int chapter_size = chapter_.entry()->size();
-
-			canvas_->draw_text(0, 0, chapter_.name());
+			canvas_->draw_text(0, 0, w, row_h, chapter_.name(), Canvas::CENTER, Canvas::CENTER);
 
 			for (int i = 0; i < kMaxPageRows; ++i) {
 				int page = i + chapter_top_page_;
 				int page_y = (i * row_h) + y;
 
-				if (page < chapter_size) {
+				if (page < chapter_.entry()->size()) {
 					canvas_->draw_text(x + 4, page_y, chapter_.entry()->name(page));
 					if (page == chapter_.entry()->page_index()) {
 						canvas_->fill(x, page_y, w, row_h, Canvas::INVERTED);
@@ -114,9 +111,9 @@ namespace TopPage {
 				}
 			}
 
-			const int bar_w = 8;
-			const int bar_x = x + (w - bar_w);
-			WindowPainter::draw_vertical_scollbar(bar_x, y, bar_w, h, chapter_top_page_, chapter_size, kMaxPageRows);
+		//	const int bar_w = 8;
+		//	const int bar_x = x + (w - bar_w);
+		//	WindowPainter::draw_vertical_scollbar(bar_x, y, bar_w, h, chapter_top_page_, chapter_.entry()->size(), kMaxPageRows);
 		}
 
 		MessagePainter::draw(pages_->target_fps());
