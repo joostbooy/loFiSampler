@@ -122,7 +122,7 @@ private:
 	// Modulation
 	Entry modulation_;
 	static const int modulation_pages[];
-	static const char* const mod_page_names[];
+	static const char* const modulation_page_names[];
 
 	// System
 	Entry system_;

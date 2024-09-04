@@ -19,7 +19,7 @@ constexpr const int Chapter::modulation_pages[] = {
 	Pages::DELAY_PAGE,
 };
 
-constexpr const char* const Chapter::mod_page_names[] = {
+constexpr const char* const Chapter::modulation_page_names[] = {
 	"SETTINGS",
 	"LFO",
 	"ENVELOPE",
@@ -67,7 +67,7 @@ constexpr const char* const Chapter::storage_page_names[] = {
 };
 
 void Chapter::init() {
-	modulation_.init(modulation_pages, mod_page_names, ENTRY_SIZE(modulation_pages));
+	modulation_.init(modulation_pages, modulation_page_names, ENTRY_SIZE(modulation_pages));
 	midi_.init(midi_pages, midi_page_names, ENTRY_SIZE(midi_pages));
 	sample_.init(sample_pages, sample_page_names, ENTRY_SIZE(sample_pages));
 	system_.init(system_pages, system_page_names, ENTRY_SIZE(system_pages));
