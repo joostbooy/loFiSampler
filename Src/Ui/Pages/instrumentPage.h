@@ -15,7 +15,7 @@ namespace InstrumentPage {
 
 	bool pasteable_;
 	Instrument instrument_;
-	EnvelopeList instrumentList_;
+	InstrumentList instrumentList_;
 
 	enum Options {
 		EDIT_NAME,
