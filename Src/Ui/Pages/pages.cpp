@@ -1,5 +1,6 @@
 #include "pages.h"
 #include "topPage.h"
+#include "emptyPage.h"
 #include "lfoPage.h"
 #include "envelopePage.h"
 #include "instrumentPage.h"
@@ -17,6 +18,7 @@
 #include "instrumentSampleListPage.h"
 
 Pages::Page* page_[Pages::NUM_PAGES] = {
+	[Pages::EMPTY_PAGE]						= &EmptyPage::page,
 	[Pages::LFO_PAGE]						= &LfoPage::page,
 	[Pages::ENVELOPE_PAGE]					= &EnvelopePage::page,
 	[Pages::INSTRUMENT_PAGE]				= &InstrumentPage::page,
@@ -58,6 +60,8 @@ void Pages::close(int id) {
 		page_[id]->exit();
 		if (page_stack_.readable()) {
 			curr_page_ = page_stack_.read(page_stack_.size() - 1);
+		} else {
+			curr_page_ = EMPTY_PAGE;
 		}
 	}
 }
@@ -67,6 +71,7 @@ void Pages::close_all() {
 		int id = page_stack_.pop();
 		page_[id]->exit();
 	}
+	curr_page_ = EMPTY_PAGE;
 }
 
 void Pages::on_button(int id, int state) {

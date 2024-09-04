@@ -11,6 +11,7 @@ class Pages {
 public:
 
 	enum PageId {
+		EMPTY_PAGE,
 		LFO_PAGE,
 		ENVELOPE_PAGE,
 		INSTRUMENT_PAGE,
