@@ -1,7 +1,8 @@
 #include "settings.h"
 
 bool Settings::save(const char* new_path) {
-	path.write(new_path);
+	//path.write(new_path);
+	path.write(new_path, "/", project_name(), ".PRJ");
 	if (!save()) {
 		path.clear();
 		return false;

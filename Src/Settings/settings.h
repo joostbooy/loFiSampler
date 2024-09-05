@@ -214,6 +214,20 @@ public:
 		return sampleAllocator_;
 	}
 
+	// name
+	const char *project_name() {
+		return project_name_;
+	}
+
+	void set_project_name(const char *value) {
+		return StringUtils::copy(project_name_, const_cast<char*>(value), max_name_length());
+	}
+
+	const size_t max_name_length() {
+		return 8;
+	}
+
+
 private:
 	StringBuilderBase<63>path;
 
@@ -238,6 +252,8 @@ private:
 	int selected_instrument_index_;
 	int selected_envelope_index_;
 	int selected_instrument_sample_index_;
+
+	char project_name_[8];
 };
 
 #endif
