@@ -55,7 +55,6 @@ namespace TextInputPage {
 		message.clear();
 		dest_max_ = 0;
 		callback = nullptr;
-		disk_ = nullptr;
 	}
 
 	void enter() {
@@ -176,11 +175,11 @@ namespace TextInputPage {
 	}
 
 	bool text_is_empty() {
-		return disk_ != nullptr && (char_stack.read(0) == '\0' || char_stack.read(0) == '.');
+		return (char_stack.read(0) == '\0' || char_stack.read(0) == '.');
 	}
 
 	bool name_excists() {
-		return disk_ != nullptr && disk_->entry().excists(char_stack.pointer());
+		return disk_->entry().excists(char_stack.pointer());
 	}
 
 	void on_button(int id, int state) {
