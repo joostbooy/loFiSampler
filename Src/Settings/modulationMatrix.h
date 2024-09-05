@@ -23,7 +23,7 @@ public:
 
 	static_assert(NUM_DESTINATIONS < 32, "Too many destinations !");
 
-	const char *destination_text(int value) {
+	static const char *destination_text(int value) {
 		switch (value)
 		{
 		case PAN:					return "PAN";
@@ -62,7 +62,7 @@ public:
 		NUM_SOURCES
 	};
 
-	const char *source_text(int value) {
+	static const char *source_text(int value) {
 		switch (value)
 		{
 		case LFO_1:			return "LFO 1";
