@@ -25,6 +25,7 @@ namespace DiskUtilPage {
 
 	void set_entry(Entry::List* entry) {
 		entry_ = entry;
+
 		// only allow add folder if its a directory with no entries
 		if (entry_ == nullptr) {
 			num_options_ = ADD_FOLDER;
@@ -41,10 +42,10 @@ namespace DiskUtilPage {
 		if (option == ConfirmationPage::CONFIRM) {
 			if (disk_->directory().remove(entry_->name.read())) {
 				MessagePainter::show(entry_->is_dir ? "FOLDER DELETED" : "FILE DELETED");
+				refresh_dir_callback_();
 			} else {
 				MessagePainter::show("FAILED");
 			}
-			refresh_dir_callback_();
 		}
 		pages_->close(Pages::DISK_UTIL_PAGE);
 	}
@@ -123,7 +124,6 @@ namespace DiskUtilPage {
 		OptionListPage::refresh_leds();
 	}
 
-	// Bottom to top
 	void draw() {
 		OptionListPage::draw();
 	}
