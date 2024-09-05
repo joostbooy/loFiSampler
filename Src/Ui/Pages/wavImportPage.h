@@ -21,7 +21,7 @@ namespace WavImportPage {
 	bool import_as_mono_;
 	StringBuilderBase<63>str_;
 
-	const char* const option_text[NUM_OPTIONS] = { "IMPORT", "IMPORT AS MONO" };
+	const char* const footer_text[NUM_OPTIONS] = { "IMPORT", "IMPORT MONO" };
 
 	void draw_progression(const char *file_name) {
 		MessagePainter::show(str_.write("IMPORTING... ", file_name));
@@ -31,7 +31,7 @@ namespace WavImportPage {
 	void import(int option) {
 		int wavs_total_ = 0;
 		int wavs_imported_ = 0;
-		
+
 		switch (option)
 		{
 		case ConfirmationPage::CONFIRM:
@@ -46,7 +46,7 @@ namespace WavImportPage {
 			disk_->entry().rewind();
 
 			while (disk_->entry().next_visible()) {
-				if (disk_->entry().is_dir() == false) {
+				if ((disk_->entry().is_dir() == false) && disk_->entry().has_extension(".WAV")) {
 					draw_progression(disk_->entry().name());
 
 					++wavs_total_;
@@ -75,7 +75,7 @@ namespace WavImportPage {
 	}
 
 	void enter() {
-		DiskNavigatorPage::set_footer_text(option_text);
+		DiskNavigatorPage::set_footer_text(footer_text);
 		DiskNavigatorPage::set_num_footer_options(NUM_OPTIONS);
 		DiskNavigatorPage::set_footer_callback(footer_callback);
 		DiskNavigatorPage::set_list_filter(Entry::WAV);
