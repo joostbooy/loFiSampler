@@ -3,7 +3,9 @@
 Sdmmc* Sdmmc::sdmmc_;
 
 void Sdmmc::init() {
+
 	sdmmc_ = this;
+
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
 
 	//powerOff();
