@@ -14,39 +14,35 @@ namespace WavImportPage {
 	enum Options {
 		IMPORT,
 		IMPORT_AS_MONO,
-		IMPORT_ALL,
-		IMPORT_ALL_AS_MONO,
 
 		NUM_OPTIONS
 	};
 
+	bool import_as_mono_;
 	StringBuilderBase<63>str_;
 
-	const char* const option_text[NUM_OPTIONS] = { "IMPORT", "IMPORT AS MONO", "IMPORT ALL", "ALL AS MONO" };
+	const char* const option_text[NUM_OPTIONS] = { "IMPORT", "IMPORT AS MONO" };
 
 	void draw_progression(const char *file_name) {
 		MessagePainter::show(str_.write("IMPORTING... ", file_name));
 		ui_->send_display();
 	}
 
-	void import_callback(int option) {
+	void import(int option) {
 		int wavs_total_ = 0;
 		int wavs_imported_ = 0;
-		bool as_mono = (option == IMPORT_AS_MONO) || (option == IMPORT_ALL_AS_MONO);
-
+		
 		switch (option)
 		{
-		case IMPORT:
-		case IMPORT_AS_MONO:
+		case ConfirmationPage::CONFIRM:
 			draw_progression(DiskNavigatorPage::curr_entry_name());
-			if (settings_->wavImporter().import(DiskNavigatorPage::curr_entry_path(), as_mono)) {
+			if (settings_->wavImporter().import(DiskNavigatorPage::curr_entry_path(), import_as_mono_)) {
 				MessagePainter::show("FINISHED");
 			} else {
 				MessagePainter::show("FAILED");
 			}
 			break;
-		case IMPORT_ALL:
-		case IMPORT_ALL_AS_MONO:
+		case ConfirmationPage::APPLY_TO_ALL:
 			disk_->entry().rewind();
 
 			while (disk_->entry().next_visible()) {
@@ -55,7 +51,7 @@ namespace WavImportPage {
 
 					++wavs_total_;
 					str_.write(DiskNavigatorPage::curr_path(), "/", disk_->entry().name());
-					if (settings_->wavImporter().import(str_.read(), as_mono)) {
+					if (settings_->wavImporter().import(str_.read(), import_as_mono_)) {
 						++wavs_imported_;
 					}
 				}
@@ -68,6 +64,12 @@ namespace WavImportPage {
 		}
 	}
 
+	void footer_callback(int option) {
+		import_as_mono_ = option == IMPORT_AS_MONO;
+		ConfirmationPage::set("CONTINUE ?", import, true);
+		pages_->open(Pages::CONFIRMATION_PAGE);
+	}
+
 	void init() {
 		DiskNavigatorPage::init();
 	}
@@ -75,7 +77,7 @@ namespace WavImportPage {
 	void enter() {
 		DiskNavigatorPage::set_footer_text(option_text);
 		DiskNavigatorPage::set_num_footer_options(NUM_OPTIONS);
-		DiskNavigatorPage::set_footer_callback(import_callback);
+		DiskNavigatorPage::set_footer_callback(footer_callback);
 		DiskNavigatorPage::set_list_filter(Entry::WAV);
 		DiskNavigatorPage::enter();
 	}
