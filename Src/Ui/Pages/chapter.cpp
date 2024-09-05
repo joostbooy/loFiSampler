@@ -27,10 +27,12 @@ constexpr const char* const Chapter::modulation_page_names[] = {
 // System
 constexpr const int Chapter::system_pages[] = {
 	Pages::HARDWARE_TEST_PAGE
+	//Pages::SYSTEM_INFO_PAGE
 };
 
 constexpr const char* const Chapter::system_page_names[] = {
 	"HARDWARE TEST"
+	//"INFO"
 };
 
 // Instrument
@@ -53,11 +55,11 @@ constexpr const char* const Chapter::sample_page_names[] = {
 
 // Storage
 constexpr const int Chapter::storage_pages[] = {
-	Pages::HARDWARE_TEST_PAGE
+	Pages::PROJECT_PAGE
 };
 
 constexpr const char* const Chapter::storage_page_names[] = {
-	"TEST"
+	"PROJECT STORAGE"
 };
 
 void Chapter::init() {

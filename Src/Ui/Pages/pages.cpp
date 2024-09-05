@@ -16,6 +16,7 @@
 #include "wavImportPage.h"
 #include "diskRetryPage.h"
 #include "instrumentSampleListPage.h"
+#include "projectPage.h"
 
 Pages::Page* page_[Pages::NUM_PAGES] = {
 	[Pages::EMPTY_PAGE]						= &EmptyPage::page,
@@ -33,10 +34,10 @@ Pages::Page* page_[Pages::NUM_PAGES] = {
 	[Pages::WAV_IMPORT_PAGE]				= &WavImportPage::page,
 	[Pages::DISK_RETRY_PAGE]				= &DiskRetryPage::page,
 	[Pages::INSTRUMENT_SAMPLE_LIST_PAGE]	= &InstrumentSampleListPage::page,
+	[Pages::PROJECT_PAGE]					= &ProjectPage::page,
 };
 
 void Pages::init(Settings *settings, Engine *engine, Ui *ui) {
-	curr_page_ = SAMPLE_PAGE;
 	page_stack_.clear();
 	TopPage::init(settings, engine, ui);
 
@@ -44,7 +45,7 @@ void Pages::init(Settings *settings, Engine *engine, Ui *ui) {
 		page_[i]->init();
 	}
 
-	open(curr_page_);
+	open(INSTRUMENT_PAGE);
 }
 
 void Pages::open(int id) {
