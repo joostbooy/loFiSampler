@@ -9,6 +9,7 @@ namespace WavImportPage {
 	using TopPage::settings_;
 	using TopPage::canvas_;
 	using TopPage::ui_;
+	using TopPage::disk_;
 
 	enum Options {
 		IMPORT,
@@ -21,7 +22,7 @@ namespace WavImportPage {
 
 	StringBuilderBase<63>str_;
 
-	const char* const option_text[NUM_OPTIONS] = { "IMPORT", "IMPORT AS MONO", "IMPORT ALL", "IMPORT ALL AS MONO" };
+	const char* const option_text[NUM_OPTIONS] = { "IMPORT", "IMPORT AS MONO", "IMPORT ALL", "ALL AS MONO" };
 
 	void draw_progression(const char *file_name) {
 		MessagePainter::show(str_.write("IMPORTING... ", file_name));
@@ -31,7 +32,6 @@ namespace WavImportPage {
 	void import_callback(int option) {
 		int wavs_total_ = 0;
 		int wavs_imported_ = 0;
-		Disk *disk_ = settings_->disk();
 		bool as_mono = (option == IMPORT_AS_MONO) || (option == IMPORT_ALL_AS_MONO);
 
 		switch (option)

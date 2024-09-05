@@ -9,6 +9,7 @@ namespace DiskRetryPage {
 	using TopPage::canvas_;
 	using TopPage::pages_;
 	using TopPage::leds_;
+	using TopPage::disk_;
 
 	typedef void (*Callback)();
 	Callback refresh_dir_callback;
@@ -47,15 +48,13 @@ namespace DiskRetryPage {
 			return;
 		}
 
-		Disk *disk = settings_->disk();
-
 		switch (Controller::button_to_function(id))
 		{
 		case RETRY:
-			disk->mount();
+			disk_->mount();
 
-			if (disk->mounted()) {
-				disk->reset();
+			if (disk_->mounted()) {
+				disk_->reset();
 				pages_->close(Pages::DISK_RETRY_PAGE);	// close page before calling refresh_dir_callback() !
 				MessagePainter::show("CARD DETECTED");
 				refresh_dir_callback();

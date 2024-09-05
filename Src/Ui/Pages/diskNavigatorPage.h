@@ -12,19 +12,20 @@ namespace DiskNavigatorPage {
 	using TopPage::str_;
 	using TopPage::leds_;
 	using TopPage::settings_;
-
-	Disk *disk_;
+	using TopPage::disk_;
 
 	int rowsTotal_;
 	int selected_;
 	int top_row_;
+	const int kMaxVisibleRows = 6;
+
 	void (*footer_callback_)(int);
 	int num_footer_options_;
 	const char* const* footer_text_;
-	const int kMaxVisibleRows = 6;
+
 
 	void set_num_footer_options(int value) {
-		num_footer_options_ = SettingsUtils::clip(0, 3, value);
+		num_footer_options_ = SettingsUtils::clip(0, 4, value);
 	}
 
 	void set_footer_text(const char* const* footer_text) {
@@ -85,7 +86,6 @@ namespace DiskNavigatorPage {
 
 	void init() {
 		footer_callback_ = nullptr;
-		disk_ = settings_->disk();
 	}
 
 	void enter() {
@@ -167,16 +167,17 @@ namespace DiskNavigatorPage {
 
 			if (row < rowsTotal_) {
 				Entry::List* e = disk_->entry().read_list(i);
+				if (e) {
+					if (e->is_dir) {
+						canvas_->draw_text(x + 4, row_y, w - 8, row_h, str_.write("/", e->name.read()), Canvas::LEFT, Canvas::CENTER);
+					} else {
+						canvas_->draw_text(x + 4, row_y, w - 8, row_h, e->name.read(), Canvas::LEFT, Canvas::CENTER);
+						canvas_->draw_text(x + 4 + (w / 2), row_y, (w / 2) - 8, row_h, SettingsText::kb_to_mem_size_text(e->size / 1000), Canvas::LEFT, Canvas::CENTER);
+					}
 
-				if (e->is_dir) {
-					canvas_->draw_text(x + 4, row_y, w - 8, row_h, str_.write("/", e->name.read()), Canvas::LEFT, Canvas::CENTER);
-				} else {
-					canvas_->draw_text(x + 4, row_y, w - 8, row_h, e->name.read(), Canvas::LEFT, Canvas::CENTER);
-					canvas_->draw_text(x + 4 + (w / 2), row_y, (w / 2) - 8, row_h, SettingsText::kb_to_mem_size_text(e->size / 1000), Canvas::LEFT, Canvas::CENTER);
-				}
-
-				if (row == selected_) {
-					canvas_->fill(x, row_y, w, row_h, Canvas::INVERTED);
+					if (row == selected_) {
+						canvas_->fill(x, row_y, w, row_h, Canvas::INVERTED);
+					}
 				}
 			}
 		}

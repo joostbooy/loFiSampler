@@ -19,6 +19,7 @@ namespace TopPage {
 	Pages *pages_;
 	Leds *leds_;
 	Ui *ui_;
+	Disk *disk_;
 
 	StringBuilderBase<63>str_;
 
@@ -44,6 +45,7 @@ namespace TopPage {
 		canvas_ = &ui->canvas();
 		leds_ = &ui->leds();
 		pages_ = &ui->pages();
+		disk_ = settings_->disk();
 
 		Controller::init();
 		MessagePainter::init(canvas_);

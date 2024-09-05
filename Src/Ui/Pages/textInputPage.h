@@ -6,6 +6,7 @@ namespace TextInputPage {
 	using TopPage::canvas_;
 	using TopPage::pages_;
 	using TopPage::leds_;
+	using TopPage::disk_;
 
 	uint8_t box_x;
 	uint8_t box_w;
@@ -13,7 +14,6 @@ namespace TextInputPage {
 	int text_cursor = 0;
 	uint16_t text_cursor_ticks = 0;
 
-	Disk *disk;
 	char *dest_ptr;
 
 	typedef void (*Callback)(bool confirmed);
@@ -55,7 +55,7 @@ namespace TextInputPage {
 		message.clear();
 		dest_max_ = 0;
 		callback = nullptr;
-		disk = nullptr;
+		disk_ = nullptr;
 	}
 
 	void enter() {
@@ -93,12 +93,11 @@ namespace TextInputPage {
 		}
 	}
 
-	void set(const char* dest_ptr_, uint8_t max, const char* message_, Disk* disk_, Callback callback_){
+	void set(const char* dest_ptr_, uint8_t max, const char* message_, Callback callback_){
 		char_cursor = 0;
 		text_cursor_ticks = 0;
 		message.write(message_);
 
-		disk = disk_;
 		callback = callback_;
 
 		dest_ptr = const_cast<char*>(dest_ptr_);
@@ -114,9 +113,9 @@ namespace TextInputPage {
 	}
 
 
-	// text edit without disk check
+	// text edit without disk_ check
 	void set(const char* dest_ptr_, uint8_t max_, const char* message_) {
-		set(dest_ptr_, max_, message_, nullptr, nullptr);
+		set(dest_ptr_, max_, message_, nullptr);
 	}
 
 
@@ -177,11 +176,11 @@ namespace TextInputPage {
 	}
 
 	bool text_is_empty() {
-		return disk != nullptr && (char_stack.read(0) == '\0' || char_stack.read(0) == '.');
+		return disk_ != nullptr && (char_stack.read(0) == '\0' || char_stack.read(0) == '.');
 	}
 
 	bool name_excists() {
-		return disk != nullptr && disk->entry().excists(char_stack.pointer());
+		return disk_ != nullptr && disk_->entry().excists(char_stack.pointer());
 	}
 
 	void on_button(int id, int state) {
