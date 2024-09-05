@@ -16,12 +16,15 @@ namespace SamplePage {
 	Sample sample_;
 	SampleList sampleList_;
 
+	int selected_option_;
+
 	enum ListOptions {
 		IMPORT,
 		REMOVE,
 		CONVERT_TO_MONO,
 		MAP_NAME_TO_ROOT_NOTE,
 		MAP_NAME_TO_KEY_RANGE,
+		MAP_NAME_TO_ROOT_AND_KEY,
 		CANCEL,
 
 		NUM_LIST_OPTIONS
@@ -33,6 +36,7 @@ namespace SamplePage {
 		"CONVERT TO MONO",
 		"MAP NAME TO ROOT NOTE",
 		"MAP NAME TO KEY RANGE",
+		"MAP NAME TO ROOT & KEY",
 		"CANCEL"
 	};
 
@@ -62,12 +66,34 @@ namespace SamplePage {
 		}
 	}
 
+	void remove_all() {
+		engine_->add_request_blocking(Engine::STOP);
+
+		size_t count = settings_->num_samples();
+		for (size_t i = 0; i < count; ++i) {
+			settings_->sampleAllocator().remove(i);
+		}
+
+		settings_->refresh_sample_selection();
+		MessagePainter::show("SAMPLES REMOVED");
+	}
+
 	void convert_to_mono(int index) {
 		engine_->add_request_blocking(Engine::STOP);
 
 		if (settings_->sampleAllocator().convert_to_mono(index)) {
 			MessagePainter::show("SAMPLE CONVERTED TO MONO");
 		}
+	}
+
+	void convert_all_to_mono() {
+		engine_->add_request_blocking(Engine::STOP);
+
+		size_t count = settings_->num_samples();
+		for (size_t i = 0; i < count; ++i) {
+			settings_->sampleAllocator().convert_to_mono(i);
+		}
+		MessagePainter::show("SAMPLES CONVERTED TO MONO");
 	}
 
 	void map_name_to_root_note(int index) {
@@ -77,6 +103,14 @@ namespace SamplePage {
 		}
 	}
 
+	void map_all_names_to_root_note() {
+		size_t count = settings_->num_samples();
+		for (size_t i = 0; i < count; ++i) {
+			settings_->sample(i)->map_name_to_root_note();
+		}
+		MessagePainter::show("FINISHED");
+	}
+
 	void map_name_to_key_range(int index) {
 		Sample *sample = settings_->sample(index);
 		if (sample->map_name_to_key_range()) {
@@ -84,38 +118,74 @@ namespace SamplePage {
 		}
 	}
 
+	void map_all_names_to_key_range() {
+		size_t count = settings_->num_samples();
+		for (size_t i = 0; i < count; ++i) {
+			settings_->sample(i)->map_name_to_key_range();
+		}
+		MessagePainter::show("FINISHED");
+	}
+
 	void edit(int option) {
-		switch (option)
+		if (option != ConfirmationPage::CANCEL) {
+			return;
+		}
+
+		bool apply_to_all = option == ConfirmationPage::APPLY_TO_ALL;
+
+		switch (selected_option_)
 		{
-		case IMPORT:
-			pages_->open(Pages::WAV_IMPORT_PAGE);
-			break;
 		case REMOVE:
-			ConfirmationPage::set("REMOVE SAMPLE ?", [](int option) {
-				if (option == ConfirmationPage::CONFIRM) {
-					remove(settings_->selected_sample_index());
-				}
-			});
-			pages_->open(Pages::CONFIRMATION_PAGE);
+			if (apply_to_all) {
+				remove_all();
+			} else {
+				remove(settings_->selected_sample_index());
+			}
 			break;
 		case CONVERT_TO_MONO:
-			ConfirmationPage::set("CONVERT TO MONO ?", [](int option) {
-				if (option == ConfirmationPage::CONFIRM) {
-					convert_to_mono(settings_->selected_sample_index());
-				}
-			});
-			pages_->open(Pages::CONFIRMATION_PAGE);
+			if (apply_to_all) {
+				convert_all_to_mono();
+			} else {
+				convert_to_mono(settings_->selected_sample_index());
+			}
 			break;
 		case MAP_NAME_TO_ROOT_NOTE:
-			map_name_to_root_note(settings_->selected_sample_index());
+			if (apply_to_all) {
+				map_all_names_to_root_note();
+			} else {
+				map_name_to_root_note(settings_->selected_sample_index());
+			}
 			break;
 		case MAP_NAME_TO_KEY_RANGE:
-			map_name_to_key_range(settings_->selected_sample_index());
+			if (apply_to_all) {
+				map_all_names_to_key_range();
+			} else {
+				map_name_to_key_range(settings_->selected_sample_index());
+			}
+			break;
+		case MAP_NAME_TO_ROOT_AND_KEY:
+			if (apply_to_all) {
+				map_all_names_to_root_note();
+				map_all_names_to_key_range();
+			} else {
+				map_name_to_root_note(settings_->selected_sample_index());
+				map_name_to_key_range(settings_->selected_sample_index());
+			}
 			break;
 		case CANCEL:
 			break;
 		default:
 			break;
+		}
+	}
+
+	void select_edit_option(int option) {
+		if (option == IMPORT) {
+			pages_->open(Pages::WAV_IMPORT_PAGE);
+		} else if (option != CANCEL) {
+			selected_option_ = option;
+			ConfirmationPage::set("CONTINUE ?", edit, true);
+			pages_->open(Pages::CONFIRMATION_PAGE);
 		}
 	}
 
@@ -131,10 +201,6 @@ namespace SamplePage {
 		ListPage::set_copy_callback(&copy);
 		ListPage::set_paste_callback(&paste);
 		ListPage::enter();
-
-		OptionListPage::set_text(list_option_text);
-		OptionListPage::set_callback(edit);
-		OptionListPage::set_count(NUM_LIST_OPTIONS);
 	}
 
 	void exit()  {
@@ -146,6 +212,9 @@ namespace SamplePage {
 
 		if (state) {
 			if (id == Controller::MENU_BUTTON) {
+				OptionListPage::set_text(list_option_text);
+				OptionListPage::set_callback(select_edit_option);
+				OptionListPage::set_count(NUM_LIST_OPTIONS);
 				pages_->open(Pages::OPTION_LIST_PAGE);
 				return;
 			}
@@ -166,7 +235,7 @@ namespace SamplePage {
 		if (settings_->num_samples() == 0) {
 			return;
 		}
-		
+
 		const int x = 2;
 		const int y = 5;
 		const int w = 251;
