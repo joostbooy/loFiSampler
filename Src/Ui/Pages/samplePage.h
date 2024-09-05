@@ -127,7 +127,7 @@ namespace SamplePage {
 	}
 
 	void edit(int option) {
-		if (option != ConfirmationPage::CANCEL) {
+		if (option == ConfirmationPage::CANCEL) {
 			return;
 		}
 
