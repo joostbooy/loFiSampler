@@ -46,7 +46,7 @@ namespace WavImportPage {
 			disk_->entry().rewind();
 
 			while (disk_->entry().next_visible()) {
-				if ((disk_->entry().is_dir() == false) && disk_->entry().has_extension(".WAV")) {
+				if (disk_->entry().is_dir() == false) {
 					draw_progression(disk_->entry().name());
 
 					++wavs_total_;
