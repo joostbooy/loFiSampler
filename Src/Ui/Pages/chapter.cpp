@@ -15,7 +15,6 @@ constexpr const int Chapter::modulation_pages[] = {
 	Pages::LFO_PAGE,
 	Pages::ENVELOPE_PAGE,
 	Pages::DELAY_PAGE,
-	Pages::MODULATION_MATRIX_PAGE
 };
 
 constexpr const char* const Chapter::modulation_page_names[] = {
@@ -23,7 +22,6 @@ constexpr const char* const Chapter::modulation_page_names[] = {
 	"LFO",
 	"ENVELOPE",
 	"DELAY"
-	"MODULATION MATRIX"
 };
 
 // System

@@ -20,11 +20,12 @@ namespace InstrumentPage {
 	enum Options {
 		EDIT_NAME,
 		SAMPLE_LIST,
+		MODULATION_MATRIX,
 		CANCEL,
 		NUM_OPTIONS
 	};
 
-	const char* const option_text[NUM_OPTIONS] = { "EDIT NAME", "SAMPLE LIST", "CANCEL" };
+	const char* const option_text[NUM_OPTIONS] = { "EDIT NAME", "SAMPLE LIST", "MODULATION MATRIX", "CANCEL" };
 
 	void edit(int option) {
 		switch (option)
@@ -35,6 +36,9 @@ namespace InstrumentPage {
 			break;
 		case SAMPLE_LIST:
 			pages_->open(Pages::INSTRUMENT_SAMPLE_LIST_PAGE);
+			break;
+		case MODULATION_MATRIX:
+			pages_->open(Pages::MODULATION_MATRIX_PAGE);
 			break;
 		default:
 			break;
