@@ -17,6 +17,7 @@
 #include "diskRetryPage.h"
 #include "instrumentSampleListPage.h"
 #include "projectPage.h"
+#include "modulationMatrixPage.h"
 
 Pages::Page* page_[Pages::NUM_PAGES] = {
 	[Pages::EMPTY_PAGE]						= &EmptyPage::page,
@@ -35,6 +36,7 @@ Pages::Page* page_[Pages::NUM_PAGES] = {
 	[Pages::DISK_RETRY_PAGE]				= &DiskRetryPage::page,
 	[Pages::INSTRUMENT_SAMPLE_LIST_PAGE]	= &InstrumentSampleListPage::page,
 	[Pages::PROJECT_PAGE]					= &ProjectPage::page,
+	[Pages::MODULATION_MATRIX_PAGE]			= &ModulationMatrixPage::page,
 };
 
 void Pages::init(Settings *settings, Engine *engine, Ui *ui) {
