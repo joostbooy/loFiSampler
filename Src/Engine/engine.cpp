@@ -43,6 +43,7 @@ void Engine::tick() {
 		}
 	}
 	midiEngine_.poll();
+	//poll_gates();
 }
 
 void Engine::note_on(MidiEngine::Event &e) {
@@ -81,6 +82,7 @@ void Engine::process_gates() {
 			last_gate_[i] = current;
 			e = settings_->modulation().gate_to_midi(i);
 			current ? note_on(e) : note_off(e);
+			// midiEngine_.write_input(e);
 		}
 	}
 }
@@ -144,6 +146,8 @@ void Engine::process_requests() {
 }
 
 void Engine::fill(Dac::Channel *channel, const size_t size) {
+	uint32_t start = Micros::read();
+
 	process_midi();
 	process_gates();
 	process_requests();
@@ -160,4 +164,6 @@ void Engine::fill(Dac::Channel *channel, const size_t size) {
 	voiceEngine_.fill(channel, size);
 	delayEngine_.fill(channel, size);
 	limiter_.fill(channel, size);
+
+	processing_time_uS_ = Micros::read() - start;
 }

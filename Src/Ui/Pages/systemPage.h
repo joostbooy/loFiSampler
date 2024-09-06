@@ -8,6 +8,7 @@ namespace SystemPage {
 	using TopPage::disk_;
 	using TopPage::canvas_;
 	using TopPage::settings_;
+	using TopPage::engine_;
 	using TopPage::str_;
 	using TopPage::leds_;
 
@@ -68,10 +69,10 @@ namespace SystemPage {
 		canvas_->draw_text(x + w + 2, y + h - 6, value_text);
 	}
 
-	//	void draw_processing_time(int x, int y, int w, int h) {
-	//		float time = engine_->processing_time()
-	//		draw_graph(x, y, w, h, time, "CPU", str_.write(100 * time, "%"));
-	//	}
+	void draw_processing_time(int x, int y, int w, int h) {
+		float time = (1.f / (1000000.f / CONTROL_RATE)) * engine_->processing_time_uS();
+		draw_graph(x, y, w, h, time, "CPU", str_.write(100 * time, "%"));
+	}
 
 	void draw_available_ram(int x, int y, int w, int h) {
 		uint32_t total_ram = settings_->sampleAllocator().max_ram() * 2;		// 2 bytes per sample
@@ -102,7 +103,7 @@ namespace SystemPage {
 
 		draw_available_ram(37, y, w, h);
 		draw_sd_card_available_kb(122, y, w, h);
-		//draw_processing_time(207, y, w, h);
+		draw_processing_time(207, y, w, h);
 
 		WindowPainter::draw_footer(footer_text, NUM_OPTIONS);
 	}

@@ -48,11 +48,16 @@ public:
 		while (requests_ & type);
 	}
 
+	uint32_t processing_time_uS() {
+		return processing_time_uS_;
+	}
+
 private:
 	volatile uint8_t requests_ = 0x00;
 
 	uint8_t port_to_kill_;
 	uint8_t channel_to_kill_;
+	uint32_t processing_time_uS_;
 
 	Gate *gate_;
 	Settings *settings_;
