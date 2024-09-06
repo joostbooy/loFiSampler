@@ -136,12 +136,13 @@ namespace DiskUtilPage {
 		&init,
 		&enter,
 		&exit,
-		&refresh_leds,
 		&draw,
+		&refresh_leds,
 		&on_button,
 		&on_encoder,
-		&target_fps,
+		&target_fps
 	};
+
 };
 
 #endif
