@@ -266,12 +266,9 @@ namespace SamplePage {
 			index += inc;
 		}
 
-		// float start = sample->start() / size;
-		// canvas_->vertical_line(start * w, y, h, Canvas::INVERTED);
-
-		float start = (sample->start() / size) * w;
-		canvas_->vertical_line(start, y, h, Canvas::INVERTED);
-
+		float start = sample->start() / size;
+		canvas_->vertical_line(start * w, y, h, Canvas::INVERTED);
+		
 		float end = sample->end() / size;
 		canvas_->vertical_line(end * w, y, h, Canvas::INVERTED);
 
