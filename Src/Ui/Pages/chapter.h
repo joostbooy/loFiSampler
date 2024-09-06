@@ -112,7 +112,7 @@ public:
 
 private:
 	Entry *entry_;
-	int selected_ = SAMPLE;
+	int selected_ = INSTRUMENT;
 
 	// Midi
 	Entry midi_;
