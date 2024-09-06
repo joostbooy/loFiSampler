@@ -138,8 +138,8 @@ namespace DiskUtilPage {
 		&exit,
 		&refresh_leds,
 		&draw,
-		&on_encoder,
 		&on_button,
+		&on_encoder,
 		&target_fps,
 	};
 };
