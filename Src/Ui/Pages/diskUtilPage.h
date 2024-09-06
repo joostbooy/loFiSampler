@@ -92,6 +92,9 @@ namespace DiskUtilPage {
 			ConfirmationPage::set(str_.read(), &remove);
 			pages_->open(Pages::CONFIRMATION_PAGE);
 			break;
+		case CANCEL:
+			pages_->close(Pages::DISK_UTIL_PAGE);
+			break;
 		default:
 			break;
 		}
