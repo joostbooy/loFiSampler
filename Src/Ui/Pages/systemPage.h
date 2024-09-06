@@ -78,18 +78,22 @@ namespace SystemPage {
 		uint32_t total_ram = settings_->sampleAllocator().max_ram() * 2;		// 2 bytes per sample
 		uint32_t free_ram = settings_->sampleAllocator().available_ram() * 2;	// 2 bytes per sample
 		uint32_t used_ram = total_ram - free_ram;
-		float value = (1.f / total_ram) * used_ram;
+		float value = used_ram / total_ram;
 
-		str_.write(SettingsText::kb_to_mem_size_text(free_ram / 1000), "/", SettingsText::kb_to_mem_size_text(total_ram / 1000));
+		str_.write(SettingsText::kb_to_mem_size_text(free_ram / 1000));
+		str_.append("/");
+		str_.append(SettingsText::kb_to_mem_size_text(total_ram / 1000));
 
 		draw_graph(x, y, w, h, value, "RAM", str_.read());
 	}
 
 	void draw_sd_card_available_kb(int x, int y, int w, int h) {
 		uint32_t sd_used = sd_size_total - sd_size_free;
-		float value = (1.f / sd_size_total) * sd_used;
+		float value = sd_used / sd_size_total;
 
-		str_.write(SettingsText::kb_to_mem_size_text(sd_size_free), "/", SettingsText::kb_to_mem_size_text(sd_size_total));
+		str_.write(SettingsText::kb_to_mem_size_text(sd_size_free));
+		str_.append("/");
+		str_.append(SettingsText::kb_to_mem_size_text(sd_size_total));
 
 		draw_graph(x, y, w, h, value, "SD CARD", str_.read());
 	}
