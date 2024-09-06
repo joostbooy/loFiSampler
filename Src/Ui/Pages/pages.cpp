@@ -15,9 +15,11 @@
 #include "textInputPage.h"
 #include "wavImportPage.h"
 #include "diskRetryPage.h"
+#include "diskUtilPage.h"
 #include "instrumentSampleListPage.h"
 #include "projectPage.h"
 #include "modulationMatrixPage.h"
+#include "systemPage.h"
 
 Pages::Page* page_[Pages::NUM_PAGES] = {
 	[Pages::EMPTY_PAGE]						= &EmptyPage::page,
@@ -34,9 +36,11 @@ Pages::Page* page_[Pages::NUM_PAGES] = {
 	[Pages::TEXT_INPUT_PAGE]				= &TextInputPage::page,
 	[Pages::WAV_IMPORT_PAGE]				= &WavImportPage::page,
 	[Pages::DISK_RETRY_PAGE]				= &DiskRetryPage::page,
+	[Pages::DISK_UTIL_PAGE]					= &DiskUtilPage::page,
 	[Pages::INSTRUMENT_SAMPLE_LIST_PAGE]	= &InstrumentSampleListPage::page,
 	[Pages::PROJECT_PAGE]					= &ProjectPage::page,
 	[Pages::MODULATION_MATRIX_PAGE]			= &ModulationMatrixPage::page,
+	[Pages::SYSTEM_PAGE]					= &SystemPage::page,
 };
 
 void Pages::init(Settings *settings, Engine *engine, Ui *ui) {

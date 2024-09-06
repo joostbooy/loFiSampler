@@ -26,13 +26,13 @@ constexpr const char* const Chapter::modulation_page_names[] = {
 
 // System
 constexpr const int Chapter::system_pages[] = {
+	Pages::SYSTEM_PAGE,
 	Pages::HARDWARE_TEST_PAGE
-	//Pages::SYSTEM_INFO_PAGE
 };
 
 constexpr const char* const Chapter::system_page_names[] = {
+	"INFO",
 	"HARDWARE TEST"
-	//"INFO"
 };
 
 // Instrument
