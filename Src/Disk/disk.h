@@ -31,7 +31,7 @@ public:
 
 		const int root = 0;
 
-		directory_.init(&fdir, root, &result);
+		directory_.init(&fdir, root);
 		entry_.init(&fdir, &fil_info, directory_.path_ptr());
 		file_.init(&fil);
 
@@ -50,10 +50,6 @@ public:
 		return sdmmc_->initialised();
 	}
 
-	FRESULT last_result() {
-		return result;
-	}
-
 	void reset() {
 		directory_.reset();
 		directory_.close();
@@ -65,8 +61,7 @@ public:
 		FATFS* fs_ptr = &fs;
 		uint32_t free_clusters;
 
-		result = f_getfree(directory_.root(), &free_clusters, &fs_ptr);
-		if (result == FR_OK) {
+		if (f_getfree(directory_.root(), &free_clusters, &fs_ptr) == FR_OK) {
 			*total_blocks = ((fs_ptr->n_fatent - 2) * fs_ptr->csize) / 2;
 			*free_blocks = (free_clusters * fs_ptr->csize) / 2;
 		}
@@ -77,7 +72,6 @@ private:
 	DIR fdir;
 	FIL fil;
 	FILINFO fil_info;
-	FRESULT result;
 
 	Directory directory_;
 	Entry entry_;
