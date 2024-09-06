@@ -237,9 +237,10 @@ namespace SamplePage {
 		}
 
 		const int x = 2;
-		const int y = 5;
+		const int y = 2;
 		const int w = 251;
 		const int h = 32;
+		const int center_h = h / 2;
 
 		size_t index = 0;
 		int16_t left = 0;
@@ -252,17 +253,24 @@ namespace SamplePage {
 		for (int x2 = 0; x2 < w; ++x2) {
 			sample->read(index, &left, &right);
 
-			float left_ = left * (1.f / 32767.f);
-			float right_ = right * (1.f / 32767.f);
-			float mix = (left_ +  right_) * 0.5f;
-			int y2 = h * (1.f - mix);
+			float left_ = (left + 32768) * (1.f / 65535.f);
+			int y_left = center_h * (1.f - left_);
+			int h_left = center_h - y_left;
+			canvas_->vertical_line(x + x2, y + y_left, h_left, Canvas::BLACK);
 
-			canvas_->draw_pixel(x + x2, y + y2, Canvas::BLACK);
+			float right_ = (right + 32768) * (1.f / 65535.f);
+			int y_right = center_h;
+			int h_right = center_h * right_;
+			canvas_->vertical_line(x + x2, y + y_right, h_right, Canvas::BLACK);
+
 			index += inc;
 		}
 
-		float start = sample->start() / size;
-		canvas_->vertical_line(start * w, y, h, Canvas::INVERTED);
+		// float start = sample->start() / size;
+		// canvas_->vertical_line(start * w, y, h, Canvas::INVERTED);
+
+		float start = (sample->start() / size) * w;
+		canvas_->vertical_line(start, y, h, Canvas::INVERTED);
 
 		float end = sample->end() / size;
 		canvas_->vertical_line(end * w, y, h, Canvas::INVERTED);
