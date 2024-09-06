@@ -74,12 +74,12 @@ namespace SystemPage {
 	//	}
 
 	void draw_available_ram(int x, int y, int w, int h) {
-		uint32_t total_ram = settings_->sampleAllocator().max_ram();
-		uint32_t free_ram = settings_->sampleAllocator().available_ram();
+		uint32_t total_ram = settings_->sampleAllocator().max_ram() * 2;		// 2 bytes per sample
+		uint32_t free_ram = settings_->sampleAllocator().available_ram() * 2;	// 2 bytes per sample
 		uint32_t used_ram = total_ram - free_ram;
 		float value = (1.f / total_ram) * used_ram;
 
-		str_.write(SettingsText::kb_to_mem_size_text(free_ram), "/", SettingsText::kb_to_mem_size_text(total_ram));
+		str_.write(SettingsText::kb_to_mem_size_text(free_ram / 1000), "/", SettingsText::kb_to_mem_size_text(total_ram / 1000));
 
 		draw_graph(x, y, w, h, value, "RAM", str_.read());
 	}
@@ -96,9 +96,13 @@ namespace SystemPage {
 	void draw() {
 		canvas_->set_font(Font::SMALL);
 
-		draw_available_ram(37, 15, 10, 30);
-		draw_sd_card_available_kb(122, 15, 10, 30);
-		//draw_processing_time(207, 15, 10, 30);
+		const int y = 15;
+		const int w = 10;
+		const int h = 30;
+
+		draw_available_ram(37, y, w, h);
+		draw_sd_card_available_kb(122, y, w, h);
+		//draw_processing_time(207, y, w, h);
 
 		WindowPainter::draw_footer(footer_text, NUM_OPTIONS);
 	}
