@@ -54,21 +54,25 @@ public:
 			return false;
 		}
 
-		// read from file & write to ram
-		uint8_t *data = nullptr;
-		uint32_t *size = nullptr;
+		// get the allocated slot
+		int slot = sampleAllocator_->num_samples() - 1;
 
-		while (wavFile_.read(data, size)) {
-			if (!write(data, *size)) {
-				cancel();
+		// read from file & write to ram
+		uint8_t *data;
+		uint32_t size;
+
+		while (wavFile_.read(&data, &size)) {
+			if (!write(data, size)) {
+				sampleAllocator_->remove(slot);
 				wavFile_.close();
 				return false;
 			}
 		}
+
 		wavFile_.close();
 
 		if (bytes_received_ != wavFile_.data.size) {
-			cancel();
+			sampleAllocator_->remove(slot);
 			return false;
 		}
 
@@ -95,13 +99,6 @@ private:
 	size_t bytes_received_;
 	size_t samples_received_;
 	size_t sample_rate_prescaler_;
-
-	void cancel() {
-		int slot = sampleAllocator_->num_samples() - 1;
-		if (slot >= 0) {
-			sampleAllocator_->remove(slot);
-		}
-	}
 
 	bool mono_sample_received(uint8_t data) {
 		sample_raw_ >>= 8;
