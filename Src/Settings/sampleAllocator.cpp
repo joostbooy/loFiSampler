@@ -11,6 +11,7 @@ int16_t* SampleAllocator::allocate(const char* path, uint8_t num_channels, size_
 		if (!sample_[i].has_data()) {
 			sampleList_.push(&sample_[i]);
 
+			sample_[i].init();
 			sample_[i].set_data(data);
 			sample_[i].set_size(size);
 			sample_[i].set_end(size);
