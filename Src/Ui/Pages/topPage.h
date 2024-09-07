@@ -53,6 +53,7 @@ namespace TopPage {
 		WindowPainter::init(canvas_);
 
 		chapter_.init();
+		chapter_.set(Chapter::INSTRUMENT);
 	}
 
 	void enter() {
