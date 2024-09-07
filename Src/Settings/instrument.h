@@ -17,7 +17,6 @@ public:
 
 	class SampleList;
 	static const size_t kMaxNameLength = 16;
-	static const size_t kMaxNumSamples = 128;
 
 	static void init(SampleAllocator *sampleAllocator) {
 		sampleAllocator_ = sampleAllocator;
@@ -63,7 +62,7 @@ public:
 	}
 
 	bool add_sample(Sample *sample) {
-		if (num_samples_ < kMaxNumSamples && sample != nullptr && sample_in_list(sample) == false) {
+		if (num_samples_ < SampleAllocator::kMaxSamples && sample != nullptr && sample_in_list(sample) == false) {
 			sampleList_[num_samples_].sample = sample;
 			sampleList_[num_samples_].hash = sample->hash();
 			++num_samples_;
@@ -261,7 +260,7 @@ public:
 		fileWriter.write(sample_rate_divider_);
 
 		fileWriter.write(num_samples_);
-		for (size_t i = 0; i < kMaxNumSamples; ++i) {
+		for (size_t i = 0; i < SampleAllocator::kMaxSamples; ++i) {
 			fileWriter.write(sampleList_[i]);
 		}
 
@@ -281,7 +280,7 @@ public:
 		fileReader.read(sample_rate_divider_);
 
 		fileReader.read(num_samples_);
-		for (size_t i = 0; i < kMaxNumSamples; ++i) {
+		for (size_t i = 0; i < SampleAllocator::kMaxSamples; ++i) {
 			fileReader.read(sampleList_[i]);
 		}
 
@@ -303,7 +302,7 @@ public:
 
 	void paste_sample_list(Instrument *instrument) {
 		num_samples_ = instrument->num_samples();
-		for (size_t i = 0; i < kMaxNumSamples; ++i) {
+		for (size_t i = 0; i < SampleAllocator::kMaxSamples; ++i) {
 			sampleList_[i] = instrument->sampleList(i);
 		}
 	}
@@ -327,7 +326,7 @@ private:
 	struct SampleList {
 		Sample *sample;
 		uint32_t hash;
-	}sampleList_[kMaxNumSamples];
+	}sampleList_[SampleAllocator::kMaxSamples];
 
 	Sample* hash_to_sample(uint32_t hash) {
 		for (size_t i = 0; i < sampleAllocator_->num_samples(); ++i) {
