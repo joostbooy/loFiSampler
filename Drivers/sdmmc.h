@@ -387,7 +387,7 @@ private:
 
 		// check errors
 		const uint32_t succes_flags = SDMMC_STA_DBCKEND | SDMMC_STA_DATAEND;
-		const uint32_t error_flags = SDMMC_STA_DCRCFAIL | SDMMC_STA_RXOVERR | SDMMC_STA_DTIMEOUT | SDMMC_STA_RXOVERR; //SDMMC_STA_STBITERR
+		const uint32_t error_flags = SDMMC_STA_DCRCFAIL | SDMMC_STA_RXOVERR | SDMMC_STA_DTIMEOUT; //SDMMC_STA_STBITERR
 
 		while (true) {
 			volatile uint32_t flags = SDMMC2->STA;
@@ -439,7 +439,7 @@ private:
 
 		// check errors
 		const uint32_t succes_flags = SDMMC_STA_DBCKEND | SDMMC_STA_DATAEND;
-		const uint32_t error_flags = SDMMC_STA_DCRCFAIL | SDMMC_STA_TXUNDERR | SDMMC_STA_DTIMEOUT | SDMMC_STA_RXOVERR; //SDMMC_STA_STBITERR
+		const uint32_t error_flags = SDMMC_STA_DCRCFAIL | SDMMC_STA_TXUNDERR | SDMMC_STA_DTIMEOUT; //SDMMC_STA_STBITERR
 
 		while (true) {
 			volatile uint32_t flags = SDMMC2->STA;
