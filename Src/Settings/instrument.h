@@ -23,7 +23,7 @@ public:
 	}
 
 	void init() {
-		set_name("NEW INSTRUMENT");
+		set_name("NEW_INSTRUMENT");
 		set_gain(1.0);
 		set_pan(0.5);
 		set_audio_channel(0);
