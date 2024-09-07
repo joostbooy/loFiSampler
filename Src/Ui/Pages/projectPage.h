@@ -19,6 +19,16 @@ namespace ProjectPage {
 
 	const char* const option_text[NUM_OPTIONS] = { "LOAD", "SAVE" };
 
+	void save_as(bool confirmed) {
+		if (confirmed) {
+			if (settings_->save(DiskNavigatorPage::curr_path())) {
+				MessagePainter::show("PROJECT SAVED");
+			} else {
+				MessagePainter::show("SAVE FAILED !");
+			}
+		}
+	}
+
 	void option_callback(int option) {
 		switch (option)
 		{
@@ -43,11 +53,8 @@ namespace ProjectPage {
 					MessagePainter::show("SAVE FAILED !");
 				}
 			} else {
-				if (settings_->save(DiskNavigatorPage::curr_path())) {
-					MessagePainter::show("PROJECT SAVED");
-				} else {
-					MessagePainter::show("SAVE FAILED !");
-				}
+				TextInputPage::set(settings_->project_name(), settings_->max_name_length(), "SET PROJECT NAME", save_as);
+				pages_->open(Pages::TEXT_INPUT_PAGE);
 			}
 			break;
 		default:
