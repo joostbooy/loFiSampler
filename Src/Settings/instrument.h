@@ -9,13 +9,19 @@
 #include "midiEngine.h"
 #include "sample.h"
 #include "modulationMatrix.h"
+#include "sampleAllocator.h"
 
 class Instrument {
 
 public:
 
+	class SampleList;
 	static const size_t kMaxNameLength = 16;
 	static const size_t kMaxNumSamples = 128;
+
+	static void init(SampleAllocator *sampleAllocator) {
+		sampleAllocator_ = sampleAllocator;
+	}
 
 	void init() {
 		set_name("NEW INSTRUMENT");
@@ -40,8 +46,12 @@ public:
 	}
 
 	// Sample
+	SampleList &sampleList(size_t index) {
+		return sampleList_[index];
+	}
+
 	Sample *sample(size_t index) {
-		return sample_[index];
+		return sampleList_[index].sample;
 	}
 
 	size_t num_samples() {
@@ -53,21 +63,22 @@ public:
 	}
 
 	bool add_sample(Sample *sample) {
-		if (num_samples_ < kMaxNumSamples && sample != nullptr && sample_excists(sample) == false) {
-			sample_[num_samples_] = sample;
+		if (num_samples_ < kMaxNumSamples && sample != nullptr && sample_in_list(sample) == false) {
+			sampleList_[num_samples_].sample = sample;
+			sampleList_[num_samples_].hash = sample->hash();
 			++num_samples_;
 			return true;
 		}
 		return false;
 	}
 
-	bool remove_sample(uint8_t index) {
-		if (index >= num_samples()) {
+	bool remove_sample(size_t index) {
+		if (index >= num_samples_) {
 			return false;
 		}
 
-		for (int i = 0; i < index; ++i) {
-			sample_[i] = sample_[i + 1];
+		for (size_t i = 0; i < index; ++i) {
+			sampleList_[i] = sampleList_[i + 1];
 		}
 		--num_samples_;
 
@@ -77,10 +88,18 @@ public:
 	void refresh_sample_list() {
 		size_t index = 0;
 		while (index < num_samples_) {
-			if (sample_[index]->has_data()) {
+			SampleList &s = sampleList_[index];
+
+			if (s.hash == s.sample->hash() && s.sample->has_data() == true) {
 				++index;
 			} else {
-				remove_sample(index);
+				Sample *sample = hash_to_sample(s.hash);
+				if (sample) {
+					s.sample = sample;
+					++index;
+				} else {
+					remove_sample(index);
+				}
 			}
 		}
 	}
@@ -95,7 +114,7 @@ public:
 	}
 
 	const char* pan_text() {
-		return SettingsText::float_to_text(-100, 100, pan());
+		return SettingsText::float_to_text(pan(), -100, 100);
 	}
 
 	// Midi channel
@@ -241,8 +260,9 @@ public:
 		fileWriter.write(num_samples_);
 		fileWriter.write(sample_rate_divider_);
 
+		fileWriter.write(num_samples_);
 		for (size_t i = 0; i < kMaxNumSamples; ++i) {
-			fileWriter.write(sample_[i]);
+			fileWriter.write(sampleList_[i]);
 		}
 
 		modulationMatrix().save(fileWriter);
@@ -260,8 +280,9 @@ public:
 		fileReader.read(num_samples_);
 		fileReader.read(sample_rate_divider_);
 
+		fileReader.read(num_samples_);
 		for (size_t i = 0; i < kMaxNumSamples; ++i) {
-			fileReader.read(sample_[i]);
+			fileReader.read(sampleList_[i]);
 		}
 
 		modulationMatrix().load(fileReader);
@@ -283,7 +304,7 @@ public:
 	void paste_sample_list(Instrument *instrument) {
 		num_samples_ = instrument->num_samples();
 		for (size_t i = 0; i < kMaxNumSamples; ++i) {
-			sample_[i] = instrument->sample(i);
+			sampleList_[i] = instrument->sampleList(i);
 		}
 	}
 
@@ -302,15 +323,29 @@ private:
 	int sample_rate_divider_;
 	uint8_t bend_range_;
 	size_t num_samples_;
-
 	char name_[kMaxNameLength];
-	Sample *sample_[kMaxNumSamples];
 
 	ModulationMatrix modulationMatrix_;
+	static SampleAllocator *sampleAllocator_;
 
-	bool sample_excists(Sample *sample) {
+	struct SampleList {
+		Sample *sample;
+		uint32_t hash;
+	}sampleList_[kMaxNumSamples];
+
+	Sample* hash_to_sample(uint32_t hash) {
+		for (size_t i = 0; i < sampleAllocator_->num_samples(); ++i) {
+			Sample *sample = sampleAllocator_->read_list(i);
+			if (hash == sample->hash()) {
+				return sample;
+			}
+		}
+		return nullptr;
+	}
+
+	bool sample_in_list(Sample *sample) {
 		for (size_t i = 0; i < num_samples_; ++i) {
-			if (sample_[i] == sample) {
+			if (sampleList_[i].sample == sample) {
 				return true;
 			}
 		}

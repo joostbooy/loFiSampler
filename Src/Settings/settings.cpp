@@ -83,6 +83,7 @@ bool Settings::load(const char* new_path) {
 	for (size_t i = 0; i < kNumInstruments; ++i) {
 		instrument(i).load(fileReader);
 	}
+	refresh_sample_selection();
 
 	fileReader.stop();
 

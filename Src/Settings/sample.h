@@ -6,6 +6,7 @@
 #include "stringUtils.h"
 #include "fileWriter.h"
 #include "fileReader.h"
+#include "hash.h"
 
 class Sample {
 
@@ -31,7 +32,7 @@ public:
 
 	void init() {
 		set_path("");
-		set_size(0);
+		set_size(100);
 		set_num_channels(0);
 		set_data(nullptr);
 		set_loop(false);
@@ -76,15 +77,6 @@ public:
 		return data_ != nullptr;
 	}
 
-	// Hash
-	// void set_hash(uint32_t hash) {
-	//	hash_ = hash;
-	// }
-
-	//uint32_t hash() {
-	//	return hash_.read();
-	// }
-
 	// path
 	const char *path() {
 		return path_;
@@ -92,6 +84,12 @@ public:
 
 	void set_path(const char *new_path) {
 		StringUtils::copy(path_, const_cast<char*>(new_path), kMaxPathLength);
+		hash_.init();
+		hash_.write(path_, kMaxPathLength);
+	}
+
+	uint32_t hash() {
+		return hash_.read();
 	}
 
 	const char *name() {
@@ -116,7 +114,7 @@ public:
 		return is_stereo() ? size_ / 2 : size_;
 	}
 
-	void refresh_points() {
+	void refresh_start_end_points() {
 		if (end_ >= size_samples()) {
 			end_ = size_samples();
 		}
@@ -309,7 +307,7 @@ public:
 	}
 
 	const char *gain_text() {
-		return SettingsText::float_to_text(0, 100, gain());
+		return SettingsText::float_to_text(gain(), 0, 100);
 	}
 
 	// pan
@@ -322,7 +320,7 @@ public:
 	}
 
 	const char* pan_text() {
-		return SettingsText::float_to_text(-100, 100, pan());
+		return SettingsText::float_to_text(pan(), -100, 100);
 	}
 
 
@@ -411,7 +409,7 @@ public:
 		gain_ = sample->gain();
 		pan_ = sample->gain();
 
-		refresh_points();
+		refresh_start_end_points();
 
 		// dont paste data, path, size or num_channels
 		// thats handled by the sampleAllocator
@@ -423,7 +421,7 @@ private:
 	int16_t *data_;
 	size_t size_;
 
-	// uint32_t hash_;
+	Hash hash_;
 
 	char path_[kMaxPathLength];
 	int num_channels_;
