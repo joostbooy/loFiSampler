@@ -39,6 +39,7 @@ public:
 		modulation().init();
 		sampleAllocator().init(sdram);
 		wavImporter().init(&sampleAllocator_);
+		Instrument::init(&sampleAllocator_);
 		ModulationMatrix::init(&modulation_);
 
 		for (size_t i = 0; i < kNumLfos; ++i) {
@@ -52,6 +53,8 @@ public:
 		for (size_t i = 0; i < kNumInstruments; ++i) {
 			instrument(i).init();
 		}
+
+		set_project_name("NEW_PRJ");
 	}
 
 	void init() {
@@ -186,12 +189,15 @@ public:
 	bool save(const char* new_path);
 	bool load(const char* new_path);
 
-	const char* read_path() {
-		return path.read();
-	}
-
 	bool has_valid_path() {
-		return path.length() > 0; // && StringUtils::is_equal(file_name.read(), song.name());
+		char file_name[max_name_length()];
+
+		if (path.length() > 0) {
+			StringUtils::get_file_name_from_path(const_cast<char*>(path.read()), file_name);
+			StringUtils::remove_extension(file_name);
+			return StringUtils::text_is_equal(file_name, project_name_);
+		}
+		return false;
 	}
 
 	uint32_t current_version() {

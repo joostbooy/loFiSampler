@@ -48,7 +48,7 @@ namespace ProjectPage {
 			break;
 		case SAVE:
 		case SAVE_AS:
-			if (settings_->project_name() == nullptr || option == SAVE_AS) {
+			if (settings_->has_valid_path() == false || option == SAVE_AS) {
 				TextInputPage::set(settings_->project_name(), settings_->max_name_length(), "SET PROJECT NAME", &save);
 				pages_->open(Pages::TEXT_INPUT_PAGE);
 			} else {
