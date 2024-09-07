@@ -256,7 +256,7 @@ public:
 
 	// Key range high
 	void set_key_range_high(int value) {
-		key_range_low_ = SettingsUtils::clip(key_range_low(), 127, value);
+		key_range_high_ = SettingsUtils::clip(key_range_low(), 127, value);
 	}
 
 	uint8_t key_range_high() {
