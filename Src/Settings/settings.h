@@ -229,7 +229,7 @@ public:
 	}
 
 	const size_t max_name_length() {
-		return 8;
+		return 13;
 	}
 
 
