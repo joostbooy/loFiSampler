@@ -252,6 +252,7 @@ namespace SamplePage {
 
 		for (int x2 = 0; x2 < w; ++x2) {
 			sample->read(index, &left, &right);
+			index += inc;
 
 			float left_ = (left + 32768) * (1.f / 65535.f);
 			int y_left = center_h * (1.f - left_);
@@ -262,21 +263,19 @@ namespace SamplePage {
 			int y_right = center_h;
 			int h_right = center_h * right_;
 			canvas_->vertical_line(x + x2, y + y_right, h_right, Canvas::BLACK);
-
-			index += inc;
 		}
 
-		float start = sample->start() / size;
-		canvas_->vertical_line(start * w, y, h, Canvas::INVERTED);
-		
-		float end = sample->end() / size;
-		canvas_->vertical_line(end * w, y, h, Canvas::INVERTED);
+		float start = (sample->start() / float(size)) * w;
+		canvas_->vertical_line(x + start, y, h, Canvas::INVERTED);
 
-		float loop_start = sample->loop_start() / size;
-		canvas_->vertical_line(loop_start * w, y, h, Canvas::INVERTED);
+		float end = (sample->end() / float(size)) * w;
+		canvas_->vertical_line(x + end, y, h, Canvas::INVERTED);
 
-		float loop_end = sample->loop_end() / size;
-		canvas_->vertical_line(loop_end * w, y, h, Canvas::INVERTED);
+		float loop_start = (sample->loop_start() / float(size)) * w;
+		canvas_->vertical_line(x + loop_start, y, h, Canvas::INVERTED);
+
+		float loop_end = (sample->loop_end() / float(size)) * w;
+		canvas_->vertical_line(x + loop_end, y, h, Canvas::INVERTED);
 	}
 
 	const size_t target_fps() {
