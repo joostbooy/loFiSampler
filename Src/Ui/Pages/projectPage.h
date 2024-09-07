@@ -13,23 +13,11 @@ namespace ProjectPage {
 	enum Options {
 		LOAD,
 		SAVE,
-		SAVE_AS,
 
 		NUM_OPTIONS
 	};
 
-	const char* const option_text[NUM_OPTIONS] = { "LOAD", "SAVE", "SAVE AS" };
-
-	void save(bool confirmed) {
-		if (confirmed) {
-			if (settings_->save(DiskNavigatorPage::curr_path())) {
-				settings_->set_project_name(DiskNavigatorPage::curr_entry_name());
-				MessagePainter::show("PROJECT SAVED");
-			} else {
-				MessagePainter::show("SAVE FAILED !");
-			}
-		}
-	}
+	const char* const option_text[NUM_OPTIONS] = { "LOAD", "SAVE" };
 
 	void option_callback(int option) {
 		switch (option)
@@ -38,6 +26,7 @@ namespace ProjectPage {
 			ConfirmationPage::set("LOAD PROJECT ?", [](int option) {
 				if (option == ConfirmationPage::CONFIRM) {
 					if (settings_->load(DiskNavigatorPage::curr_entry_path())) {
+						settings_->set_project_name(DiskNavigatorPage::curr_entry_name());
 						MessagePainter::show("PROJECT LOADED");
 					} else {
 						MessagePainter::show("LOAD FAILED !");
@@ -47,12 +36,18 @@ namespace ProjectPage {
 			pages_->open(Pages::CONFIRMATION_PAGE);
 			break;
 		case SAVE:
-		case SAVE_AS:
-			if (settings_->has_valid_path() == false || option == SAVE_AS) {
-				TextInputPage::set(settings_->project_name(), settings_->max_name_length(), "SET PROJECT NAME", &save);
-				pages_->open(Pages::TEXT_INPUT_PAGE);
+			if (settings_->has_valid_path()) {
+				if (settings_->save()) {
+					MessagePainter::show("PROJECT SAVED");
+				} else {
+					MessagePainter::show("SAVE FAILED !");
+				}
 			} else {
-				save(true);
+				if (settings_->save(DiskNavigatorPage::curr_path())) {
+					MessagePainter::show("PROJECT SAVED");
+				} else {
+					MessagePainter::show("SAVE FAILED !");
+				}
 			}
 			break;
 		default:

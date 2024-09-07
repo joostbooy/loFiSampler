@@ -1,7 +1,7 @@
 #include "settings.h"
 
 bool Settings::save(const char* new_path) {
-	path.write(new_path, "/", project_name(), ".PRJ");
+	path.write(new_path, "/", project_name());
 	if (!save()) {
 		path.clear();
 		return false;
@@ -84,6 +84,7 @@ bool Settings::load(const char* new_path) {
 		instrument(i).load(fileReader);
 	}
 	refresh_sample_selection();
+
 
 	fileReader.stop();
 

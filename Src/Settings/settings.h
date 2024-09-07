@@ -54,7 +54,7 @@ public:
 			instrument(i).init();
 		}
 
-		set_project_name("NEW_PRJ");
+		set_project_name("NEW.PRJ");
 	}
 
 	void init() {
@@ -194,7 +194,6 @@ public:
 
 		if (path.length() > 0) {
 			StringUtils::get_file_name_from_path(const_cast<char*>(path.read()), file_name);
-			StringUtils::remove_extension(file_name);
 			return StringUtils::text_is_equal(file_name, project_name_);
 		}
 		return false;
