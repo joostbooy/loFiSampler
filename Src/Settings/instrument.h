@@ -308,10 +308,6 @@ public:
 		}
 	}
 
-	void paste_mod_matrix(ModulationMatrix *modulationMatrix) {
-		modulationMatrix_.paste(modulationMatrix);
-	}
-
 private:
 	float pan_;
 	float gain_;
