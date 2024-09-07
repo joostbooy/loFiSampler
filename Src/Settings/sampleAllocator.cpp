@@ -13,6 +13,8 @@ int16_t* SampleAllocator::allocate(const char* path, uint8_t num_channels, size_
 
 			sample_[i].set_data(data);
 			sample_[i].set_size(size);
+			sample_[i].set_end(size);
+			sample_[i].set_loop_end(size);
 			sample_[i].set_num_channels(num_channels);
 			sample_[i].set_path(path);
 
