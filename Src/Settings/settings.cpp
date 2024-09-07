@@ -64,7 +64,7 @@ bool Settings::load(const char* new_path) {
 	}
 
 	// the wavImporter will assign the data to a free sample slot,
-	// so we first load the sample into some temp memory so we can read the path,
+	// so we first load the sample into some temp memory so we dont overwrite it,
 	// then we paste the temp memory into that assigned slot
 	Sample sample;
 
@@ -84,7 +84,6 @@ bool Settings::load(const char* new_path) {
 		instrument(i).load(fileReader);
 	}
 	refresh_sample_selection();
-
 
 	fileReader.stop();
 
