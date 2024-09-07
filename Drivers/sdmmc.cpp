@@ -44,7 +44,7 @@ void Sdmmc::init() {
 }
 
 
-// DMA2 stream 0 Channel 4
+// DMA2 stream 0 Channel 11
 const uint32_t kChannel11				= (11 << 25);
 const uint32_t kMemoryBurst_inc4		= (1 << 23);
 const uint32_t kPeripheralBurst_inc4	= (1 << 21);
