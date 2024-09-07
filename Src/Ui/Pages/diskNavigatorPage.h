@@ -3,7 +3,7 @@
 
 #include "topPage.h"
 #include "settingsUtils.h"
-//#include "diskUtilPage.h"
+#include "diskUtilPage.h"
 
 namespace DiskNavigatorPage {
 
@@ -14,15 +14,14 @@ namespace DiskNavigatorPage {
 	using TopPage::settings_;
 	using TopPage::disk_;
 
-	int rowsTotal_;
-	int selected_;
-	int top_row_;
-	const int kMaxVisibleRows = 6;
+	int selected_ = 0;
+	int top_row_ = 0;
+	int rowsTotal_ = 1; // Fixme! if this is 0 we are fucked
+	const int kMaxVisibleRows = 5;
 
 	void (*footer_callback_)(int);
 	int num_footer_options_;
 	const char* const* footer_text_;
-
 
 	void set_num_footer_options(int value) {
 		num_footer_options_ = SettingsUtils::clip(0, 4, value);
@@ -51,11 +50,16 @@ namespace DiskNavigatorPage {
 		}
 
 		rowsTotal_ = disk_->entry().num_visible();
+		if (rowsTotal_ < 1) {
+			rowsTotal_ = 1;
+		}
 		disk_->entry().make_list(top_row_, kMaxVisibleRows);
 	}
 
 	void scroll_to_row(int row, bool force_refresh = false) {
 		int last_top_row = top_row_;
+
+		row = SettingsUtils::clip(0, rowsTotal_ - 1, row);
 
 		if (row < top_row_) {
 			top_row_ = row;
@@ -66,6 +70,8 @@ namespace DiskNavigatorPage {
 		if (top_row_ != last_top_row || force_refresh == true) {
 			refresh_dir();
 		}
+
+		selected_ = SettingsUtils::clip(0, rowsTotal_ - 1, row);
 	}
 
 	const char* curr_path() {
@@ -90,19 +96,16 @@ namespace DiskNavigatorPage {
 
 	void enter() {
 		selected_ = 0;
-		//disk_->directory().reopen();
 		scroll_to_row(0, true);
 	}
 
 	void exit()  {
 		footer_callback_ = nullptr;
 		num_footer_options_ = 0;
-		//disk_->directory().close();
 	}
 
 	void on_encoder(int id, int state) {
-		selected_ = SettingsUtils::clip(0, rowsTotal_ - 1, selected_ + state);
-		scroll_to_row(selected_);
+		scroll_to_row(selected_ + state);
 	}
 
 	void on_button(int id, int state) {
@@ -123,17 +126,17 @@ namespace DiskNavigatorPage {
 				}
 				break;
 			case Controller::RIGHT_BUTTON:
-				if (e->is_dir) {
+				if (e != nullptr && e->is_dir) {
 					if (disk_->directory().enter(e->name.read())) {
 						scroll_to_row(0, true);
 					}
 				}
 				break;
 			case Controller::MENU_BUTTON:
-				//		DiskUtilPages::set_entry(e);
-				//		DiskUtilPages::set_callback(refresh_dir);
-				//		pages_->open(Pages::DISK_UTIL_PAGE);
-				//		break;
+				DiskUtilPage::set_entry(e);
+				DiskUtilPage::set_callback(&refresh_dir);
+				pages_->open(Pages::DISK_UTIL_PAGE);
+				break;
 			default:
 				break;
 			}
@@ -154,10 +157,10 @@ namespace DiskNavigatorPage {
 
 	void draw() {
 		const int row_h = 8;
-		const int w = canvas_->width();
-		const int h = canvas_->height() - (row_h * kMaxVisibleRows);
 		const int x = 0;
-		const int y = 0;
+		const int y = row_h;
+		const int w = canvas_->width();
+		const int h = canvas_->height() - y;
 
 		canvas_->draw_text(0, 0, w, row_h, curr_path(), Canvas::LEFT, Canvas::CENTER);
 
