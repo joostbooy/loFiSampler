@@ -11,16 +11,18 @@ namespace SystemPage {
 	using TopPage::engine_;
 	using TopPage::str_;
 	using TopPage::leds_;
+	using TopPage::pages_;
 
 	uint32_t sd_size_total;
 	uint32_t sd_size_free;
 
 	enum FooterOptions {
 		VERSION,
+		CLEAR,
 		NUM_OPTIONS
 	};
 
-	const char *const footer_text[NUM_OPTIONS] = { "VERSION" };
+	const char *const footer_text[NUM_OPTIONS] = { "VERSION", "CLEAR" };
 
 	void init() {
 
@@ -45,6 +47,15 @@ namespace SystemPage {
 			{
 			case VERSION:
 				MessagePainter::show(str_.write("FIRMWARE V", settings_->current_version()));
+				break;
+			case CLEAR:
+				ConfirmationPage::set("CLEAR SETTINGS ?", [](int option) {
+					if (option == ConfirmationPage::CONFIRM) {
+						settings_->init();
+						MessagePainter::show("SETTINGS CLEARED");
+					}
+				});
+				pages_->open(Pages::CONFIRMATION_PAGE);
 				break;
 			default:
 				break;
