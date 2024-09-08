@@ -305,6 +305,7 @@ public:
 		for (size_t i = 0; i < SampleAllocator::kMaxSamples; ++i) {
 			sampleList_[i] = instrument->sampleList(i);
 		}
+		refresh_sample_list();
 	}
 
 private:
