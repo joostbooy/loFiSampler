@@ -196,11 +196,16 @@ namespace SamplePage {
 	}
 
 	void enter() {
-		ListPage::set_list(&sampleList_);
-		ListPage::set_clear_callback(&clear);
-		ListPage::set_copy_callback(&copy);
-		ListPage::set_paste_callback(&paste);
-		ListPage::enter();
+		if (settings_->num_samples() == 0) {
+			pages_->close(Pages::SAMPLE_PAGE);
+			pages_->open(Pages::WAV_IMPORT_PAGE);
+		} else {
+			ListPage::set_list(&sampleList_);
+			ListPage::set_clear_callback(&clear);
+			ListPage::set_copy_callback(&copy);
+			ListPage::set_paste_callback(&paste);
+			ListPage::enter();
+		}
 	}
 
 	void exit()  {
@@ -231,10 +236,6 @@ namespace SamplePage {
 
 	void draw() {
 		ListPage::draw();
-
-		if (settings_->num_samples() == 0) {
-			return;
-		}
 
 		const int x = 2;
 		const int y = 2;
