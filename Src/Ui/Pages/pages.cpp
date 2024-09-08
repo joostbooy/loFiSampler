@@ -56,20 +56,20 @@ void Pages::init(Settings *settings, Engine *engine, Ui *ui) {
 
 void Pages::open(int id) {
 	if (page_stack_.find(id) < 0 && page_stack_.writeable() == true) {
+		curr_page_ = id;
 		page_stack_.push(id);
 		page_[id]->enter();
-		curr_page_ = id;
 	}
 }
 
 void Pages::close(int id) {
 	if (page_stack_.remove_by_value(id)) {
-		page_[id]->exit();
 		if (page_stack_.readable()) {
 			curr_page_ = page_stack_.read(page_stack_.size() - 1);
 		} else {
 			curr_page_ = EMPTY_PAGE;
 		}
+		page_[id]->exit();
 	}
 }
 
