@@ -85,6 +85,7 @@ public:
 
 		int shifts = 16 - instrument_.bit_depth();
 		int sample_rate_divider = instrument_.sample_rate_divider();
+		float pan = sample_.pan();
 		float gain = sample_.gain() * instrument_.gain();
 		float inc = get_inc(note_, sample_.root_note(), instrument_.bend_range(), instrument_.bend(), sample_.cents());
 
@@ -106,7 +107,7 @@ public:
 			l = gain * ((l >> shifts) << shifts);
 			r = gain * ((r >> shifts) << shifts);
 
-			Dsp::pan(&l, &r, sample_.pan());
+			Dsp::pan(&l, &r, pan);
 
 			if (++sample_count_ >= sample_rate_divider) {
 				sample_count_ = 0;
