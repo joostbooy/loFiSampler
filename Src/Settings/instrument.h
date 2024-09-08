@@ -143,7 +143,7 @@ public:
 	}
 
 	const char* midi_port_text() {
-		return nullptr;
+		return Midi::port_text(midi_port());
 	}
 
 	bool midi_port_accepted(int port) {
