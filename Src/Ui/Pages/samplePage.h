@@ -318,10 +318,14 @@ namespace SamplePage {
 		float loop_end = (sample->loop_end() / float(size)) * w;
 		canvas_->vertical_line(x + loop_end, y, h, Canvas::BLACK);
 
-		Voice &voice = engine_->voiceEngine().most_recent_voice();
-		if (sample == &voice.sample()) {
-			float play_position = (voice.phase() / float(size)) * w;
-			canvas_->vertical_line(x + play_position, y, h, Canvas::BLACK);
+		int count = engine_->voiceEngine().num_active();
+		for (int i = 0; i < count; ++i) {
+			Voice &voice = engine_->voiceEngine().young_to_old(i);
+			if (&voice.sample() == sample) {
+				float play_position = (voice.phase() / float(size)) * w;
+				canvas_->vertical_line(x + play_position, y, h, Canvas::BLACK);
+				break;
+			}
 		}
 
 		canvas_->draw_text(x, y, w, h, str_.write("X", zoom_), Canvas::RIGHT, Canvas::BOTTOM);

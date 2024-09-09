@@ -100,7 +100,7 @@ namespace EnvelopePage {
 		}
 
 		int index = settings_->selected_envelope_index();
-		float phase = engine_->voiceEngine().most_recent_voice().envelopeEngine(index).phase();
+		float phase = engine_->voiceEngine().young_to_old(0).envelopeEngine(index).phase();
 		canvas_->vertical_line(x + (phase * w), y, h, Canvas::BLACK);
 	}
 

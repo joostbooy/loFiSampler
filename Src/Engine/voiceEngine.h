@@ -21,16 +21,24 @@ public:
 		}
 	}
 
-	inline bool is_idle() {
-		return active_voices_.size() == 0;
-	}
-
 	Voice &voice(uint8_t index) {
 		return voice_[index];
 	}
 
-	Voice &most_recent_voice() {
-		return voice_[most_recent_voice_];
+	inline bool is_idle() {
+		return active_voices_.size() == 0;
+	}
+
+	int num_active() {
+		return active_voices_.size();
+	}
+
+	Voice &young_to_old(uint8_t index) {
+		int num_active_ = num_active();
+		if (index > num_active_) {
+			index = num_active_;
+		}
+		return voice(active_voices_.read(num_active_ - index));
 	}
 
 	void fill(Dac::Channel *channel, const size_t size) {
@@ -75,7 +83,6 @@ public:
 		uint8_t v = available_voices_.pop();
 		voice_[v].note_on(e);
 		active_voices_.push(v);
-		most_recent_voice_ = v;
 	}
 
 	void kill_midi_channel(uint8_t port, uint8_t channel) {
@@ -93,7 +100,6 @@ private:
 	Voice voice_[Settings::kMaxVoices];
 	Stack<uint8_t, Settings::kMaxVoices> active_voices_;
 	Stack<uint8_t, Settings::kMaxVoices> available_voices_;
-	size_t most_recent_voice_ = 0;
 
 	void update_available_voices() {
 		uint8_t index = 0;
