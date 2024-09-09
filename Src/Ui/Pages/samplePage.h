@@ -215,6 +215,25 @@ namespace SamplePage {
 		ListPage::exit();
 	}
 
+	void on_encoder(int id, int state) {
+		if (Controller::is_pressed(Controller::SHIFT_BUTTON)) {
+			int inc = Controller::encoder_is_pressed(id) ? state * 10 : state * 1;
+			sample_x_ = SettingsUtils::clip(0, 251, sample_x_ + inc);
+			return;
+		}
+
+		//	const int kMilliSecond = 1000 / SAMPLE_RATE;
+		//	const int kQuarterSecond = SAMPLE_RATE / 4;
+
+		//	if (Controller::is_pressed(Controller::SHIFT_BUTTON)) {
+		//		int inc = Controller::encoder_is_pressed(id) ? kQuarterSecond * state : kMilliSecond * state;
+		//		sample_x_ = SettingsUtils::clip(0, settings_->selected_sample()->size_samples(), sample_x_ + inc);
+		//		return;
+		//	}
+
+		ListPage::on_encoder(id, state);
+	}
+
 	void on_button(int id, int state) {
 		bool shift = Controller::is_pressed(Controller::SHIFT_BUTTON);
 
@@ -245,16 +264,6 @@ namespace SamplePage {
 		}
 	}
 
-	void on_encoder(int id, int state) {
-		if (Controller::is_pressed(Controller::SHIFT_BUTTON)) {
-			int inc = Controller::is_pressed(id) ? state * 10 : state * 1;
-			sample_x_ = SettingsUtils::clip(0, 251, sample_x_ + inc);
-			return;
-		}
-
-		ListPage::on_encoder(id, state);
-	}
-
 	void refresh_leds() {
 		ListPage::refresh_leds();
 	}
@@ -265,7 +274,7 @@ namespace SamplePage {
 		const int x = 2;
 		const int y = 2;
 		const int w = 251;
-		const int h = 32;
+		const int h = 47;
 		const int center_h = h / 2;
 
 		Sample *sample = settings_->selected_sample();
@@ -292,6 +301,11 @@ namespace SamplePage {
 			canvas_->vertical_line(x + x2, y + y_right, h_right, Canvas::GRAY);
 		}
 
+		//if (sample->start() >= offset && sample->start() < (offset + size)) {
+		//	float start = (sample->start() / float(size)) * w;
+		//	canvas_->vertical_line((x + start) - sample_x_, y, h, Canvas::BLACK);
+		//}
+
 		float start = (sample->start() / float(size)) * w;
 		canvas_->vertical_line(x + start, y, h, Canvas::BLACK);
 
@@ -303,6 +317,12 @@ namespace SamplePage {
 
 		float loop_end = (sample->loop_end() / float(size)) * w;
 		canvas_->vertical_line(x + loop_end, y, h, Canvas::BLACK);
+
+		if (sample == &engine_->voiceEngine().most_recent_voice().sample()) {
+			uint32_t phase = engine_->voiceEngine().most_recent_voice().phase() ;
+			float position = (phase / float(size)) * w;
+			canvas_->vertical_line(x + position, y, h, Canvas::BLACK);
+		}
 
 		canvas_->draw_text(x, y, w, h, str_.write("X", zoom_), Canvas::RIGHT, Canvas::BOTTOM);
 	}
