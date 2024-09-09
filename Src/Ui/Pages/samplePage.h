@@ -11,11 +11,14 @@ namespace SamplePage {
 	using TopPage::engine_;
 	using TopPage::pages_;
 	using TopPage::canvas_;
+	using TopPage::str_;
 
 	bool pasteable_;
 	Sample sample_;
 	SampleList sampleList_;
 
+	int zoom_ = 1;
+	int sample_x_ = 0;
 	int selected_option_;
 
 	enum ListOptions {
@@ -213,7 +216,11 @@ namespace SamplePage {
 	}
 
 	void on_button(int id, int state) {
-		ListPage::on_button(id, state);
+		bool shift = Controller::is_pressed(Controller::SHIFT_BUTTON);
+
+		if (!shift) {
+			ListPage::on_button(id, state);
+		}
 
 		if (state) {
 			if (id == Controller::MENU_BUTTON) {
@@ -223,10 +230,28 @@ namespace SamplePage {
 				pages_->open(Pages::OPTION_LIST_PAGE);
 				return;
 			}
+
+			if (shift) {
+				if (id == Controller::UP_BUTTON) {
+					zoom_ = SettingsUtils::clip(1, 8, zoom_ - 1);
+					return;
+				}
+
+				if (id == Controller::DOWN_BUTTON) {
+					zoom_ = SettingsUtils::clip(1, 8, zoom_ + 1);
+					return;
+				}
+			}
 		}
 	}
 
 	void on_encoder(int id, int state) {
+		if (Controller::is_pressed(Controller::SHIFT_BUTTON)) {
+			int inc = Controller::is_pressed(id) ? state * 10 : state * 1;
+			sample_x_ = SettingsUtils::clip(0, 251, sample_x_ + inc);
+			return;
+		}
+
 		ListPage::on_encoder(id, state);
 	}
 
@@ -243,13 +268,14 @@ namespace SamplePage {
 		const int h = 32;
 		const int center_h = h / 2;
 
-		size_t index = 0;
+		Sample *sample = settings_->selected_sample();
+		size_t size = sample->size_samples() / zoom_;
+		size_t offset = ((sample->size_samples() - size) / w) * sample_x_;
+		size_t inc = (size / w);
+
 		int16_t left = 0;
 		int16_t right = 0;
-
-		Sample *sample = settings_->selected_sample();
-		size_t size = sample->size_samples();
-		size_t inc = size / w;
+		size_t index = offset;
 
 		for (int x2 = 0; x2 < w; ++x2) {
 			sample->read(index, &left, &right);
@@ -258,25 +284,27 @@ namespace SamplePage {
 			float left_ = (left + 32768) * (1.f / 65535.f);
 			int y_left = center_h * (1.f - left_);
 			int h_left = center_h - y_left;
-			canvas_->vertical_line(x + x2, y + y_left, h_left, Canvas::BLACK);
+			canvas_->vertical_line(x + x2, y + y_left, h_left, Canvas::GRAY);
 
 			float right_ = (right + 32768) * (1.f / 65535.f);
 			int y_right = center_h;
 			int h_right = center_h * right_;
-			canvas_->vertical_line(x + x2, y + y_right, h_right, Canvas::BLACK);
+			canvas_->vertical_line(x + x2, y + y_right, h_right, Canvas::GRAY);
 		}
 
 		float start = (sample->start() / float(size)) * w;
-		canvas_->vertical_line(x + start, y, h, Canvas::INVERTED);
+		canvas_->vertical_line(x + start, y, h, Canvas::BLACK);
 
 		float end = (sample->end() / float(size)) * w;
-		canvas_->vertical_line(x + end, y, h, Canvas::INVERTED);
+		canvas_->vertical_line(x + end, y, h, Canvas::BLACK);
 
 		float loop_start = (sample->loop_start() / float(size)) * w;
-		canvas_->vertical_line(x + loop_start, y, h, Canvas::INVERTED);
+		canvas_->vertical_line(x + loop_start, y, h, Canvas::BLACK);
 
 		float loop_end = (sample->loop_end() / float(size)) * w;
-		canvas_->vertical_line(x + loop_end, y, h, Canvas::INVERTED);
+		canvas_->vertical_line(x + loop_end, y, h, Canvas::BLACK);
+
+		canvas_->draw_text(x, y, w, h, str_.write("X", zoom_), Canvas::RIGHT, Canvas::BOTTOM);
 	}
 
 	const size_t target_fps() {
