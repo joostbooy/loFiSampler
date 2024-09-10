@@ -218,20 +218,19 @@ namespace SamplePage {
 	}
 
 	void on_encoder(int id, int state) {
-		if (Controller::is_pressed(Controller::SHIFT_BUTTON)) {
-			int inc = Controller::encoder_is_pressed(id) ? state * 10 : state * 1;
-			sample_x_ = SettingsUtils::clip(0, 251, sample_x_ + inc);
-			return;
-		}
-
-		//	const int kMilliSecond = 1000 / SAMPLE_RATE;
-		//	const int kQuarterSecond = SAMPLE_RATE / 4;
-
 		//	if (Controller::is_pressed(Controller::SHIFT_BUTTON)) {
-		//		int inc = Controller::encoder_is_pressed(id) ? kQuarterSecond * state : kMilliSecond * state;
-		//		sample_x_ = SettingsUtils::clip(0, settings_->selected_sample()->size_samples(), sample_x_ + inc);
+		//		int inc = Controller::encoder_is_pressed(id) ? state * 10 : state * 1;
+		//		sample_x_ = SettingsUtils::clip(0, 251, sample_x_ + inc);
 		//		return;
 		//	}
+
+		const int kMilliSecond =  SAMPLE_RATE / 1000;
+		const int kQuarterSecond = SAMPLE_RATE / 4;
+
+		if (Controller::is_pressed(Controller::SHIFT_BUTTON)) {
+			sample_x_ += Controller::encoder_is_pressed(id) ? kQuarterSecond * state : kMilliSecond * state;
+			return;
+		}
 
 		ListPage::on_encoder(id, state);
 	}
@@ -280,14 +279,15 @@ namespace SamplePage {
 		const int center_h = h / 2;
 
 		Sample *sample = settings_->selected_sample();
-		size_t size_samples = sample->size_samples();
-		size_t size = size_samples / zoom_;
-		size_t offset = ((size_samples - size) / w) * sample_x_;
-		size_t inc = (size / w);
+		size_t size = sample->size_samples();
+		size_t visible_size = size / zoom_;
+		size_t inc = (visible_size / w);
+
+		sample_x_ = SettingsUtils::clip(0, (size - visible_size), sample_x_);
 
 		int16_t left = 0;
 		int16_t right = 0;
-		size_t index = offset;
+		size_t index = sample_x_;
 
 		for (int x2 = 0; x2 < w; ++x2) {
 			sample->read(index, &left, &right);
@@ -306,23 +306,23 @@ namespace SamplePage {
 
 		const int bar_h = 6;
 		const int bar_y = h - bar_h;
-		WindowPainter::draw_horizontal_scollbar(x, bar_y, w, bar_h, offset, size_samples, size);
+		WindowPainter::draw_horizontal_scollbar(x, bar_y, w, bar_h, sample_x_, size, visible_size);
 
-		//if (sample->start() >= offset && sample->start() < (offset + size)) {
-		//	float start = (sample->start() / float(size)) * w;
-		//	canvas_->vertical_line((x + start) - sample_x_, y, h, Canvas::BLACK);
-		//}
+		if (sample->start() >= sample_x_ && sample->start() <= (sample_x_ + visible_size)) {
+			float start = (sample->start() / float(visible_size)) * w;
+			canvas_->vertical_line((x + start) - sample_x_, y, h, Canvas::BLACK);
+		}
 
-		float start = (sample->start() / float(size)) * w;
-		canvas_->vertical_line(x + start, y, h, Canvas::BLACK);
+		//float start = (sample->start() / float(visible_size)) * w;
+		//canvas_->vertical_line(x + start, y, h, Canvas::BLACK);
 
-		float end = (sample->end() / float(size)) * w;
+		float end = (sample->end() / float(visible_size)) * w;
 		canvas_->vertical_line(x + end, y, h, Canvas::BLACK);
 
-		float loop_start = (sample->loop_start() / float(size)) * w;
+		float loop_start = (sample->loop_start() / float(visible_size)) * w;
 		canvas_->vertical_line(x + loop_start, y, h, Canvas::BLACK);
 
-		float loop_end = (sample->loop_end() / float(size)) * w;
+		float loop_end = (sample->loop_end() / float(visible_size)) * w;
 		canvas_->vertical_line(x + loop_end, y, h, Canvas::BLACK);
 
 		Voice &most_recent = engine_->voiceEngine().most_recent_voice();
@@ -331,7 +331,7 @@ namespace SamplePage {
 		}
 
 		if (sample == &voice_->sample()) {
-			float play_position = (voice_->phase() / float(size)) * w;
+			float play_position = (voice_->phase() / float(visible_size)) * w;
 			canvas_->vertical_line(x + play_position, y, h, Canvas::BLACK);
 		}
 
