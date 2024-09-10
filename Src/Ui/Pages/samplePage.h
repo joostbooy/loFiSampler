@@ -20,6 +20,7 @@ namespace SamplePage {
 	int zoom_ = 1;
 	int sample_x_ = 0;
 	int selected_option_;
+	Voice *voice_;
 
 	enum ListOptions {
 		IMPORT,
@@ -196,6 +197,7 @@ namespace SamplePage {
 		pasteable_ = false;
 		sample_.init();
 		sampleList_.init(engine_, settings_);
+		voice_ = &engine_->voiceEngine().voice(0);
 	}
 
 	void enter() {
@@ -318,14 +320,14 @@ namespace SamplePage {
 		float loop_end = (sample->loop_end() / float(size)) * w;
 		canvas_->vertical_line(x + loop_end, y, h, Canvas::BLACK);
 
-		int count = engine_->voiceEngine().num_active();
-		for (int i = 0; i < count; ++i) {
-			Voice &voice = engine_->voiceEngine().young_to_old(i);
-			if (&voice.sample() == sample) {
-				float play_position = (voice.phase() / float(size)) * w;
-				canvas_->vertical_line(x + play_position, y, h, Canvas::BLACK);
-				break;
-			}
+		Voice &voice = engine_->voiceEngine().most_recent_voice();
+		if (sample == &voice.sample()) {
+			voice_ = &voice;
+		}
+
+		if (sample == &voice_->sample()) {
+			float play_position = (voice.phase() / float(size)) * w;
+			canvas_->vertical_line(x + play_position, y, h, Canvas::BLACK);
 		}
 
 		canvas_->draw_text(x, y, w, h, str_.write("X", zoom_), Canvas::RIGHT, Canvas::BOTTOM);
