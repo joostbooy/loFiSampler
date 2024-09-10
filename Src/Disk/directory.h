@@ -8,10 +8,9 @@ class Directory {
 
 public:
 
-	void init(DIR* dir_, int root_id_, FRESULT* result_) {
+	void init(DIR* dir_, int root_id_) {
 		dir = dir_;
 		root_id = root_id_;
-		result = result_;
 		path.write(root_id, ":");
 	}
 
@@ -108,7 +107,6 @@ public:
 
 private:
 	DIR* dir;
-	FRESULT* result;
 	uint8_t root_id;
 
 	static const uint8_t kMaxPathLength = 64;
