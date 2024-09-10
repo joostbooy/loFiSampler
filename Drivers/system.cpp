@@ -1,6 +1,35 @@
 #include "system.h"
 
 void Sys::init() {
+	//MPU_Region_InitTypeDef MPU_InitStruct = {0};
+
+	/* Disables the MPU */
+	// HAL_MPU_Disable();
+	/** Initializes and configures the Region and the memory to be protected
+	*/
+/*
+	MPU_InitStruct.Enable = MPU_REGION_ENABLE;
+    MPU_InitStruct.BaseAddress = 0x00;
+    MPU_InitStruct.Size = MPU_REGION_SIZE_4GB;
+    MPU_InitStruct.AccessPermission = MPU_REGION_NO_ACCESS;
+    MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+    MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+    MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
+    MPU_InitStruct.Number = MPU_REGION_NUMBER0;
+    MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+    MPU_InitStruct.SubRegionDisable = 0x87;
+    MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
+*/
+	//HAL_MPU_ConfigRegion(&MPU_InitStruct);
+	/* Enables the MPU */
+	//HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
+
+	/* Enable I-Cache */
+    SCB_EnableICache();
+
+    /* Enable D-Cache */
+    //SCB_EnableDCache();
+
 	//GPIO Ports Clock Enable
 	__HAL_RCC_GPIOH_CLK_ENABLE();
 	__HAL_RCC_GPIOA_CLK_ENABLE();
@@ -61,7 +90,7 @@ void Sys::init() {
 
 	PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_DFSDM1 | RCC_PERIPHCLK_SDMMC1
 	|RCC_PERIPHCLK_CLK48 | RCC_PERIPHCLK_I2S;
-	PeriphClkInitStruct.PLLI2S.PLLI2SN = 192; //96
+	PeriphClkInitStruct.PLLI2S.PLLI2SN = 192;  //205 is beter, maar check de ramp wave
 	PeriphClkInitStruct.PLLI2S.PLLI2SP = RCC_PLLP_DIV2;
 	PeriphClkInitStruct.PLLI2S.PLLI2SR = 2;
 	PeriphClkInitStruct.PLLI2S.PLLI2SQ = 2;
@@ -74,9 +103,9 @@ void Sys::init() {
 
 	// Interupt priorities
 	HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
-	HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 0, 0);	// DAC
-	//	HAL_NVIC_SetPriority(TIM3_IRQn, 1, 0);			// Engine tick
-	HAL_NVIC_SetPriority(TIM2_IRQn, 1, 0);			// Ui Poll
-//	HAL_NVIC_SetPriority(DMA2_Stream0_IRQn, 2, 0);	// SDIO
-	HAL_NVIC_SetPriority(DMA2_Stream4_IRQn, 3, 0);	// LCD
+	HAL_NVIC_SetPriority(DMA2_Stream0_IRQn, 0, 0);	// SDMMC
+	HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 1, 0);	// DAC
+	HAL_NVIC_SetPriority(TIM3_IRQn, 2, 0);			// Engine tick
+	HAL_NVIC_SetPriority(TIM2_IRQn, 3, 0);			// Ui Poll
+	HAL_NVIC_SetPriority(DMA2_Stream4_IRQn, 4, 0);	// LCD
 }

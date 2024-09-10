@@ -7,7 +7,6 @@ namespace ProjectPage {
 
 	using TopPage::pages_;
 	using TopPage::settings_;
-	using TopPage::canvas_;
 	using TopPage::ui_;
 
 	enum Options {
@@ -22,9 +21,9 @@ namespace ProjectPage {
 	void save_as(bool confirmed) {
 		if (confirmed) {
 			if (settings_->save(DiskNavigatorPage::curr_path())) {
-				MessagePainter::show("PROJECT SAVED");
+			//	MessagePainter::show("PROJECT SAVED");
 			} else {
-				MessagePainter::show("SAVE FAILED !");
+			//	MessagePainter::show("SAVE FAILED !");
 			}
 		}
 	}
@@ -35,6 +34,14 @@ namespace ProjectPage {
 		case LOAD:
 			ConfirmationPage::set("LOAD PROJECT ?", [](int option) {
 				if (option == ConfirmationPage::CONFIRM) {
+
+					// UNCOMMENT THIS LATER !!!
+					//engine_->add_request_blocking(Engine::STOP);
+					// UNCOMMENT THIS LATER !!!
+
+					MessagePainter::show("LOADING...");
+					ui_->send_display();
+
 					if (settings_->load(DiskNavigatorPage::curr_entry_path())) {
 						settings_->set_project_name(DiskNavigatorPage::curr_entry_name());
 						MessagePainter::show("PROJECT LOADED");

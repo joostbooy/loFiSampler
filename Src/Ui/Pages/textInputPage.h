@@ -8,23 +8,21 @@ namespace TextInputPage {
 	using TopPage::leds_;
 	using TopPage::disk_;
 
-	uint8_t box_x;
-	uint8_t box_w;
-	int char_cursor = 0;
+	uint8_t box_x_;
+	uint8_t box_w_;
+	int char_cursor_ = 0;
 	int text_cursor = 0;
-	uint16_t text_cursor_ticks = 0;
+	uint16_t text_cursor_ticks_ = 0;
 
-	char *dest_ptr;
-
-	typedef void (*Callback)(bool confirmed);
-	Callback callback;
+	char *dest_ptr_;
+	void (*callback_)(bool);
 
 	uint8_t dest_max_;
 	const uint8_t kCharTableSize = 51;
 	const uint8_t kCharsPerRow = 17;
 	const uint8_t kStackMax = 64;
 	Stack <char, kStackMax> char_stack;
-	StringBuilderBase<kStackMax> message;
+	StringBuilderBase<kStackMax> message_;
 	StringBuilderBase<kStackMax> text_copy;
 
 	enum FooterOptions {
@@ -52,9 +50,9 @@ namespace TextInputPage {
 
 	void init() {
 		char_stack.clear();
-		message.clear();
+		message_.clear();
 		dest_max_ = 0;
-		callback = nullptr;
+		callback_ = nullptr;
 	}
 
 	void enter() {
@@ -67,7 +65,7 @@ namespace TextInputPage {
 
 	void write_to_dest() {
 		for (int i = 0; i < char_stack.size(); ++i) {
-			dest_ptr[i] = char_stack.read(i);
+			dest_ptr_[i] = char_stack.read(i);
 		}
 	}
 
@@ -92,23 +90,23 @@ namespace TextInputPage {
 		}
 	}
 
-	void set(const char* dest_ptr_, uint8_t max, const char* message_, Callback callback_){
-		char_cursor = 0;
-		text_cursor_ticks = 0;
-		message.write(message_);
+	void set(const char* dest_ptr, uint8_t dest_max, const char* message, void (*callback)(bool)){
+		char_cursor_ = 0;
+		text_cursor_ticks_ = 0;
+		message_.write(message);
 
-		callback = callback_;
+		callback_ = callback;
 
-		dest_ptr = const_cast<char*>(dest_ptr_);
-		dest_max_ = max;
+		dest_ptr_ = const_cast<char*>(dest_ptr);
+		dest_max_ = dest_max;
 		if (dest_max_ >= kStackMax) {
 			dest_max_ = kStackMax;
 		}
 
-		box_w = (dest_max_ * 6) + 2;
-		box_x = (canvas_->width() - box_w) / 2;
+		box_w_ = (dest_max_ * 6) + 2;
+		box_x_ = (canvas_->width() - box_w_) / 2;
 
-		write_to_buffer(&dest_ptr[0], dest_max_);
+		write_to_buffer(&dest_ptr_[0], dest_max_);
 	}
 
 
@@ -145,28 +143,28 @@ namespace TextInputPage {
 	}
 
 	void char_cursor_left() {
-		if (char_cursor > 0) {
-			--char_cursor;
+		if (char_cursor_ > 0) {
+			--char_cursor_;
 		}
 	}
 
 	void char_cursor_right() {
-		if (char_cursor < kCharTableSize - 1) {
-			++char_cursor;
+		if (char_cursor_ < kCharTableSize - 1) {
+			++char_cursor_;
 		}
 	}
 
 	void char_cursor_up() {
-		int up = char_cursor - kCharsPerRow;
+		int up = char_cursor_ - kCharsPerRow;
 		if (up >= 0) {
-			char_cursor = up;
+			char_cursor_ = up;
 		}
 	}
 
 	void char_cursor_down() {
-		int down = char_cursor + kCharsPerRow;
+		int down = char_cursor_ + kCharsPerRow;
 		if (down < kCharTableSize - 1) {
-			char_cursor = down;
+			char_cursor_ = down;
 		}
 	}
 
@@ -175,7 +173,7 @@ namespace TextInputPage {
 	}
 
 	bool text_is_empty() {
-		return (char_stack.read(0) == '\0' || char_stack.read(0) == '.');
+		return char_stack.read(0) == '\0' || char_stack.read(0) == '.';
 	}
 
 	bool name_excists() {
@@ -193,7 +191,7 @@ namespace TextInputPage {
 		case Controller::FUNCTION_ENC_PUSH_B:
 		case Controller::FUNCTION_ENC_PUSH_C:
 		case Controller::FUNCTION_ENC_PUSH_D:
-			insert(char_table[char_cursor]);
+			insert(char_table[char_cursor_]);
 			return;
 		default:
 			break;
@@ -258,18 +256,18 @@ namespace TextInputPage {
 			write_to_dest();
 
 			pages_->close(Pages::TEXT_INPUT_PAGE);
-			if (callback) {
-				callback(true);
+			if (callback_) {
+				callback_(true);
 			}
 			break;
 		case CANCEL:
 			pages_->close(Pages::TEXT_INPUT_PAGE);
-			if (callback) {
-				callback(false);
+			if (callback_) {
+				callback_(false);
 			}
 			break;
 		case INSERT:
-			insert(char_table[char_cursor]);
+			insert(char_table[char_cursor_]);
 			break;
 		default:
 			break;
@@ -292,13 +290,13 @@ namespace TextInputPage {
 
 		//draw message
 		canvas_->fill(0, 0, canvas_->width(), 10, Canvas::BLACK);
-		canvas_->draw_text(0, 0, canvas_->width(), 10, message.read(), Canvas::CENTER, Canvas::CENTER, Canvas::WHITE);
+		canvas_->draw_text(0, 0, canvas_->width(), 10, message_.read(), Canvas::CENTER, Canvas::CENTER, Canvas::WHITE);
 
 		//draw char buffer
-		canvas_->fill(box_x, 14, box_w, 11, Canvas::DARK_GRAY);
+		canvas_->fill(box_x_, 14, box_w_, 11, Canvas::DARK_GRAY);
 
-		int cursor_x = box_x;
-		int char_x = box_x + 2;
+		int cursor_x = box_x_;
+		int char_x = box_x_ + 2;
 		int char_y = 16;
 		int length = char_stack.size();
 
@@ -315,14 +313,14 @@ namespace TextInputPage {
 		}
 
 		//draw text_cursor
-		if (text_cursor_ticks < 500) {
+		if (text_cursor_ticks_ < 500) {
 			uint8_t h = canvas_->font().height();
-			cursor_x = SettingsUtils::clip_min(box_x, cursor_x - 1);
+			cursor_x = SettingsUtils::clip_min(box_x_, cursor_x - 1);
 			canvas_->vertical_line(cursor_x, char_y, h, Canvas::WHITE);
 		}
 
-		if ((text_cursor_ticks += target_fps()) >= 1000){
-			text_cursor_ticks = 0;
+		if ((text_cursor_ticks_ += target_fps()) >= 1000){
+			text_cursor_ticks_ = 0;
 		}
 
 		//draw char table
@@ -331,7 +329,7 @@ namespace TextInputPage {
 		Canvas::Color color;
 
 		for (int i = 0; i < kCharTableSize; ++i) {
-			color = char_cursor == i ? Canvas::BLACK : Canvas::LIGHT_GRAY;
+			color = char_cursor_ == i ? Canvas::BLACK : Canvas::LIGHT_GRAY;
 			canvas_->set_font(Font::SMALL, color);
 			canvas_->draw_char(x, y, char_table[i]);
 			x = canvas_->text_cursor() + 10;
@@ -353,8 +351,9 @@ namespace TextInputPage {
 		&refresh_leds,
 		&on_button,
 		&on_encoder,
-		&target_fps,
+		&target_fps
 	};
+
 };
 
 #endif

@@ -3,8 +3,8 @@
 
 Dac* Dac::dac_;
 bool Dac::first_frame_;
-
-uint16_t Dac::dma_buffer_[Dac::kDmaBufferSize]__attribute__((section(".dtcm")));
+uint16_t Dac::dma_buffer_[Dac::kDmaBufferSize];
+//uint16_t Dac::dma_buffer_[Dac::kDmaBufferSize] __attribute__((section(".dtcm")));
 
 uint16_t Dac::left_channel_bits_[kNumStereoChannels] = {
 	0x0300 | (0 << 4),
@@ -44,14 +44,14 @@ void Dac::init() {
 	GPIO_InitStruct.Pin = GPIO_PIN_15;
 	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 	GPIO_InitStruct.Alternate = GPIO_AF6_SPI3;
 	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 	GPIO_InitStruct.Pin = GPIO_PIN_10 | GPIO_PIN_12;
 	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 	GPIO_InitStruct.Alternate = GPIO_AF6_SPI3;
 	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
@@ -62,7 +62,7 @@ void Dac::init() {
 	hi2s3.Init.DataFormat = I2S_DATAFORMAT_32B;
 	hi2s3.Init.MCLKOutput = I2S_MCLKOUTPUT_DISABLE;
 	hi2s3.Init.AudioFreq = SAMPLE_RATE * (kNumStereoChannels * 2);
-	hi2s3.Init.CPOL = I2S_CPOL_LOW;
+	hi2s3.Init.CPOL = I2S_CPOL_HIGH;
 	hi2s3.Init.ClockSource = I2S_CLOCK_PLL;
 	HAL_I2S_Init(&hi2s3);
 	__HAL_I2S_ENABLE(&hi2s3);
@@ -82,6 +82,9 @@ void Dac::init() {
 	DMA1_Stream5->NDTR = kDmaBufferSize;
 	DMA1_Stream5->CR |= DMA_SxCR_EN;
 	SPI3->CR2 |= SPI_CR2_TXDMAEN;
+
+	//SCB_InvalidateDCache_by_Addr(reinterpret_cast<uint32_t*>(&dma_buffer_[0]), kDmaBufferSize / 2);
+	//SCB_CleanDCache_by_Addr(reinterpret_cast<uint32_t*>(&dma_buffer_[0]), kDmaBufferSize / 2);
 }
 
 void Dac::start(void (*callback)(Channel*, size_t)) {

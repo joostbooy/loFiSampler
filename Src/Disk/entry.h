@@ -26,23 +26,22 @@ public:
 	static const int kMaxListSize = 8;
 	List list[kMaxListSize];
 
-
-	void init(DIR* dir_, FILINFO* fil_info_, StringBuilder* dir_path_) {
-		dir = dir_;
-		fil_info = fil_info_;
-		dir_path = dir_path_;
+	void init(DIR* dir, FILINFO* fil_info, StringBuilder* dir_path) {
+		dir_ = dir;
+		fil_info_ = fil_info;
+		dir_path_ = dir_path;
 	}
 
 	bool is_dir() {
-		return fil_info->fattrib & AM_DIR;
+		return fil_info_->fattrib & AM_DIR;
 	}
 
 	bool is_read_only() {
-		return fil_info->fattrib & AM_RDO;
+		return fil_info_->fattrib & AM_RDO;
 	}
 
 	bool is_archive() {
-		return fil_info->fattrib & AM_ARC;
+		return fil_info_->fattrib & AM_ARC;
 	}
 
 	bool has_extension(const char* extension) {
@@ -50,27 +49,27 @@ public:
 	}
 
 	const char* name() {
-		return fil_info->fname;
+		return fil_info_->fname;
 	}
 
 	uint32_t size() {
-		return fil_info->fsize;
+		return fil_info_->fsize;
 	}
 
 	const char* path() {
-		return path_.write(dir_path->read(), "/", name());
+		return path_.write(dir_path_->read(), "/", name());
 	}
 
 	const char* path(const char* entry_name) {
-		return path_.write(dir_path->read(), "/", entry_name);
+		return path_.write(dir_path_->read(), "/", entry_name);
 	}
 
 	bool is_visible() {
-		if ((fil_info->fattrib & AM_HID) || (fil_info->fattrib & AM_SYS)) {
+		if ((fil_info_->fattrib & AM_HID) || (fil_info_->fattrib & AM_SYS)) {
 			return false;
 		}
 
-		switch (filter)
+		switch (filter_)
 		{
 		case NONE:
 			return true;
@@ -88,38 +87,38 @@ public:
 	}
 
 	bool rename(const char* old_name, const char* new_name) {
-		const char* old_path = buffer.write(dir_path->read(), "/", old_name);
-		const char* new_path = path_.write(dir_path->read(), "/", new_name);
+		const char* old_path = buffer_.write(dir_path_->read(), "/", old_name);
+		const char* new_path = path_.write(dir_path_->read(), "/", new_name);
 		return f_rename(old_path, new_path) == FR_OK;
 	}
 
 	bool excists(const char* name) {
-		return f_stat(path(name), fil_info) == FR_OK;
+		return f_stat(path(name), fil_info_) == FR_OK;
 	}
 
 	const char* generate_duplicate_name(const char* name) {
 		const int kMaxTries = 100;
 
-		buffer.write(name);
-		if (excists(buffer.read()) == false) {
-			return buffer.read();
+		buffer_.write(name);
+		if (excists(buffer_.read()) == false) {
+			return buffer_.read();
 		}
 
 		for (int i = 2; i < kMaxTries; ++i) {
-			buffer.write(i, "_", name);
-			if (excists(buffer.read()) == false) {
-				return buffer.read();
+			buffer_.write(i, "_", name);
+			if (excists(buffer_.read()) == false) {
+				return buffer_.read();
 			}
 		}
 		return "\0";
 	}
 
 	void rewind() {
-		f_rewinddir(dir);
+		f_rewinddir(dir_);
 	}
 
 	bool next() {
-		return (f_readdir(dir, fil_info) == FR_OK) && (fil_info->fname[0] != '\0');
+		return (f_readdir(dir_, fil_info_) == FR_OK) && (fil_info_->fname[0] != '\0');
 	}
 
 	bool next_visible() {
@@ -131,8 +130,8 @@ public:
 		return false;
 	}
 
-	void set_list_filter(Filter filter_) {
-		filter = filter_;
+	void set_list_filter(Filter filter) {
+		filter_ = filter;
 	}
 
 	int num_visible() {
@@ -174,9 +173,9 @@ public:
 
 		int i = 0;
 		while (next_visible() && size--) {
-			list[i].name.write(fil_info->fname);
-			list[i].size = fil_info->fsize;
-			list[i].is_dir = fil_info->fattrib & AM_DIR;
+			list[i].name.write(fil_info_->fname);
+			list[i].size = fil_info_->fsize;
+			list[i].is_dir = fil_info_->fattrib & AM_DIR;
 			++i;
 		}
 		list_size_ = i;
@@ -192,17 +191,17 @@ public:
 
 	void reset() {
 		list_size_ = 0;
-		filter = NONE;
+		filter_ = NONE;
 	}
 
 private:
-	DIR* dir;
-	FILINFO* fil_info;
-	StringBuilder* dir_path;
+	DIR* dir_;
+	FILINFO* fil_info_;
+	StringBuilder* dir_path_;
 	StringBuilderBase<64>path_;
-	StringBuilderBase<64>buffer;
+	StringBuilderBase<64>buffer_;
 	int list_size_ = 0;
-	Filter filter = NONE;
+	Filter filter_ = NONE;
 };
 
 #endif

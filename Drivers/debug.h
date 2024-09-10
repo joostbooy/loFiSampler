@@ -9,7 +9,8 @@ public:
     static void init();
 
 	static inline void write(bool state) {
-        GPIOG->BSRR = state ? GPIO_PIN_13 : GPIO_PIN_13 << 16;
+		  //  GPIOF->BSRR = state ? GPIO_PIN_13 : GPIO_PIN_13 << 16;
+      GPIOG->BSRR = state ? GPIO_PIN_13 : GPIO_PIN_13 << 16;
     }
 
     static inline void toggle() {

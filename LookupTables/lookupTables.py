@@ -9,7 +9,7 @@ import lutCompiler
 tables = []
 
 block_size = 8
-sample_rate = 16000
+sample_rate = 16000 #24000
 control_rate = sample_rate / block_size
 
 ppqn = 24

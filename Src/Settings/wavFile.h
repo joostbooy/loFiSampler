@@ -83,6 +83,7 @@ private:
 	File file_;
 
 	static const size_t kBufferSize = 512;
+	//static uint8_t buffer_[kBufferSize];
 	uint8_t buffer_[kBufferSize];
 
 	static const uint32_t RIFF_CHUNK_ID		= 0x46464952;

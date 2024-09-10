@@ -42,7 +42,6 @@ namespace DiskUtilPage {
 		if (option == ConfirmationPage::CONFIRM) {
 			if (disk_->directory().remove(entry_->name.read())) {
 				MessagePainter::show(entry_->is_dir ? "FOLDER DELETED" : "FILE DELETED");
-				refresh_dir_callback_();
 			} else {
 				MessagePainter::show("FAILED");
 			}
@@ -54,7 +53,6 @@ namespace DiskUtilPage {
 		if (confirmed) {
 			if (disk_->directory().make(str_.read())) {
 				MessagePainter::show("FOLDER CREATED");
-				refresh_dir_callback_();
 			} else {
 				MessagePainter::show("FAILED !");
 			}
@@ -66,7 +64,6 @@ namespace DiskUtilPage {
 		if (confirmed) {
 			if (disk_->entry().rename(entry_->name.read(), str_.read())) {
 				MessagePainter::show("RENAMED");
-				refresh_dir_callback_();
 			} else {
 				MessagePainter::show("FAILED !");
 			}
@@ -113,6 +110,7 @@ namespace DiskUtilPage {
 
 	void exit() {
 		OptionListPage::exit();
+		refresh_dir_callback_();
 	}
 
 	void on_encoder(int id, int inc) {

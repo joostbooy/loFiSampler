@@ -67,6 +67,10 @@ public:
 		}
 	}
 
+	const char* flags_text() {
+		return sdmmc_->flags_text();
+	}
+
 private:
 	FATFS fs;
 	DIR fdir;

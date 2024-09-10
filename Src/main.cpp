@@ -51,18 +51,17 @@ extern "C" {
 			return;
 		}
 		TIM3->SR = ~TIM_IT_UPDATE;
-		engine.tick();
+		//engine.tick();
 	}
 
 	// 1Khz
-	void TIM7_IRQHandler(void) {
-		if (!(TIM7->SR & TIM_IT_UPDATE)) {
+	void TIM2_IRQHandler(void) {
+		if (!(TIM2->SR & TIM_IT_UPDATE)) {
 			return;
 		}
-		TIM7->SR = ~TIM_IT_UPDATE;
+		TIM2->SR = ~TIM_IT_UPDATE;
 		ui.poll();
 	}
-
 } //extern "C"
 
 void fill(Dac::Channel *channel, const size_t size) {
@@ -71,31 +70,32 @@ void fill(Dac::Channel *channel, const size_t size) {
 
 void test_fill(Dac::Channel *channel, const size_t size) {
 	static int16_t value;
-	const int16_t inc = SAMPLE_RATE / 1000;
+	const float hertz = 100.f;
+	const int16_t inc = (hertz / float(SAMPLE_RATE)) * 65535.f;
 
-	for (size_t c = 0; c < Dac::kNumStereoChannels; ++c) {
-		for (size_t i = 0; i < size; ++i) {
+	for (size_t i = 0; i < size; ++i) {
+		for (size_t c = 0; c < Dac::kNumStereoChannels; ++c) {
 			channel[c].left[i] = value;
-			channel[c].right[i] = value;
+			channel[c].right[i] = 32768 - value;
 		}
 		value += inc;
 	}
 }
 
-
 int main(void)
 {
 	// Init drivers
+	// HAL_Init();
 	sys.init();
 
 	Debug::init();
 	Micros::init();
 
-	//dac.init();
-	//uart.init();
-	//gate.init();
-	//usb.init();
-	//adc.init();
+	// dac.init();
+	// uart.init();
+	// gate.init();
+	// usb.init();
+	// adc.init();
 	matrix.init();
 	display.init();
 	sdram.init();
@@ -110,9 +110,10 @@ int main(void)
 	// Start timers
 	// dac.start(fill);
 	// timer.start_3(CLOCK_ISR_FREQ);
-	// timer.start_7(1000);
+	timer.start_2(1000);
 
 	while (1) {
 		ui.process();
+		// engine.process_midi();
 	}
 }

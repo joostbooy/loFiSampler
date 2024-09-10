@@ -22,32 +22,52 @@ public:
 		fil_ = fil;
 	}
 
-	bool open(const char* path_, uint8_t mode = READ) {
-		return f_open(fil_, path_, mode) == FR_OK;
-	}
+		bool open(const char* path_, uint8_t mode = READ) {
+			return f_open(fil_, path_, mode) == FR_OK;
+		}
+
+//	bool open(const char* path_, uint8_t mode = READ) {
+//		last_res_ = f_open(fil_, path_, mode);
+//		return last_res_ == FR_OK;
+//	}
 
 	bool open(const char* dir, const char* name, uint8_t mode = READ) {
 		return f_open(fil_, path.write(dir, "/", name), mode) == FR_OK;
 	}
 
-	bool close() {
-		return f_close(fil_) == FR_OK;
-	}
+		bool close() {
+			return f_close(fil_) == FR_OK;
+		}
+
+//	bool close() {
+//		FRESULT last_res_ = f_close(fil_);
+//		return last_res_ == FR_OK;
+//	}
+
 
 	bool sync() {
 		return f_sync(fil_) == FR_OK;
 	}
 
-	bool write(const void* data, uint32_t size, uint32_t* num_written = nullptr) {
+	//	bool write(const void *data, uint32_t size, uint32_t* num_written = nullptr) {
+	//		UINT bw;
+	//		FRESULT res = f_write(fil_, data, size, &bw);
+	//		if (num_written) {
+	//			*num_written = bw;
+	//		}
+	//		return (bw > 0) && (res == FR_OK);
+	//	}
+
+	bool write(const void *data, uint32_t size, uint32_t* num_written = nullptr) {
 		UINT bw;
-		FRESULT res = f_write(fil_, data, size, &bw);
+		last_res_ = f_write(fil_, data, size, &bw);
 		if (num_written) {
 			*num_written = bw;
 		}
-		return (bw > 0) && (res == FR_OK);
+		return (bw > 0) && (last_res_ == FR_OK);
 	}
 
-	bool read(void* data, uint32_t size, uint32_t* num_read = nullptr) {
+	bool read(void *data, uint32_t size, uint32_t* num_read = nullptr) {
 		UINT br;
 		FRESULT res = f_read(fil_, data, size, &br);
 		if (num_read) {
@@ -77,9 +97,17 @@ public:
 		return f_rewind(fil_) == FR_OK;
 	}
 
+
+
+	FRESULT last_res() {
+		return last_res_;
+	}
+
 private:
 	FIL* fil_;
 	StringBuilderBase<64>path;
+
+	FRESULT last_res_;
 };
 
 #endif

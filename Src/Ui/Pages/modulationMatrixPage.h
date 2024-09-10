@@ -74,16 +74,16 @@ namespace ModulationMatrixPage {
 
 			switch (id)
 			{
-			case Controller::UP_BUTTON:
+			case Controller::LEFT_BUTTON:
 				on_encoder(Controller::FUNCTION_ENC_A, -1);
 				break;
-			case Controller::DOWN_BUTTON:
+			case Controller::RIGHT_BUTTON:
 				on_encoder(Controller::FUNCTION_ENC_A, 1);
 				break;
-			case Controller::LEFT_BUTTON:
+			case Controller::UP_BUTTON:
 				on_encoder(Controller::FUNCTION_ENC_D, -1);
 				break;
-			case Controller::RIGHT_BUTTON:
+			case Controller::DOWN_BUTTON:
 				on_encoder(Controller::FUNCTION_ENC_D, 1);
 				break;
 			case Controller::COPY_BUTTON:
@@ -133,15 +133,18 @@ namespace ModulationMatrixPage {
 	}
 
 	void draw() {
-		//	const int coll_w = 0;
-		//	const int row_h = 0;
-		//	const int x = 0;
-		//	const int y = 0;
-		//	const int w = 0;
-		//	const int h = 0;
+	//	const int x = 0;
+	//	const int y = 0;
+	//	const int w = canvas_->width();
+	//	const int h = canvas_->height() - 10;
+	//	const int coll_w = w / kMaxVisibleSources;
+	//	const int row_h = h / kMaxVisibleDestinations;
 
 		for (int src = 0; src < kMaxVisibleSources; ++src) {
+			// ModulationMatrix::source_text(src);
 			for (int dest = 0; dest < kMaxVisibleDestinations; ++dest) {
+				 // ModulationMatrix::destination_text(dest);
+
 				//	bool state = settings_->selected_modulation_matrix().read(src, dest);
 				if (src == src_ && dest == dest_ ) {
 					// hightlight

@@ -61,8 +61,9 @@ _Min_Stack_Size = 0x400; /* required amount of stack */
 /* Specify the memory areas */
 MEMORY
 {
-DTCM (xrw)      : ORIGIN = 0x20000000, LENGTH = 128K
-RAM (xrw)      : ORIGIN = 0x20020000, LENGTH = 384K /* 0x20000000 512K */
+/*DTCM (xrw)      : ORIGIN = 0x20000000, LENGTH = 128K*/
+/*RAM (xrw)      : ORIGIN = 0x20020000, LENGTH = 384K */
+RAM (xrw)      : ORIGIN = 0x20000000, LENGTH = 512K
 FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = 1024K
 }
 
@@ -174,7 +175,8 @@ SECTIONS
   } >RAM
 
 	/* Uninitialized DTCM RAM section */
- .dtcm :
+/*
+ .dtcm(NOLOAD) :
  {
 	 . = ALIGN(4);
 	 _sdtcm = .;
@@ -183,8 +185,16 @@ SECTIONS
 
 	 . = ALIGN(4);
 	 _edtcm = .;
- } >DTCM AT> FLASH
-
+ } >DTCM
+*/
+/*
+.dtcm(NOLOAD) :
+{
+	. = ALIGN(1);
+	. = ABSOLUTE(0x20000000);
+	*(.dtcm)
+} >RAM
+*/
   /* Remove information from the standard libraries */
   /DISCARD/ :
   {

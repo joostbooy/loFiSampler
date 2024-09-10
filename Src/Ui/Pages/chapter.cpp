@@ -9,6 +9,7 @@
 	"SETTINGS",
 };
 
+
 // Modulation
 constexpr const int Chapter::modulation_pages[] = {
 	Pages::MODULATION_PAGE,
@@ -24,6 +25,7 @@ constexpr const char* const Chapter::modulation_page_names[] = {
 	"DELAY"
 };
 
+
 // System
 constexpr const int Chapter::system_pages[] = {
 	Pages::SYSTEM_PAGE,
@@ -35,23 +37,30 @@ constexpr const char* const Chapter::system_page_names[] = {
 	"HARDWARE TEST"
 };
 
+
 // Instrument
 constexpr const int Chapter::instrument_pages[] = {
-	Pages::INSTRUMENT_PAGE
+	Pages::INSTRUMENT_PAGE,
+	Pages::MODULATION_MATRIX_PAGE
 };
 
 constexpr const char* const Chapter::instrument_page_names[] = {
 	"SETTINGS",
+	"MODULATION MATRIX",
 };
+
 
 // Sample
 constexpr const int Chapter::sample_pages[] = {
 	Pages::SAMPLE_PAGE,
+	Pages::WAV_IMPORT_PAGE,
 };
 
 constexpr const char* const Chapter::sample_page_names[] = {
 	"SETTINGS",
+	"WAV IMPORT"
 };
+
 
 // Storage
 constexpr const int Chapter::storage_pages[] = {
@@ -61,6 +70,7 @@ constexpr const int Chapter::storage_pages[] = {
 constexpr const char* const Chapter::storage_page_names[] = {
 	"PROJECT STORAGE"
 };
+
 
 void Chapter::init() {
 	modulation_.init(modulation_pages, modulation_page_names, ENTRY_SIZE(modulation_pages));

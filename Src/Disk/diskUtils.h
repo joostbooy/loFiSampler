@@ -3,10 +3,19 @@
 
 #include "disk.h"
 #include "stringBuilder.h"
+#include "messagePainter.h"
 
 class DiskUtils {
 
 public:
+
+	static void print_result(FRESULT result) {
+		MessagePainter::show(result_text(result));
+	}
+
+	static void print_user_result(FRESULT result) {
+		MessagePainter::show(user_result_text(result));
+	}
 
 	static const char* result_text(FRESULT result) {
 		switch (result) {

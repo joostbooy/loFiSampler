@@ -63,7 +63,7 @@ void Sdmmc::init_dma(uint32_t buffer, DmaType dmaType) {
 
 	uint32_t direction = 0;
 	if (dmaType == MEM_TO_SD) {
-		direction =	kMemoryToPeripheral;
+		direction =	DMA_SxCR_DIR_0; // kMemoryToPeripheral
 	} else if (dmaType == SD_TO_MEM) {
 		direction =	0;
 	}
@@ -73,12 +73,12 @@ void Sdmmc::init_dma(uint32_t buffer, DmaType dmaType) {
 	kMemorySize_32bit | kPeripheralSize_32bit | kEnableMemoryIncrement | kPeripheralFlowControl | direction | kEnable_TC_interupt);
 
 	DMA2_Stream0->FCR |= DMA_SxFCR_DMDIS;	// disable direct mode (enables fifo mode)
-	DMA2_Stream0->FCR |= (3 << 0); 			// fifo treshold full
+	DMA2_Stream0->FCR |= DMA_SxFCR_FTH; 	// fifo treshold full (3 << 0)
 
 	DMA2->LIFCR |= DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0 | DMA_LIFCR_CTEIF0 | DMA_LIFCR_CDMEIF0 | DMA_LIFCR_CFEIF0;
 	DMA2_Stream0->PAR = reinterpret_cast<uint32_t>(&SDMMC2->FIFO);
 	DMA2_Stream0->M0AR = buffer;
-	DMA2_Stream0->NDTR = 0;
+	DMA2_Stream0->NDTR = 0; // blocksize / num_blocks / 4 bytes per word
 	DMA2_Stream0->CR |= DMA_SxCR_EN;		// enable stream
 
 	sdmmc_->lock_dma();
@@ -90,6 +90,8 @@ extern "C" {
 		DMA2->LIFCR |= DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0;
 
 		if (flags & DMA_LISR_TCIF0) {
+		//	DMA2_Stream0->FCR &= ~DMA_SxFCR_FEIE;
+		//	DMA2->LIFCR = DMA_LIFCR_CFEIF0;
 			Sdmmc::sdmmc_->unlock_dma();
 		}
 	}

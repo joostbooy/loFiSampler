@@ -53,6 +53,7 @@ namespace DiskNavigatorPage {
 		if (rowsTotal_ < 1) {
 			rowsTotal_ = 1;
 		}
+		
 		disk_->entry().make_list(top_row_, kMaxVisibleRows);
 	}
 
@@ -79,15 +80,12 @@ namespace DiskNavigatorPage {
 	}
 
 	const char* curr_entry_name() {
-		return disk_->entry().read_list(selected_ - top_row_)->name.read();
+		Entry::List *e = disk_->entry().read_list(selected_ - top_row_);
+		return e ? e->name.read() : "";
 	}
 
 	const char* curr_entry_path() {
 		return str_.write(curr_path(), "/", curr_entry_name());
-	}
-
-	bool curr_entry_is_dir() {
-		return disk_->entry().read_list(selected_ - top_row_)->is_dir;
 	}
 
 	void init() {

@@ -97,7 +97,7 @@ public:
 
 	void unlock_dma() {
 		SDMMC2->DCTRL &= ~SDMMC_DCTRL_DMAEN;
-		DMA2_Stream3->CR &= ~DMA_SxCR_EN;
+		DMA2_Stream0->CR &= ~DMA_SxCR_EN;
 		dma_busy_ = false;
 	}
 
@@ -107,7 +107,35 @@ public:
 
 	static Sdmmc *sdmmc_;
 
+
+	const char *flags_text() {
+		if (flags_ & SDMMC_STA_DCRCFAIL) {
+			return "SDMMC_STA_DCRCFAIL";
+		}
+
+		if (flags_ & SDMMC_STA_TXUNDERR) {
+			return "SDMMC_STA_TXUNDERR";
+		}
+
+		if (flags_ & SDMMC_STA_DTIMEOUT) {
+			return "SDMMC_STA_DTIMEOUT";
+		}
+
+		if (flags_ & SDMMC_STA_DBCKEND) {
+			return "SDMMC_STA_DBCKEND";
+		}
+
+		if (flags_ & SDMMC_STA_DATAEND) {
+			return "SDMMC_STA_DATAEND";
+		}
+
+		return "UNKOWN";
+	}
+
+
 private:
+	volatile uint32_t flags_ = 0;
+
 	enum DmaType {
 		MEM_TO_SD,
 		SD_TO_MEM
@@ -255,7 +283,7 @@ private:
 		}
 
 		//start clock 24 mHz, 4 bit
-		SDMMC2->CLKCR = SDMMC_CLKCR_CLKEN | (1 << 11) | 0x00;
+		SDMMC2->CLKCR = SDMMC_CLKCR_CLKEN | (1 << 11) | 0x00; //0x02
 
 		return true;
 	}
@@ -424,7 +452,7 @@ private:
 
 		init_dma((uint32_t)buffer, MEM_TO_SD);
 
-		SDMMC2->DTIMER = 12000000;	// 500ms (on 24Mhz bus clock)
+		SDMMC2->DTIMER = 12000000;	// 500ms (on 24Mhz bus clock)  24000000
 		SDMMC2->DLEN = 512 * count;
 		SDMMC2->DCTRL = (9 << 4) | SDMMC_DCTRL_DTEN | SDMMC_DCTRL_DMAEN;
 
@@ -438,11 +466,14 @@ private:
 		}
 
 		// check errors
-		const uint32_t succes_flags = SDMMC_STA_DBCKEND | SDMMC_STA_DATAEND;
+		const uint32_t succes_flags = SDMMC_STA_DBCKEND | SDMMC_STA_DATAEND; //SDMMC_STA_TXACT
 		const uint32_t error_flags = SDMMC_STA_DCRCFAIL | SDMMC_STA_TXUNDERR | SDMMC_STA_DTIMEOUT; //SDMMC_STA_STBITERR
 
 		while (true) {
 			volatile uint32_t flags = SDMMC2->STA;
+
+			flags_ = flags;
+
 			if (flags & (succes_flags | error_flags)) {
 				if (flags & error_flags) {
 					return false;

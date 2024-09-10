@@ -87,6 +87,34 @@ namespace OptionListPage {
 		leds_->set_footer_buttons(4);
 	}
 
+	/*
+	void draw() {
+	const int row_h = 8;
+	const int w = 128;
+	const int h = row_h * kMaxRows;
+	const int x = (canvas_->width() - w) / 2;
+	const int y = (canvas_->height() - h) / 2;
+
+	canvas_->fill(x, y, w, h, Canvas::WHITE);
+
+	for (int i = 0; i < kMaxRows; ++i) {
+	int row = i + top_row_;
+	int row_y = (i * row_h) + y;
+
+	if (row < count_) {
+	canvas_->draw_text(x + 4, row_y, w - 8, row_h, text_[row], Canvas::LEFT, Canvas::CENTER);
+	if (row == selected_) {
+	canvas_->fill(x, row_y, w, row_h, Canvas::INVERTED);
+}
+}
+}
+
+const int bar_w = 8;
+const int bar_x = x + (w - bar_w);
+WindowPainter::draw_vertical_scollbar(bar_x, y, bar_w, h, top_row_, count_, kMaxRows);
+}
+*/
+
 	void draw() {
 		const int row_h = 8;
 		const int w = 128;
@@ -94,7 +122,13 @@ namespace OptionListPage {
 		const int x = (canvas_->width() - w) / 2;
 		const int y = (canvas_->height() - h) / 2;
 
+		canvas_->set_font(Font::SMALL);
+		//canvas_->fill(x, y, w, h, Canvas::WHITE);
+		canvas_->fill(x + 5, y + 5, w, h, Canvas::SUBTRACTED);
+
+		// list
 		canvas_->fill(x, y, w, h, Canvas::WHITE);
+		canvas_->frame(x, y, w, h, Canvas::BLACK);
 
 		for (int i = 0; i < kMaxRows; ++i) {
 			int row = i + top_row_;
@@ -103,12 +137,13 @@ namespace OptionListPage {
 			if (row < count_) {
 				canvas_->draw_text(x + 4, row_y, w - 8, row_h, text_[row], Canvas::LEFT, Canvas::CENTER);
 				if (row == selected_) {
-					canvas_->fill(x, row_y, w, row_h, Canvas::INVERTED);
+					//canvas_->fill(x, row_y, w, row_h, Canvas::INVERTED);
+					canvas_->fill(x + 1, row_y + 1, w - 2, row_h - 2, Canvas::INVERTED);
 				}
 			}
 		}
 
- 		const int bar_w = 8;
+		const int bar_w = 8;
 		const int bar_x = x + (w - bar_w);
 		WindowPainter::draw_vertical_scollbar(bar_x, y, bar_w, h, top_row_, count_, kMaxRows);
 	}

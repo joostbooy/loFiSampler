@@ -8,10 +8,10 @@ class Directory {
 
 public:
 
-	void init(DIR* dir_, int root_id_) {
-		dir = dir_;
-		root_id = root_id_;
-		path.write(root_id, ":");
+	void init(DIR *dir, uint8_t root_id) {
+		dir_ = dir;
+		root_id_ = root_id;
+		path.write(root_id_, ":");
 	}
 
 	StringBuilder* path_ptr() {
@@ -29,7 +29,7 @@ public:
 
 	bool open_path(const char* path_) {
 		const char* new_path_ = build_new_path(path_);
-		if (f_opendir(dir, new_path_) == FR_OK) {
+		if (f_opendir(dir_, new_path_) == FR_OK) {
 			path.write(new_path_);
 			return true;
 		}
@@ -37,15 +37,15 @@ public:
 	}
 
 	bool close() {
-		return f_closedir(dir) == FR_OK;
+		return f_closedir(dir_) == FR_OK;
 	}
 
 	const char* root() {
-		return buffer.write(root_id, ":");
+		return buffer.write(root_id_, ":");
 	}
 
 	bool has_root(const char* path_) {
-		return (path_[0] == (root_id + 48)) && (path_[1] == ':');
+		return (path_[0] == (root_id_ + 48)) && (path_[1] == ':');
 	}
 
 	bool is_root() {
@@ -56,11 +56,11 @@ public:
 	bool reset() {
 		close();
 		path.write(root());
-		return f_opendir(dir, path.read()) == FR_OK;
+		return f_opendir(dir_, path.read()) == FR_OK;
 	}
 
 	bool reopen() {
-		return f_opendir(dir, path.read()) == FR_OK;
+		return f_opendir(dir_, path.read()) == FR_OK;
 	}
 
 	bool enter(const char* dir_name) {
@@ -106,14 +106,13 @@ public:
 	}
 
 private:
-	DIR* dir;
-	uint8_t root_id;
+	DIR *dir_;
+	uint8_t root_id_;
 
 	static const uint8_t kMaxPathLength = 64;
 	StringBuilderBase<64>path;			// the current valid path
 	StringBuilderBase<64>new_path;		// buffer to build new path, used only in build_new_path()
 	StringBuilderBase<64>buffer;		// general text buffer
-
 
 	const char* build_new_path(const char* path_) {
 		new_path.write(path_);
