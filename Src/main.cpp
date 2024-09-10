@@ -28,6 +28,7 @@ Sdmmc sdmmc;
 Matrix matrix;
 Display display;
 
+
 Disk disk;
 Ui ui;
 Engine engine;
@@ -65,7 +66,9 @@ extern "C" {
 } //extern "C"
 
 void fill(Dac::Channel *channel, const size_t size) {
+	Debug::write(1);
 	engine.fill(channel, size);
+	Debug::write(0);
 }
 
 void test_fill(Dac::Channel *channel, const size_t size) {
@@ -91,9 +94,9 @@ int main(void)
 	Debug::init();
 	Micros::init();
 
-	// dac.init();
-	// uart.init();
-	// gate.init();
+	dac.init();
+	uart.init();
+	gate.init();
 	// usb.init();
 	// adc.init();
 	matrix.init();
@@ -104,11 +107,11 @@ int main(void)
 	// Init engine, settings & ui
 	disk.init(&sdmmc);
 	settings.init(&sdram, &disk);
-	//	engine.init(&settings, &uart, &usb, &gate);
+	engine.init(&settings, &uart, &usb, &gate);
 	ui.init(&settings, &engine, &matrix, &display);
 
 	// Start timers
-	// dac.start(fill);
+	dac.start(test_fill);
 	// timer.start_3(CLOCK_ISR_FREQ);
 	timer.start_2(1000);
 

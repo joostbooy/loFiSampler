@@ -28,7 +28,7 @@ void Sys::init() {
     SCB_EnableICache();
 
     /* Enable D-Cache */
-    //SCB_EnableDCache();
+    SCB_EnableDCache();
 
 	//GPIO Ports Clock Enable
 	__HAL_RCC_GPIOH_CLK_ENABLE();
@@ -103,9 +103,9 @@ void Sys::init() {
 
 	// Interupt priorities
 	HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
-	HAL_NVIC_SetPriority(DMA2_Stream0_IRQn, 0, 0);	// SDMMC
-	HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 1, 0);	// DAC
-	HAL_NVIC_SetPriority(TIM3_IRQn, 2, 0);			// Engine tick
-	HAL_NVIC_SetPriority(TIM2_IRQn, 3, 0);			// Ui Poll
-	HAL_NVIC_SetPriority(DMA2_Stream4_IRQn, 4, 0);	// LCD
+	HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 0, 0);	// DAC
+	HAL_NVIC_SetPriority(TIM3_IRQn, 1, 0);			// Engine tick
+	HAL_NVIC_SetPriority(TIM2_IRQn, 2, 0);			// Ui Poll
+	HAL_NVIC_SetPriority(DMA2_Stream0_IRQn, 3, 0);	// SDMMC
+	HAL_NVIC_SetPriority(DMA2_Stream4_IRQn, 4, 0);	// Display
 }

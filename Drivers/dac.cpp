@@ -5,6 +5,7 @@ Dac* Dac::dac_;
 bool Dac::first_frame_;
 uint16_t Dac::dma_buffer_[Dac::kDmaBufferSize];
 //uint16_t Dac::dma_buffer_[Dac::kDmaBufferSize] __attribute__((section(".dtcm")));
+//uint16_t Dac::dma_buffer_[Dac::kDmaBufferSize] __attribute__((section(".dtcm"), aligned(32)));
 
 uint16_t Dac::left_channel_bits_[kNumStereoChannels] = {
 	0x0300 | (0 << 4),
@@ -97,6 +98,9 @@ void Dac::fill(const size_t offset) {
 	callback_(channel_, BLOCK_SIZE);
 
 	uint16_t *ptr = &dma_buffer_[offset * (kDmaBufferSize / 2)];
+
+	uint32_t alligned = ((uint32_t)ptr) & ~(0x1F);
+	SCB_CleanDCache_by_Addr((uint32_t*)alligned, kDmaBufferSize + ((uint32_t)ptr - alligned));
 
 	if (first_frame_) {
 		for (size_t i = 0; i < BLOCK_SIZE; ++i) {

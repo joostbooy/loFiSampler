@@ -64,8 +64,14 @@ void Sdmmc::init_dma(uint32_t buffer, DmaType dmaType) {
 	uint32_t direction = 0;
 	if (dmaType == MEM_TO_SD) {
 		direction =	DMA_SxCR_DIR_0; // kMemoryToPeripheral
+
+		uint32_t alligned = buffer & ~(0x1F);
+		SCB_CleanDCache_by_Addr((uint32_t*)alligned, 512 + (buffer - alligned));
 	} else if (dmaType == SD_TO_MEM) {
 		direction =	0;
+
+		uint32_t alligned = buffer & ~(0x1F);
+		SCB_CleanInvalidateDCache_by_Addr((uint32_t*)alligned, 512 + (buffer - alligned));
 	}
 
 	DMA2_Stream0->CR = 0;
@@ -78,7 +84,7 @@ void Sdmmc::init_dma(uint32_t buffer, DmaType dmaType) {
 	DMA2->LIFCR |= DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0 | DMA_LIFCR_CTEIF0 | DMA_LIFCR_CDMEIF0 | DMA_LIFCR_CFEIF0;
 	DMA2_Stream0->PAR = reinterpret_cast<uint32_t>(&SDMMC2->FIFO);
 	DMA2_Stream0->M0AR = buffer;
-	DMA2_Stream0->NDTR = 0; // blocksize / num_blocks / 4 bytes per word
+	DMA2_Stream0->NDTR = 0;
 	DMA2_Stream0->CR |= DMA_SxCR_EN;		// enable stream
 
 	sdmmc_->lock_dma();
@@ -90,8 +96,8 @@ extern "C" {
 		DMA2->LIFCR |= DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0;
 
 		if (flags & DMA_LISR_TCIF0) {
-		//	DMA2_Stream0->FCR &= ~DMA_SxFCR_FEIE;
-		//	DMA2->LIFCR = DMA_LIFCR_CFEIF0;
+			//	DMA2_Stream0->FCR &= ~DMA_SxFCR_FEIE;
+			//	DMA2->LIFCR = DMA_LIFCR_CFEIF0;
 			Sdmmc::sdmmc_->unlock_dma();
 		}
 	}
