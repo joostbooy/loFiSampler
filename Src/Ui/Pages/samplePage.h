@@ -303,6 +303,10 @@ namespace SamplePage {
 			canvas_->vertical_line(x + x2, y + y_right, h_right, Canvas::GRAY);
 		}
 
+		// const int bar_h = 6;
+		// const int bar_y = h - bar_h;
+		// WindowPainter::draw_horizontal_scollbar(x, bar_y, w, bar_h, list_->top_item(), list_->num_items(), list_->collumns());
+
 		//if (sample->start() >= offset && sample->start() < (offset + size)) {
 		//	float start = (sample->start() / float(size)) * w;
 		//	canvas_->vertical_line((x + start) - sample_x_, y, h, Canvas::BLACK);
@@ -334,7 +338,7 @@ namespace SamplePage {
 	}
 
 	const size_t target_fps() {
-		return 1000 / 16;
+		return 1000 / 24;
 	}
 
 	Pages::Page page = {

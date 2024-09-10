@@ -105,7 +105,7 @@ namespace EnvelopePage {
 	}
 
 	const size_t target_fps() {
-		return 1000 / 16;
+		return 1000 / 24;
 	}
 
 	Pages::Page page = {
