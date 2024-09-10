@@ -66,9 +66,9 @@ public:
 		return true;
 	}
 
-	bool read(uint8_t *data, uint32_t *num_read) {
+	bool read(uint8_t **data, uint32_t *num_read) {
 		if (file_.read(buffer_, kBufferSize, num_read)) {
-			data = buffer_;
+			*data = buffer_;
 			return true;
 		}
 		return false;
@@ -83,7 +83,7 @@ private:
 	File file_;
 
 	static const size_t kBufferSize = 512;
-	static uint8_t buffer_[kBufferSize];
+	uint8_t buffer_[kBufferSize];
 
 	static const uint32_t RIFF_CHUNK_ID		= 0x46464952;
 	static const uint32_t FMT_CHUNK_ID		= 0x20746D66;
@@ -92,9 +92,8 @@ private:
 	static const uint16_t WAVE_FORMAT_PCM	= 0x0001;
 
 	uint32_t read_u32() {
-		uint8_t data[4];
-		file_.read(data, 4);
-		return data[0] | (data[1] << 8) | (data[2] << 16) | (data[3] << 24);
+		file_.read(buffer_, 4);
+		return buffer_[0] | (buffer_[1] << 8) | (buffer_[2] << 16) | (buffer_[3] << 24);
 	}
 
 	bool parse_chunk(uint32_t chunk_id, uint32_t chunk_size) {

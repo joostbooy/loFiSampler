@@ -83,19 +83,6 @@ void test_fill(Dac::Channel *channel, const size_t size) {
 }
 
 
-void test_dac_spi() {
-	static uint16_t value = 0;
-	static uint16_t prescaler = 0;
-
-	if ((++prescaler & 63) == 0) {
-		for (size_t c = 0; c < Dac::kNumStereoChannels; ++c) {
-			dac.write((c * 2), value);
-			dac.write((c * 2) + 1, value);
-		}
-		++value;
-	}
-}
-
 int main(void)
 {
 	// Init drivers
@@ -104,29 +91,28 @@ int main(void)
 	Debug::init();
 	Micros::init();
 
-	dac.init();
+	//dac.init();
 	//uart.init();
 	//gate.init();
 	//usb.init();
 	//adc.init();
-	//matrix.init();
-	//display.init();
-	//sdram.init();
-	//sdmmc.init();
+	matrix.init();
+	display.init();
+	sdram.init();
+	sdmmc.init();
 
 	// Init engine, settings & ui
-	//	disk.init(&sdmmc);
-	//	settings.init(&sdram, &disk);
+	disk.init(&sdmmc);
+	settings.init(&sdram, &disk);
 	//	engine.init(&settings, &uart, &usb, &gate);
-	//	ui.init(&settings, &engine, &matrix, &display);
+	ui.init(&settings, &engine, &matrix, &display);
 
 	// Start timers
-	//	dac.start(fill);
-	//	timer.start_3(CLOCK_ISR_FREQ);
-	//	timer.start_7(1000);
+	// dac.start(fill);
+	// timer.start_3(CLOCK_ISR_FREQ);
+	// timer.start_7(1000);
 
 	while (1) {
-		//ui.process();
-		test_dac_spi();
+		ui.process();
 	}
 }
