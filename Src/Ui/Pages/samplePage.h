@@ -320,13 +320,13 @@ namespace SamplePage {
 		float loop_end = (sample->loop_end() / float(size)) * w;
 		canvas_->vertical_line(x + loop_end, y, h, Canvas::BLACK);
 
-		Voice &voice = engine_->voiceEngine().most_recent_voice();
-		if (sample == &voice.sample()) {
-			voice_ = &voice;
+		Voice &most_recent = engine_->voiceEngine().most_recent_voice();
+		if (sample == &most_recent.sample()) {
+			voice_ = &most_recent;
 		}
 
 		if (sample == &voice_->sample()) {
-			float play_position = (voice.phase() / float(size)) * w;
+			float play_position = (voice_->phase() / float(size)) * w;
 			canvas_->vertical_line(x + play_position, y, h, Canvas::BLACK);
 		}
 
