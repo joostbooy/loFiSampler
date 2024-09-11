@@ -56,6 +56,7 @@ bool SampleAllocator::truncate(size_t index, size_t start, size_t end) {
 
 	available_ram_ += (sample->size() - new_size);
 	sample->set_size(new_size);
+	sample->refresh_start_end_points();
 
 	while (new_size--) {
 		*write_ptr++ = *read_ptr++;
@@ -80,6 +81,7 @@ bool SampleAllocator::convert_to_mono(size_t index) {
 	available_ram_ += (sample->size() - new_size);
 	sample->set_size(new_size);
 	sample->set_num_channels(1);
+	sample->refresh_start_end_points();
 
 	while (new_size--) {
 		int16_t left = *read_ptr++;
