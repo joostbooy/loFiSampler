@@ -299,12 +299,13 @@ namespace SamplePage {
 		const int w = 255;
 		const int h = 41;
 		const int wave_h = h / 2;
-		const int average = 32;
+		const size_t average = 32;
 
 		Sample *sample = settings_->selected_sample();
 		size_t size = sample->size_samples();
 		size_t visible_size = size / x_zoom_;
-		size_t inc = (visible_size / w) / average;
+		size_t inc = (visible_size / w);
+		inc = (average >= inc) ? 1 : inc / average;
 
 		sample_x_ = SettingsUtils::clip(0, (size - visible_size), sample_x_);
 
@@ -314,7 +315,7 @@ namespace SamplePage {
 			int16_t l_min = 0, l_max = 0;
 			int16_t r_min = 0, r_max = 0;
 
-			for (int i = 0; i < average; ++i) {
+			for (size_t i = 0; i < average; ++i) {
 				int16_t l, r;
 				sample->read(index, &l, &r);
 
