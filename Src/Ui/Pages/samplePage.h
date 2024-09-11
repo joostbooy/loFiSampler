@@ -247,24 +247,22 @@ namespace SamplePage {
 			}
 
 			if (shift) {
-				if (id == Controller::LEFT_BUTTON) {
+				switch (id)
+				{
+				case Controller::LEFT_BUTTON:
 					x_zoom_ = SettingsUtils::clip(1, 8, x_zoom_ - 1);
-					return;
-				}
-
-				if (id == Controller::RIGHT_BUTTON) {
+					break;
+				case Controller::RIGHT_BUTTON:
 					x_zoom_ = SettingsUtils::clip(1, 8, x_zoom_ + 1);
-					return;
-				}
-
-				if (id == Controller::DOWN_BUTTON) {
+					break;
+				case Controller::DOWN_BUTTON:
 					y_zoom_ = SettingsUtils::clip(1, 8, y_zoom_ - 1);
-					return;
-				}
-
-				if (id == Controller::UP_BUTTON) {
+					break;
+				case Controller::UP_BUTTON:
 					y_zoom_ = SettingsUtils::clip(1, 8, y_zoom_ + 1);
-					return;
+					break;
+				default:
+					break;
 				}
 			}
 		}
@@ -311,6 +309,7 @@ namespace SamplePage {
 
 		size_t index = sample_x_;
 
+		// draw audio
 		for (int x2 = 0; x2 < w; ++x2) {
 			int16_t l_min = 0, l_max = 0;
 			int16_t r_min = 0, r_max = 0;
@@ -335,11 +334,13 @@ namespace SamplePage {
 		const int bar_y = h;
 		WindowPainter::draw_horizontal_scollbar(x, bar_y, w, bar_h, sample_x_, size, visible_size);
 
+		// draw start & end points
 		draw_point(x, y, w, h, visible_size, sample->start());
 		draw_point(x, y, w, h, visible_size, sample->end());
 		draw_point(x, y, w, h, visible_size, sample->loop_start());
 		draw_point(x, y, w, h, visible_size, sample->loop_end());
 
+		// draw phase
 		Voice &most_recent = engine_->voiceEngine().most_recent_voice();
 		if (sample == &most_recent.sample()) {
 			voice_ = &most_recent;
@@ -349,6 +350,7 @@ namespace SamplePage {
 			draw_point(x, y, w, h, visible_size, voice_->phase());
 		}
 
+		// draw zoom text
 		canvas_->draw_text(x, y, w, h, str_.write("Xx", x_zoom_, " Yx", y_zoom_), Canvas::RIGHT, Canvas::TOP);
 	}
 
