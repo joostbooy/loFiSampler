@@ -309,7 +309,7 @@ namespace SamplePage {
 
 		size_t index = sample_x_;
 
-		// draw audio
+		// draw sample
 		for (int x2 = 0; x2 < w; ++x2) {
 			int16_t l_min = 0, l_max = 0;
 			int16_t r_min = 0, r_max = 0;
