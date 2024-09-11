@@ -17,7 +17,8 @@ namespace SamplePage {
 	Sample sample_;
 	SampleList sampleList_;
 
-	int zoom_ = 1;
+	int x_zoom_ = 1;
+	int y_zoom_ = 1;
 	int sample_x_ = 0;
 	int selected_option_;
 	Voice *voice_;
@@ -246,13 +247,23 @@ namespace SamplePage {
 			}
 
 			if (shift) {
+				if (id == Controller::LEFT_BUTTON) {
+					x_zoom_ = SettingsUtils::clip(1, 8, x_zoom_ - 1);
+					return;
+				}
+
+				if (id == Controller::RIGHT_BUTTON) {
+					x_zoom_ = SettingsUtils::clip(1, 8, x_zoom_ + 1);
+					return;
+				}
+
 				if (id == Controller::UP_BUTTON) {
-					zoom_ = SettingsUtils::clip(1, 8, zoom_ - 1);
+					y_zoom_ = SettingsUtils::clip(1, 8, y_zoom_ - 1);
 					return;
 				}
 
 				if (id == Controller::DOWN_BUTTON) {
-					zoom_ = SettingsUtils::clip(1, 8, zoom_ + 1);
+					y_zoom_ = SettingsUtils::clip(1, 8, y_zoom_ + 1);
 					return;
 				}
 			}
@@ -272,7 +283,8 @@ namespace SamplePage {
 
 	void draw_sample(int x, int y, int h, int sample) {
 		int h_center = h / 2;
-		int h_ = (sample * (1.f / 32768.f)) * h_center;
+		int h_ = (sample * (1.f / 32768.f)) * h_center * y_zoom_;
+		h_ = SettingsUtils::clip_max(h, h_);
 		canvas_->vertical_line(x, y + (h_center - h_), h_ * 2, Canvas::GRAY);
 	}
 
@@ -288,7 +300,7 @@ namespace SamplePage {
 
 		Sample *sample = settings_->selected_sample();
 		size_t size = sample->size_samples();
-		size_t visible_size = size / zoom_;
+		size_t visible_size = size / x_zoom_;
 		size_t inc = (visible_size / w) / average;
 
 		sample_x_ = SettingsUtils::clip(0, (size - visible_size), sample_x_);
@@ -337,7 +349,7 @@ namespace SamplePage {
 			draw_point(x, y, w, h, visible_size, voice_->phase());
 		}
 
-		canvas_->draw_text(x, y, w, h, str_.write("X", zoom_), Canvas::RIGHT, Canvas::TOP);
+		canvas_->draw_text(x, y, w, h, str_.write("Xx", x_zoom_, " Yx", y_zoom_), Canvas::RIGHT, Canvas::TOP);
 	}
 
 	const size_t target_fps() {
