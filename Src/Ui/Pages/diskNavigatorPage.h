@@ -53,7 +53,7 @@ namespace DiskNavigatorPage {
 		if (rowsTotal_ < 1) {
 			rowsTotal_ = 1;
 		}
-		
+
 		disk_->entry().make_list(top_row_, kMaxVisibleRows);
 	}
 
@@ -160,6 +160,7 @@ namespace DiskNavigatorPage {
 		const int w = canvas_->width();
 		const int h = canvas_->height() - y;
 
+		canvas_->clear();
 		canvas_->draw_text(0, 0, w, row_h, curr_path(), Canvas::LEFT, Canvas::CENTER);
 
 		for (int i = 0; i < kMaxVisibleRows; ++i) {
