@@ -51,6 +51,7 @@ namespace SystemPage {
 			case CLEAR:
 				ConfirmationPage::set("CLEAR SETTINGS ?", [](int option) {
 					if (option == ConfirmationPage::CONFIRM) {
+						engine_->add_request_blocking(Engine::STOP);
 						settings_->init();
 						MessagePainter::show("SETTINGS CLEARED");
 					}
