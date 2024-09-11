@@ -218,12 +218,6 @@ namespace SamplePage {
 	}
 
 	void on_encoder(int id, int state) {
-		//	if (Controller::is_pressed(Controller::SHIFT_BUTTON)) {
-		//		int inc = Controller::encoder_is_pressed(id) ? state * 10 : state * 1;
-		//		sample_x_ = SettingsUtils::clip(0, 251, sample_x_ + inc);
-		//		return;
-		//	}
-
 		const int kMilliSecond =  SAMPLE_RATE / 1000;
 		const int kQuarterSecond = SAMPLE_RATE / 4;
 
@@ -269,61 +263,67 @@ namespace SamplePage {
 		ListPage::refresh_leds();
 	}
 
+	void draw_point(int x, int y, int w, int h, int visible_size, int point) {
+		if (point >= sample_x_ && point <= (sample_x_ + visible_size)) {
+			float point_ = ((point - sample_x_) / float(visible_size)) * w;
+			canvas_->vertical_line(x + point_, y, h, Canvas::BLACK);
+		}
+	}
+
+	void draw_sample(int x, int y, int h, int sample) {
+		int h_center = h / 2;
+		int h_ = (sample * (1.f / 32768.f)) * h_center;
+		canvas_->vertical_line(x, y + (h_center - h_), h_ * 2, Canvas::GRAY);
+	}
+
 	void draw() {
 		ListPage::draw();
 
-		const int x = 2;
-		const int y = 2;
-		const int w = 251;
-		const int h = 47;
-		const int center_h = h / 2;
+		const int x = 0;
+		const int y = 0;
+		const int w = 255;
+		const int h = 41;
+		const int wave_h = h / 2;
+		const int average = 16;
 
 		Sample *sample = settings_->selected_sample();
 		size_t size = sample->size_samples();
 		size_t visible_size = size / zoom_;
-		size_t inc = (visible_size / w);
+		size_t inc = (visible_size / w) / average;
 
 		sample_x_ = SettingsUtils::clip(0, (size - visible_size), sample_x_);
 
-		int16_t left = 0;
-		int16_t right = 0;
 		size_t index = sample_x_;
 
 		for (int x2 = 0; x2 < w; ++x2) {
-			sample->read(index, &left, &right);
-			index += inc;
+			int32_t	left = 0;
+			int32_t	right = 0;
 
-			float left_ = (left + 32768) * (1.f / 65535.f);
-			int y_left = center_h * (1.f - left_);
-			int h_left = center_h - y_left;
-			canvas_->vertical_line(x + x2, y + y_left, h_left, Canvas::GRAY);
+			for (int i = 0; i < average; ++i) {
+				int16_t l, r;
+				sample->read(index, &l, &r);
+				index += inc;
 
-			float right_ = (right + 32768) * (1.f / 65535.f);
-			int y_right = center_h;
-			int h_right = center_h * right_;
-			canvas_->vertical_line(x + x2, y + y_right, h_right, Canvas::GRAY);
+				if (l > left) {
+					left = l;
+				}
+
+				if (r > right) {
+					right = r;
+				}
+			}
+			draw_sample(x + x2, y, wave_h, left);
+			draw_sample(x + x2, y + wave_h + 1, wave_h, right);
 		}
 
 		const int bar_h = 6;
-		const int bar_y = h - bar_h;
+		const int bar_y = h;
 		WindowPainter::draw_horizontal_scollbar(x, bar_y, w, bar_h, sample_x_, size, visible_size);
 
-		if (sample->start() >= sample_x_ && sample->start() <= (sample_x_ + visible_size)) {
-			float start = (sample->start() / float(visible_size)) * w;
-			canvas_->vertical_line((x + start) - sample_x_, y, h, Canvas::BLACK);
-		}
-
-		//float start = (sample->start() / float(visible_size)) * w;
-		//canvas_->vertical_line(x + start, y, h, Canvas::BLACK);
-
-		float end = (sample->end() / float(visible_size)) * w;
-		canvas_->vertical_line(x + end, y, h, Canvas::BLACK);
-
-		float loop_start = (sample->loop_start() / float(visible_size)) * w;
-		canvas_->vertical_line(x + loop_start, y, h, Canvas::BLACK);
-
-		float loop_end = (sample->loop_end() / float(visible_size)) * w;
-		canvas_->vertical_line(x + loop_end, y, h, Canvas::BLACK);
+		draw_point(x, y, w, h, visible_size, sample->start());
+		draw_point(x, y, w, h, visible_size, sample->end());
+		draw_point(x, y, w, h, visible_size, sample->loop_start());
+		draw_point(x, y, w, h, visible_size, sample->loop_end());
 
 		Voice &most_recent = engine_->voiceEngine().most_recent_voice();
 		if (sample == &most_recent.sample()) {
@@ -331,11 +331,10 @@ namespace SamplePage {
 		}
 
 		if (sample == &voice_->sample()) {
-			float play_position = (voice_->phase() / float(visible_size)) * w;
-			canvas_->vertical_line(x + play_position, y, h, Canvas::BLACK);
+			draw_point(x, y, w, h, visible_size, voice_->phase());
 		}
 
-		canvas_->draw_text(x, y, w, h, str_.write("X", zoom_), Canvas::RIGHT, Canvas::BOTTOM);
+		canvas_->draw_text(x, y, w, h, str_.write("X", zoom_), Canvas::RIGHT, Canvas::TOP);
 	}
 
 	const size_t target_fps() {
