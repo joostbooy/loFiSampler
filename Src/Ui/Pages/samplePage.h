@@ -296,13 +296,14 @@ namespace SamplePage {
 		size_t index = sample_x_;
 
 		for (int x2 = 0; x2 < w; ++x2) {
-			int32_t	left = 0;
-			int32_t	right = 0;
+			int16_t	left = 0;
+			int16_t	right = 0;
 
 			for (int i = 0; i < average; ++i) {
 				int16_t l, r;
 				sample->read(index, &l, &r);
-				index += inc;
+				l = abs(l);
+				r = abs(r);
 
 				if (l > left) {
 					left = l;
@@ -311,6 +312,8 @@ namespace SamplePage {
 				if (r > right) {
 					right = r;
 				}
+
+				index += inc;
 			}
 			draw_sample(x + x2, y, wave_h, left);
 			draw_sample(x + x2, y + wave_h + 1, wave_h, right);
