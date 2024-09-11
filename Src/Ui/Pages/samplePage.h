@@ -281,11 +281,14 @@ namespace SamplePage {
 		}
 	}
 
-	void draw_sample(int x, int y, int h, int sample) {
+	void draw_sample(int x, int y, int h, int min, int max) {
 		int h_center = h / 2;
-		int h_ = (sample * (1.f / 32768.f)) * h_center * y_zoom_;
-		h_ = SettingsUtils::clip_max(h, h_);
-		canvas_->vertical_line(x, y + (h_center - h_), h_ * 2, Canvas::GRAY);
+		int h_min = (abs(min) * (1.f / 32768.f)) * h_center * y_zoom_;
+		int h_max = (abs(max) * (1.f / 32768.f)) * h_center * y_zoom_;
+		h_min = SettingsUtils::clip_max(h, h_min);
+		h_max = SettingsUtils::clip_max(h, h_max);
+		canvas_->vertical_line(x, y + h_center, h_min, Canvas::GRAY);
+		canvas_->vertical_line(x, y + (h_center - h_max), h_max, Canvas::GRAY);
 	}
 
 	void draw() {
@@ -308,27 +311,23 @@ namespace SamplePage {
 		size_t index = sample_x_;
 
 		for (int x2 = 0; x2 < w; ++x2) {
-			int16_t	left = 0;
-			int16_t	right = 0;
+			int16_t l_min = 0, l_max = 0;
+			int16_t r_min = 0, r_max = 0;
 
 			for (int i = 0; i < average; ++i) {
 				int16_t l, r;
 				sample->read(index, &l, &r);
-				l = abs(l);
-				r = abs(r);
 
-				if (l > left) {
-					left = l;
-				}
-
-				if (r > right) {
-					right = r;
-				}
+				if (l > l_max) { l_max = l; }
+				if (r > r_max) { r_max = r; }
+				if (l < l_min) { l_min = l; }
+				if (r < r_min) { r_min = r; }
 
 				index += inc;
 			}
-			draw_sample(x + x2, y, wave_h, left);
-			draw_sample(x + x2, y + wave_h + 1, wave_h, right);
+
+			draw_sample(x + x2, y, wave_h, l_min, l_max);
+			draw_sample(x + x2, y + wave_h + 1, wave_h, r_min, r_max);
 		}
 
 		const int bar_h = 6;
