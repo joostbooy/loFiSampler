@@ -257,12 +257,12 @@ namespace SamplePage {
 					return;
 				}
 
-				if (id == Controller::UP_BUTTON) {
+				if (id == Controller::DOWN_BUTTON) {
 					y_zoom_ = SettingsUtils::clip(1, 8, y_zoom_ - 1);
 					return;
 				}
 
-				if (id == Controller::DOWN_BUTTON) {
+				if (id == Controller::UP_BUTTON) {
 					y_zoom_ = SettingsUtils::clip(1, 8, y_zoom_ + 1);
 					return;
 				}
@@ -281,10 +281,10 @@ namespace SamplePage {
 		}
 	}
 
-	void draw_sample(int x, int y, int h, int min, int max) {
+	void draw_sample(int x, int y, int h, int sample_min, int sample_max) {
 		int h_center = h / 2;
-		int h_min = (abs(min) * (1.f / 32768.f)) * h_center * y_zoom_;
-		int h_max = (abs(max) * (1.f / 32768.f)) * h_center * y_zoom_;
+		int h_min = (abs(sample_min) * (1.f / 32768.f)) * h_center * y_zoom_;
+		int h_max = (abs(sample_max) * (1.f / 32768.f)) * h_center * y_zoom_;
 		h_min = SettingsUtils::clip_max(h, h_min);
 		h_max = SettingsUtils::clip_max(h, h_max);
 		canvas_->vertical_line(x, y + h_center, h_min, Canvas::GRAY);
@@ -299,7 +299,7 @@ namespace SamplePage {
 		const int w = 255;
 		const int h = 41;
 		const int wave_h = h / 2;
-		const int average = 16;
+		const int average = 32;
 
 		Sample *sample = settings_->selected_sample();
 		size_t size = sample->size_samples();
