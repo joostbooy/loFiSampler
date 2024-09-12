@@ -20,6 +20,7 @@ public:
 	enum Request {
 		STOP				= (1 << 0),
 		KILL_MIDI_CHANNEL	= (1 << 1),
+		AUDITION			= (1 << 2),
 	};
 
 	void init(Settings*, Uart*, Usb*, Gate*);
@@ -41,6 +42,15 @@ public:
 	void set_midi_channel_to_kill(uint8_t port, uint8_t channel) {
 		port_to_kill_ = port;
 		channel_to_kill_ = channel;
+	}
+
+	void set_sample_to_audition(Instrument *instrument, Sample *sample) {
+		auditionEvent_.instrument_ = instrument;
+		auditionEvent_.sample_ = sample;
+		auditionEvent_.midi_event_.data[0] = sample->root_note();
+		auditionEvent_.midi_event_.data[1] = 100;
+		auditionEvent_.midi_event_.port = instrument->midi_port();
+		auditionEvent_.midi_event_.message = instrument->midi_channel();
 	}
 
 	void add_request_blocking(Request type) {
@@ -69,6 +79,7 @@ private:
 	MidiClockEngine midiClockEngine_;
 	ModulationEngine modulationEngine_;
 	bool last_gate_[Modulation::kNumGatesToNote];
+	SampleQue::Event auditionEvent_;
 
 	void start();
 	void stop();
