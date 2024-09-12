@@ -9,16 +9,18 @@ namespace InstrumentSampleListPage {
 	using TopPage::pages_;
 	using TopPage::canvas_;
 	using TopPage::leds_;
+	using TopPage::engine_;
+
 
 	enum FooterOptions {
 		ADD,
 		REMOVE,
-		CLEAR,
+		AUDITION,
 		CLOSE,
 		NUM_OPTIONS
 	};
 
-	const char* const footer_option_text[NUM_OPTIONS] = { "ADD", "REMOVE", "CLEAR", "CLOSE" };
+	const char* const footer_option_text[NUM_OPTIONS] = { "ADD", "REMOVE", "AUDITION", "CLOSE" };
 
 	bool pasteable_ = false;
 	Instrument instrument_;
@@ -79,6 +81,18 @@ namespace InstrumentSampleListPage {
 		scroll_to_selected_instrument_sample();
 	}
 
+	void audition(bool state) {
+		if (settings_->num_samples() > 0) {
+			if (state) {
+				engine_->set_sample_to_audition(&settings_->selected_instrument(), settings_->selected_sample());
+				engine_->add_request_blocking(Engine::STOP);
+				engine_->add_request_blocking(Engine::AUDITION);
+			} else {
+				engine_->add_request_blocking(Engine::STOP);
+			}
+		}
+	}
+
 	void init() {
 
 	}
@@ -102,30 +116,31 @@ namespace InstrumentSampleListPage {
 		}
 	}
 
-	void on_function_button(int function) {
+	void on_function_button(int function, bool state) {
 		switch (function)
 		{
 		case ADD:
-			add();
+			if (state) {
+				add();
+			}
 			break;
 		case REMOVE:
-			ConfirmationPage::set("REMOVE FROM LIST ?", [](int option) {
-				if (option == ConfirmationPage::CONFIRM) {
-					remove();
-				}
-			});
-			pages_->open(Pages::CONFIRMATION_PAGE);
+			if (state) {
+				ConfirmationPage::set("REMOVE FROM LIST ?", [](int option) {
+					if (option == ConfirmationPage::CONFIRM) {
+						remove();
+					}
+				});
+				pages_->open(Pages::CONFIRMATION_PAGE);
+			}
 			break;
-		case CLEAR:
-			ConfirmationPage::set("CLEAR LIST ?", [](int option) {
-				if (option == ConfirmationPage::CONFIRM) {
-					clear();
-				}
-			});
-			pages_->open(Pages::CONFIRMATION_PAGE);
+		case AUDITION:
+			audition(state);
 			break;
 		case CLOSE:
-			pages_->close(Pages::INSTRUMENT_SAMPLE_LIST_PAGE);
+			if (state) {
+				pages_->close(Pages::INSTRUMENT_SAMPLE_LIST_PAGE);
+			}
 			break;
 		default:
 			break;
@@ -146,13 +161,10 @@ namespace InstrumentSampleListPage {
 				on_encoder(enc_id, 1);
 				break;
 			case Controller::RIGHT_BUTTON:
-				on_function_button(ADD);
+				on_function_button(ADD, 1);
 				break;
 			case Controller::LEFT_BUTTON:
-				on_function_button(REMOVE);
-				break;
-			case Controller::CLEAR_BUTTON:
-				on_function_button(CLEAR);
+				on_function_button(REMOVE, 1);
 				break;
 			case Controller::COPY_BUTTON:
 				copy();
@@ -166,12 +178,20 @@ namespace InstrumentSampleListPage {
 					});
 				}
 				break;
+			case Controller::CLEAR_BUTTON:
+				ConfirmationPage::set("CLEAR LIST ?", [](int option) {
+					if (option == ConfirmationPage::CONFIRM) {
+						clear();
+					}
+				});
+				pages_->open(Pages::CONFIRMATION_PAGE);
+				break;
 			default:
 				break;
 			}
-
-			on_function_button(Controller::button_to_function(id));
 		}
+
+		on_function_button(Controller::button_to_function(id), state);
 	}
 
 	void refresh_leds() {
@@ -222,6 +242,8 @@ namespace InstrumentSampleListPage {
 		const int bar_x = w - bar_w;
 		WindowPainter::draw_vertical_scollbar(bar_x, y, bar_w, h, sample_top_row_, sample_count, kMaxVisibleRows);
 		WindowPainter::draw_vertical_scollbar(bar_x + w, y, bar_w, h, instrument_sample_top_row_, instrument_sample_count, kMaxVisibleRows);
+
+		WindowPainter::draw_footer(footer_option_text, NUM_OPTIONS);
 	}
 
 	const size_t target_fps() {
