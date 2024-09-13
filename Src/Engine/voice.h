@@ -66,6 +66,7 @@ public:
 
 		envelopeEngine_[0].attack();
 		envelopeEngine_[1].attack();
+
 	}
 
 	void note_off() {
@@ -75,6 +76,9 @@ public:
 	}
 
 	void fill(Dac::Channel *channel, size_t size) {
+		sample_.set_data(sample_src_->data());
+		sample_.set_num_channels(sample_src_->num_channels());
+		sample_.set_size(sample_src_->size());
 		sample_.paste(sample_src_);
 		instrument_.paste(instrument_src_);
 
