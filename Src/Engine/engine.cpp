@@ -6,6 +6,7 @@ void Engine::init(Settings *settings, Uart *uart, Usb *usb, Gate *gate) {
 
 	limiter_.init();
 	midiEngine_.init(uart, usb);
+	midiClockEngine_.init(&settings->midi());
 	modulationEngine_.init(settings);
 	voiceEngine_.init(settings, &modulationEngine_);
 	sampleQue_.init(settings);
