@@ -22,7 +22,7 @@ private:
 	float peak_[Dac::kNumStereoChannels * 2];
 
 	inline float int_to_float(int value) {
-		return value * (1.f * 32767.f);
+		return value * (1.f / 32767.f);
 	}
 
 	inline int float_to_int(float value) {
