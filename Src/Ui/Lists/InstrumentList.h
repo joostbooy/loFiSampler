@@ -38,7 +38,7 @@ public:
 		case MIDI_PORT:				return "MIDI PORT";
 		case MIDI_CHANNEL:			return "MIDI CHANNEL";
 		case BIT_DEPTH:				return "BIT DEPTH";
-		case SAMPLE_RATE_DIVIDER:	return "SAMPLE RATE DIVIDER";
+		case SAMPLE_RATE_DIVIDER:	return "SAMPLE RATE";
 		case BEND_RANGE:			return "BEND RANGE";
 		default:
 			break;

@@ -34,7 +34,7 @@ public:
 		case LOOP_START:			return "LOOP START";
 		case LOOP_END:				return "LOOP END";
 		case BIT_DEPTH:				return "BIT DEPTH";
-		case SAMPLE_RATE_DIVIDER:	return "SAMPLE RATE DIVIDER";
+		case SAMPLE_RATE_DIVIDER:	return "SAMPLE RATE";
 		default:
 			break;
 		}
