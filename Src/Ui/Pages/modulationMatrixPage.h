@@ -21,14 +21,6 @@ namespace ModulationMatrixPage {
 	bool pasteable_ = false;
 	ModulationMatrix modulationMatrix_;
 
-	enum FooterOptions {
-		TOGGLE,
-		CLEAR,
-		NUM_FOOTER_OPTIONS
-	};
-
-	const char *const footer_text[NUM_FOOTER_OPTIONS] = { "TOGGLE", "CLEAR" };
-
 	void scroll_to_source(int src) {
 		src_ = SettingsUtils::clip(0, ModulationMatrix::NUM_SOURCES - 1, src);
 
@@ -71,20 +63,25 @@ namespace ModulationMatrixPage {
 
 	void on_button(int id, int state) {
 		if (state) {
-
 			switch (id)
 			{
-			case Controller::LEFT_BUTTON:
+			case Controller::UP_BUTTON:
 				on_encoder(Controller::FUNCTION_ENC_A, -1);
 				break;
-			case Controller::RIGHT_BUTTON:
+			case Controller::DOWN_BUTTON:
 				on_encoder(Controller::FUNCTION_ENC_A, 1);
 				break;
-			case Controller::UP_BUTTON:
+			case Controller::LEFT_BUTTON:
 				on_encoder(Controller::FUNCTION_ENC_D, -1);
 				break;
-			case Controller::DOWN_BUTTON:
+			case Controller::RIGHT_BUTTON:
 				on_encoder(Controller::FUNCTION_ENC_D, 1);
+				break;
+			case Controller::FUNCTION_BUTTON_A:
+			case Controller::FUNCTION_BUTTON_D:
+			case Controller::FUNCTION_ENC_PUSH_A:
+			case Controller::FUNCTION_ENC_PUSH_D:
+				settings_->selected_modulation_matrix().toggle(src_, dest_);
 				break;
 			case Controller::COPY_BUTTON:
 				modulationMatrix_.paste(&settings_->selected_modulation_matrix());
@@ -100,16 +97,7 @@ namespace ModulationMatrixPage {
 					pages_->open(Pages::CONFIRMATION_PAGE);
 				}
 				break;
-			default:
-				break;
-			}
-
-			switch (Controller::button_to_function(id))
-			{
-			case TOGGLE:
-				settings_->selected_modulation_matrix().toggle(src_, dest_);
-				break;
-			case CLEAR:
+			case Controller::CLEAR_BUTTON:
 				ConfirmationPage::set("CLEAR MATRIX ?", [](int option) {
 					if (option == ConfirmationPage::CONFIRM) {
 						settings_->selected_modulation_matrix().clear();
@@ -129,32 +117,71 @@ namespace ModulationMatrixPage {
 		leds_->set_footer_encoder(2, Leds::BLACK);
 		leds_->set_footer_encoder(3, Leds::RED);
 
-		leds_->set_footer_buttons(NUM_FOOTER_OPTIONS);
+		leds_->set_footer_button(0, Leds::RED);
+		leds_->set_footer_button(1, Leds::BLACK);
+		leds_->set_footer_button(2, Leds::BLACK);
+		leds_->set_footer_button(3, Leds::RED);
 	}
 
-	void draw() {
-	//	const int x = 0;
-	//	const int y = 0;
-	//	const int w = canvas_->width();
-	//	const int h = canvas_->height() - 10;
-	//	const int coll_w = w / kMaxVisibleSources;
-	//	const int row_h = h / kMaxVisibleDestinations;
+	void draw_sources(int x, int y, int w, int h, int coll_w, int row_h) {
+		for (int i = 0; i < kMaxVisibleSources; ++i) {
+			int src = i + top_src_;
+			int src_y = (i * row_h) + y;
 
-		for (int src = 0; src < kMaxVisibleSources; ++src) {
-			// ModulationMatrix::source_text(src);
-			for (int dest = 0; dest < kMaxVisibleDestinations; ++dest) {
-				 // ModulationMatrix::destination_text(dest);
-
-				//	bool state = settings_->selected_modulation_matrix().read(src, dest);
-				if (src == src_ && dest == dest_ ) {
-					// hightlight
+			if (src < ModulationMatrix::NUM_SOURCES) {
+				canvas_->draw_text(x + 4, src_y, coll_w, row_h, ModulationMatrix::source_text(src), Canvas::CENTER, Canvas::CENTER);
+				if (src == src_) {
+					canvas_->fill(coll_w + 1, src_y + 1, w - 2, row_h - 2, Canvas::LIGHT_GRAY);
 				}
 			}
 		}
-		//WindowPainter::draw_vertical_scollbar();
-		//WindowPainter::draw_horizontal_scollbar();
 
-		WindowPainter::draw_footer(footer_text, NUM_FOOTER_OPTIONS);
+		WindowPainter::draw_vertical_scollbar(256 - 8, y, 6, h, top_src_, ModulationMatrix::NUM_SOURCES, kMaxVisibleSources);
+	}
+
+	void draw_destination(int x, int y, int w, int h, int coll_w, int row_h) {
+		for (int i = 0; i < kMaxVisibleDestinations; ++i) {
+			int dest = i + top_dest_;
+			int dest_x = (i * coll_w) + x;
+
+			if (dest < ModulationMatrix::NUM_DESTINATIONS) {
+				canvas_->draw_text(dest_x, y, coll_w, row_h, ModulationMatrix::destination_text(dest), Canvas::CENTER, Canvas::CENTER);
+				if (dest == dest_) {
+					canvas_->fill(dest_x + 1, row_h + 1, coll_w - 2, h - 2, Canvas::LIGHT_GRAY);
+				}
+			}
+		}
+
+		WindowPainter::draw_horizontal_scollbar(coll_w, 64 - 8, w - coll_w, 6, top_dest_, ModulationMatrix::NUM_DESTINATIONS, kMaxVisibleDestinations);
+	}
+
+	void draw_matrix(int x, int y, int w, int h, int coll_w, int row_h) {
+		for (int i = 0; i < kMaxVisibleDestinations; ++i) {
+			int dest = i + top_dest_;
+			int dest_x = (i * coll_w) + x;
+
+			for (int j = 0; j < kMaxVisibleSources; ++j) {
+				int src = j + top_src_;
+				int src_y = (j * row_h) + y;
+
+				if (settings_->selected_modulation_matrix().read(src, dest)) {
+					canvas_->fill(dest_x + 1, src_y + 1, coll_w - 2, row_h - 2, Canvas::BLACK);
+				}
+			}
+		}
+	}
+
+	void draw() {
+		const int x = 0;
+		const int y = 0;
+		const int w = canvas_->width() - 10;
+		const int h = canvas_->height() - 10;
+		const int coll_w = w / (kMaxVisibleSources + 1);
+		const int row_h = h / (kMaxVisibleDestinations + 1);
+
+		draw_sources(x, row_h, w, h, coll_w, row_h);
+		draw_destination(coll_w, y, w, h, coll_w, row_h);
+		draw_matrix(x + coll_w, y + row_h, w - coll_w, h - row_h, coll_w, row_h);
 	}
 
 	const size_t target_fps() {
