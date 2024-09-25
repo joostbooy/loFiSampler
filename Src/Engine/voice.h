@@ -25,13 +25,13 @@ public:
 		envelopeEngine_[1].init(&settings->envelope(1));
 	}
 
+	float phase() { return phase_; }
 	uint8_t port() { return port_; }
 	uint8_t note() { return note_; }
-	uint32_t phase() { return phase_; }
 	uint8_t channel() { return channel_; }
 	bool key_pressed() { return key_pressed_; }
 	State state() { return state_; }
-	Sample &sample() { return sample_; }
+	Sample* sample() { return sample_src_; }
 	EnvelopeEngine &envelopeEngine(int index) { return envelopeEngine_[index]; }
 
 	void request_stop() {
@@ -66,7 +66,6 @@ public:
 
 		envelopeEngine_[0].attack();
 		envelopeEngine_[1].attack();
-
 	}
 
 	void note_off() {
@@ -100,7 +99,7 @@ public:
 			float fractional = phase_ - intergral;
 
 			phase_ += (inc * state_);
-
+			
 			int16_t l, r;
 			int16_t l_next, r_next;
 

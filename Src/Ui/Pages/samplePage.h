@@ -306,7 +306,6 @@ namespace SamplePage {
 		inc = (average >= inc) ? 1 : inc / average;
 
 		sample_x_ = SettingsUtils::clip(0, (size - visible_size), sample_x_);
-
 		size_t index = sample_x_;
 
 		// draw sample
@@ -340,13 +339,14 @@ namespace SamplePage {
 		draw_point(x, y, w, h, visible_size, sample->loop_start());
 		draw_point(x, y, w, h, visible_size, sample->loop_end());
 
-		// draw phase
-		Voice &most_recent = engine_->voiceEngine().most_recent_voice();
-		if (sample == &most_recent.sample()) {
-			voice_ = &most_recent;
+		// update last voice that used the selected sample
+		Voice &most_recent_voice = engine_->voiceEngine().most_recent_voice();
+		if (sample == most_recent_voice.sample()) {
+			voice_ = &most_recent_voice;
 		}
 
-		if (sample == &voice_->sample()) {
+		// draw phase of the last voice
+		if (sample == voice_->sample() && voice_->state() != Voice::IDLE) {
 			draw_point(x, y, w, h, visible_size, voice_->phase());
 		}
 
